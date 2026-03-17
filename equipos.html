@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoanWare | Equipos Disponibles</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="publico.css">
+    <style>
+        .categoria-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.88rem;
+            color: var(--primary);
+            font-weight: 500;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+        .categoria-item:hover { background: #f0f4ff; }
+        .categoria-item.activa { background: var(--primary); color: white; font-weight: 600; }
+        .categoria-item.activa i { color: white; }
+        .badge-count {
+            margin-left: auto;
+            background: #e2e8f0;
+            color: #475569;
+            font-size: 0.72rem;
+            padding: 1px 7px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .categoria-item.activa .badge-count { background: rgba(255,255,255,0.25); color: white; }
+        #buscador {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            margin-bottom: 16px;
+            outline: none;
+            font-family: 'Montserrat', sans-serif;
+            box-sizing: border-box;
+        }
+        #buscador:focus { border-color: var(--primary); }
+        .sin-resultados { grid-column: 1/-1; text-align: center; padding: 50px 20px; color: var(--text-muted); }
+        .sin-resultados i { font-size: 2.5rem; margin-bottom: 12px; display: block; opacity: 0.4; }
+
+        /* Banner de invitado */
+        .banner-guest {
+            background: linear-gradient(135deg, var(--primary), #2d5a43);
+            color: white;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .banner-guest p { margin: 0; font-size: 0.88rem; font-weight: 600; opacity: 0.95; }
+        .banner-guest a {
+            background: var(--accent);
+            color: var(--primary);
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.82rem;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .banner-guest a:hover { opacity: 0.85; }
+    </style>
+</head>
+<body>
+
+        <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-microchip"></i>
+                <h1>Loan<span>Ware</span></h1>
+            </div>
+            <nav class="main-nav">
+                <a href="index.html">Inicio</a>
+<<<<<<< HEAD
+                <a href="equipos.html" style="color: var(--accent);">Equipos</a>
+=======
+                <a href="equipos.html">Equipos</a>
+>>>>>>> 362a65003d8cfb35fe4e3208bafc7a6cfbfcfacf
+                <div class="dropdown" style="display: inline-block; position: relative;">
+
+                    <a href="" class="dropbtn">
+                    Acerca de... <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i>
+                </a>
+
+                    <div class="dropdown-content">
+<<<<<<< HEAD
+                        <a href="./public/quienes.html"><i class="fas fa-users"></i> Quiénes Somos</a>
+                        <a href="./public/mision.html"><i class="fas fa-bullseye"></i> Misión</a>
+                        <a href="./public/vision.html"><i class="fas fa-eye"></i> Visión</a>
+=======
+                        <a href="quienes.php">
+                            <i class="fas fa-users"></i> Quiénes Somos
+                        </a>
+                        <a href="mision.php">
+                            <i class="fas fa-bullseye"></i> Misión
+                        </a>
+                        <a href="vision.php">
+                            <i class="fas fa-eye"></i> Visión
+                        </a>
+>>>>>>> 362a65003d8cfb35fe4e3208bafc7a6cfbfcfacf
+                    </div>
+
+                </div>
+                <a href="contacto.html">Contacto</a>
+            </nav>
+            <div class="login-container">
+                <a href="login.html" class="btn-login">
+                    <i class="fas fa-user-circle"></i> Iniciar Sesión
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- BANNER INVITADO — se oculta si hay sesión activa -->
+    <div class="banner-guest" id="bannerGuest">
+        <p><i class="fas fa-circle-info" style="color: var(--accent); margin-right: 8px;"></i>
+            Estás navegando como invitado. Inicia sesión para solicitar equipos.
+        </p>
+        <a href="login.html"><i class="fas fa-right-to-bracket"></i> Iniciar Sesión</a>
+    </div>
+
+    <main class="container" style="display: grid; grid-template-columns: 250px 1fr; gap: 40px; padding: 40px 20px;">
+
+        <!-- SIDEBAR -->
+        <aside style="background: white; padding: 30px; border-radius: 20px; box-shadow: var(--shadow); height: fit-content;">
+            <h3 style="color: var(--primary); margin-bottom: 15px; font-size: 1.1rem; border-bottom: 2px solid var(--accent); padding-bottom: 10px;">
+                <i class="fas fa-filter"></i> Categorías
+            </h3>
+            <input type="text" id="buscador" placeholder="🔍 Buscar categoría..." oninput="filtrarCategorias()">
+            <ul id="listaCategorias" style="list-style: none; padding: 0; margin: 0;">
+                <li>
+                    <a class="categoria-item activa" onclick="seleccionarCategoria(null, this)">
+                        <i class="fas fa-boxes-stacked"></i> Todos los equipos
+                        <span class="badge-count" id="badge-todos">0</span>
+                    </a>
+                </li>
+                <li id="cargandoCategorias" style="padding: 10px; color: var(--text-muted); font-size:0.85rem;">
+                    <i class="fas fa-circle-notch fa-spin"></i> Cargando...
+                </li>
+            </ul>
+        </aside>
+
+        <!-- CATÁLOGO -->
+        <section>
+            <div class="section-header" style="text-align: left; margin-bottom: 40px;">
+                <h2 style="font-size: 2rem;" id="tituloSeccion">Catálogo de Equipos</h2>
+                <div class="line" style="margin: 10px 0;"></div>
+                <p id="subtituloSeccion" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 6px;"></p>
+            </div>
+            <div id="contenedorEquipos" class="contenedor-noticias">
+                <div style="grid-column: 1/-1; text-align: center; padding: 50px;">
+                    <i class="fas fa-circle-notch fa-spin" style="font-size: 2rem; color: var(--primary);"></i>
+                    <p style="margin-top: 15px; color: var(--text-muted);">Cargando catálogo...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="accessibility-wrapper" id="draggableWrapper">
+        <button class="btn-access" id="accessBtn" title="Opciones de Accesibilidad">
+            <i class="fas fa-universal-access"></i>
+        </button>
+        <div class="access-menu" id="accessMenu">
+            <h4>Centro de Inclusión</h4>
+            <div class="access-section">
+                <small>VISIÓN Y CEGUERA</small>
+                <button type="button" onclick="toggleNarrador()"><i class="fas fa-comment-dots"></i> Narrador de Voz</button>
+                <button type="button" onclick="toggleDaltonismo()"><i class="fas fa-eye"></i> Modos Daltonismo</button>
+            </div>
+            <div class="access-section">
+                <small>TAMAÑO DE TEXTO</small>
+                <button type="button" onclick="cambiarFontSize('increase')"><i class="fas fa-plus"></i> Aumentar</button>
+                <button type="button" onclick="cambiarFontSize('decrease')"><i class="fas fa-minus"></i> Disminuir</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="reading-guide" class="reading-guide"></div>
+
+    <footer class="footer">
+        <div class="footer-contenido container">
+            <div class="footer-col">
+                <h3>Loan<span>Ware</span></h3>
+                <p>Sistema de gestión de préstamo de equipos y accesorios escolares. Potenciando la educación tecnológica.</p>
+                <div class="redes-sociales">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+                    <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Contacto</h4>
+                <p><i class="fas fa-envelope"></i> LoanWare@gmail.com</p>
+                <p><i class="fas fa-phone"></i> +52 771 234 8743</p>
+                <p><i class="fas fa-location-dot"></i> Huejutla de Reyes, Hidalgo</p>
+            </div>
+            <div class="footer-col">
+                <h4>Navegación</h4>
+                <div class="footer-links">
+                    <a href="index.html">Inicio</a>
+                    <a href="equipos.html">Catálogo de Equipos</a>
+                    <a href="solicitudes.html">Mis Solicitudes</a>
+                    <a href="contacto.html">Soporte Técnico</a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <div class="footer-links">
+                    <a href="#">Aviso de Privacidad</a>
+                    <a href="#">Términos y Condiciones</a>
+                    <a href="#">Reglamento de Préstamos</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 <strong>LoanWare</strong> — Diseñado para el éxito educativo.
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/equipos.js"></script>
+</body>
+</html>

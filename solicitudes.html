@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Solicitudes - LOANWARE Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="publico.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-microchip"></i>
+                <h1>Loan<span>Ware</span></h1>
+            </div>
+            
+            <div class="main-nav">
+                <span style="color:white; margin-right: 15px; font-size: 0.8rem; font-weight: 600;">
+                    <i class="fas fa-user-shield" style="color: var(--accent);"></i> 
+                    MODO ADMINISTRADOR
+                </span>
+                <a href="perfil.html" class="btn-login">MI PERFIL</a>
+            </div>
+        </div>
+    </header>
+    <nav class="header" style="background-color: var(--primary); border-top: 1px solid rgba(255,255,255,0.1); padding: 5px 0;">
+        <div class="header-container main-nav">
+            <a href="adminDashboard.html">Inicio</a>
+            <a href="inventario.html">Inventario</a>
+            <a href="historial.html">Solicitudes</a>
+            <a href="usuario.html">Usuarios</a>
+            <div class="dropdown" style="display: inline-block; position: relative;">
+                <a href="#" class="dropbtn">
+                    Catalogos <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+                </a>
+                
+                <div class="dropdown-content" style="background-color: var(--primary); min-width: 180px; box-shadow: var(--shadow); border-radius: 0 0 10px 10px;">
+                    <a href="marca.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <i class="fas fa-arrow-up" style="color: var(--accent); margin-right: 10px;"></i> Marca
+                    </a>
+                    <a href="categoria.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem;">
+                        <i class="fas fa-arrow-down" style="color: var(--accent); margin-right: 10px;"></i> Categoría
+                    </a>
+                </div>
+            </div>
+            <div class="dropdown" style="display: inline-block; position: relative;">
+                <a href="#" class="dropbtn">
+                    Movimientos <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+                </a>
+                
+                <div class="dropdown-content" style="background-color: var(--primary); min-width: 180px; box-shadow: var(--shadow); border-radius: 0 0 10px 10px;">
+                    <a href="prestamos.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <i class="fas fa-arrow-up" style="color: var(--accent); margin-right: 10px;"></i> Prestamos
+                    </a>
+                    <a href="devoluciones.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem;">
+                        <i class="fas fa-arrow-down" style="color: var(--accent); margin-right: 10px;"></i> Devoluciones
+                    </a>
+                </div>
+            </div>
+
+            <div class="dropdown" style="display: inline-block; position: relative;">
+    
+                <a href="" class="dropbtn">
+                    Acerca de... <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i>
+                </a>
+                
+                <div class="dropdown-content">
+                    <a href="quienes.html">
+                        <i class="fas fa-users"></i> Quiénes Somos
+                    </a>
+                    <a href="mision.html">
+                        <i class="fas fa-bullseye"></i> Misión
+                    </a>
+                    <a href="vision.html">
+                        <i class="fas fa-eye"></i> Visión
+                    </a>
+                </div>
+
+            </div>
+            
+            <a href="ajustes_footer.html"><i class="fas fa-cog"></i> Ajustes</a>
+        </div>
+    </nav>
+
+    <main class="container seccion-about">
+        
+        <div class="section-header">
+            <span class="tag">Panel de Administración</span>
+            <h2>Solicitudes de <span style="color: var(--primary);">Préstamo</span></h2>
+            <div class="line"></div>
+            <p style="color: var(--text-muted);">Gestiona las peticiones de equipo y accesorios de cómputo de los usuarios.</p>
+        </div>
+
+        <div class="card" style="padding: 0; overflow: hidden;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead>
+                    <tr style="background-color: var(--primary); color: var(--white);">
+                        <th style="padding: 20px;">Usuario</th>
+                        <th style="padding: 20px;">Equipo</th>
+                        <th style="padding: 20px;">Fecha Solicitud</th>
+                        <th style="padding: 20px;">Motivo</th>
+                        <th style="padding: 20px;">Estado</th>
+                        <th style="padding: 20px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody style="color: var(--text-dark);">
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 15px 20px; font-weight: 600;">20240994</td>
+                        <td style="padding: 15px 20px;">Laptop Dell Latitude</td>
+                        <td style="padding: 15px 20px;">01/03/2026</td>
+                        <td style="padding: 15px 20px;">Práctica de Redes</td>
+                        <td style="padding: 15px 20px;">
+                            <span class="badge" style="background: rgba(26, 57, 42, 0.1); color: var(--primary);">Pendiente</span>
+                        </td>
+                        <td style="padding: 15px 20px;">
+                            <button style="border: none; background: none; color: #059669; cursor: pointer; font-size: 1.1rem; margin-right: 10px;" title="Aprobar"><i class="fas fa-check-circle"></i></button>
+                            <button style="border: none; background: none; color: #dc2626; cursor: pointer; font-size: 1.1rem; margin-right: 10px;" title="Rechazar"><i class="fas fa-times-circle"></i></button>
+                            <button style="border: none; background: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem;" title="Ver Detalles"><i class="fas fa-eye"></i></button>
+                        </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 15px 20px; font-weight: 600;">20240882</td>
+                        <td style="padding: 15px 20px;">Cámara Canon EOS</td>
+                        <td style="padding: 15px 20px;">28/02/2026</td>
+                        <td style="padding: 15px 20px;">Proyecto Audiovisual</td>
+                        <td style="padding: 15px 20px;">
+                            <span class="badge" style="background: rgba(9, 255, 0, 0.2); color: #047857;">Aprobado</span>
+                        </td>
+                        <td style="padding: 15px 20px;">
+                            <button style="border: none; background: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem;" title="Ver Detalles"><i class="fas fa-eye"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <div class="accessibility-wrapper" id="draggableWrapper">
+            <button class="btn-access" id="accessBtn" title="Opciones de Accesibilidad">
+                <i class="fas fa-universal-access"></i> 
+            </button>
+            
+            <div class="access-menu" id="accessMenu">
+        <h4>Centro de Inclusión</h4>
+        <div class="access-section">
+            <small>VISIÓN Y CEGUERA</small>
+            <button  type="button" onclick="toggleNarrador()"><i class="fas fa-comment-dots"></i> Narrador de Voz</button>
+            <button type="button" onclick="toggleDaltonismo()"><i class="fas fa-eye"></i> Modos Daltonismo</button>
+        </div>
+        <div class="access-section">
+            <small>TAMAÑO DE TEXTO</small>
+            <button type="button" onclick="cambiarFontSize('increase')"><i class="fas fa-plus"></i> Aumentar</button>
+            <button type="button" onclick="cambiarFontSize('decrease')"><i class="fas fa-minus"></i> Disminuir</button>
+        </div>
+    </div>
+        </div>
+
+    <div id="reading-guide" class="reading-guide"></div>
+        </div>
+
+        <footer class="footer">
+            <div class="footer-contenido container">
+                <div class="footer-col about">
+                    <h3>Loan<span>Ware</span></h3>
+                    <p>Optimizando el acceso tecnológico en la educación.</p>
+                    <div class="redes-sociales">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-x-twitter"></i></a>
+                        <a href="#"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Contacto</h4>
+                    <p><i class="fas fa-envelope"></i> LoanWare@gmail.com</p>
+                    <p><i class="fas fa-phone"></i> +52 771 234 8743</p>
+                    <p><i class="fas fa-location-dot"></i> Huejutla, Hidalgo</p>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <nav class="footer-links">
+                        <a href="#">Privacidad</a>
+                        <a href="#">Términos</a>
+                        <a href="#">Ayuda</a>
+                    </nav>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2026 LoanWare — Diseñado para el éxito educativo
+            </div>
+        </footer>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+        
+        <script src="js/main.js"></script>
+
+</body>
+
+</html>
