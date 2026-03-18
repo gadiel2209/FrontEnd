@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Historial de Movimientos - LOANWARE Admin</title>
+    <title>Devoluciones - LOANWARE Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="publico.css">
@@ -33,7 +32,7 @@
         <div class="header-container main-nav">
             <a href="adminDashboard.html">Inicio</a>
             <a href="inventario.html">Inventario</a>
-            <a href="historial.html">Solicitudes</a>
+            <a href="solicitudes.html">Solicitudes</a>
             <a href="usuario.html">Usuarios</a>
             
             <div class="dropdown" style="display: inline-block; position: relative;">
@@ -58,14 +57,22 @@
                     <a href="prestamos.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
                         <i class="fas fa-arrow-up" style="color: var(--accent); margin-right: 10px;"></i> Prestamos
                     </a>
-                    <a href="devoluciones.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <a href="devoluciones.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem;">
                         <i class="fas fa-arrow-down" style="color: var(--accent); margin-right: 10px;"></i> Devoluciones
-                    </a>
-                    <a href="historial.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem;">
-                        <i class="fas fa-history" style="color: var(--accent); margin-right: 10px;"></i> Historial General
                     </a>
                 </div>
             </div>
+            <div    class="dropdown" style="display: inline-block; position: relative;">
+                <a href="#" class="dropbtn">
+                    Acerca de... <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+                </a>
+                <div class="dropdown-content">
+                    <a href="quienes.html"><i class="fas fa-users"></i> Quiénes Somos</a>
+                    <a href="mision.html"><i class="fas fa-bullseye"></i> Misión</a>
+                    <a href="vision.html"><i class="fas fa-eye"></i> Visión</a>
+                </div>
+            </div>
+
             
             <a href="ajustes_footer.html"><i class="fas fa-cog"></i> Ajustes</a>
         </div>
@@ -73,70 +80,27 @@
 
     <main class="container seccion-about">
         <div class="section-header">
-            <span class="tag">Reportes</span>
-            <h2>Historial de <span style="color: var(--primary);">Movimientos</span></h2>
+            <span class="tag">Control de Activos</span>
+            <h2>Gestión de <span style="color: var(--primary);">Devoluciones</span></h2>
             <div class="line"></div>
-            <p style="color: var(--text-muted);">Registro detallado de todas las transacciones, préstamos y devoluciones realizadas.</p>
-        </div>
-
-        <div class="card" style="margin-bottom: 20px; padding: 20px; display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
-            <div style="flex: 1; min-width: 200px;">
-                <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">BUSCAR POR USUARIO/EQUIPO</label>
-                <input type="text" placeholder="Ej. 20240994 o Dell..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
-            </div>
-            <div style="flex: 1; min-width: 150px;">
-                <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">TIPO DE MOVIMIENTO</label>
-                <select style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
-                    <option>Todos</option>
-                    <option>Préstamo</option>
-                    <option>Devolución</option>
-                    <option>Cancelación</option>
-                </select>
-            </div>
-            <button class="btn-login" style="border: none; cursor: pointer; height: 40px; padding: 0 25px;">
-                <i class="fas fa-filter"></i> Filtrar
-            </button>
+            <p style="color: var(--text-muted);">Equipos que se encuentran actualmente en préstamo. Registra su retorno aquí.</p>
         </div>
 
         <div class="card" style="padding: 0; overflow: hidden;">
             <table style="width: 100%; border-collapse: collapse; text-align: left;">
                 <thead>
                     <tr style="background-color: var(--primary); color: var(--white);">
-                        <th style="padding: 20px;">ID</th>
-                        <th style="padding: 20px;">Fecha y Hora</th>
                         <th style="padding: 20px;">Usuario</th>
-                        <th style="padding: 20px;">Equipo/Accesorio</th>
-                        <th style="padding: 20px;">Tipo</th>
-                        <th style="padding: 20px;">Responsable Admin</th>
+                        <th style="padding: 20px;">Equipo</th>
+                        <th style="padding: 20px;">Fecha Préstamo</th>
+                        <th style="padding: 20px;">Motivo</th>
+                        <th style="padding: 20px;">Estado</th>
                         <th style="padding: 20px;">Acciones</th>
                     </tr>
                 </thead>
-                <tbody id="listaHistorial" style="color: var(--text-dark);">
-                    <tr style="border-bottom: 1px solid #eee;">
-                        <td style="padding: 15px 20px; font-weight: 600;">#1245</td>
-                        <td style="padding: 15px 20px;">15/03/2026 10:30 AM</td>
-                        <td style="padding: 15px 20px;">20240994</td>
-                        <td style="padding: 15px 20px;">Laptop Dell Latitude</td>
-                        <td style="padding: 15px 20px;">
-                            <span class="badge" style="background: rgba(5, 150, 105, 0.1); color: #059669;">PRÉSTAMO</span>
-                        </td>
-                        <td style="padding: 15px 20px;">Admin_Juan</td>
-                        <td style="padding: 15px 20px;">
-                            <button style="border: none; background: none; color: var(--primary); cursor: pointer;" title="Imprimir Ticket"><i class="fas fa-print"></i></button>
-                        </td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #eee;">
-                        <td style="padding: 15px 20px; font-weight: 600;">#1244</td>
-                        <td style="padding: 15px 20px;">14/03/2026 04:15 PM</td>
-                        <td style="padding: 15px 20px;">20240882</td>
-                        <td style="padding: 15px 20px;">Cámara Canon EOS</td>
-                        <td style="padding: 15px 20px;">
-                            <span class="badge" style="background: rgba(37, 99, 235, 0.1); color: #2563eb;">DEVOLUCIÓN</span>
-                        </td>
-                        <td style="padding: 15px 20px;">Admin_Maria</td>
-                        <td style="padding: 15px 20px;">
-                            <button style="border: none; background: none; color: var(--primary); cursor: pointer;" title="Imprimir Ticket"><i class="fas fa-print"></i></button>
-                        </td>
+                <tbody id="listaDevolucionesAdmin" style="color: var(--text-dark);">
+                    <tr>
+                        <td colspan="6" style="text-align:center; padding:20px;">Cargando datos...</td>
                     </tr>
                 </tbody>
             </table>
@@ -161,6 +125,8 @@
             </div>
         </div>
     </div>
+
+    <div id="reading-guide" class="reading-guide"></div>
 
     <footer class="footer">
         <div class="footer-contenido container">
@@ -194,6 +160,9 @@
         </div>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/devoluciones.js"></script>
+
 </body>
 </html>

@@ -106,19 +106,22 @@ function cerrarSesion() {
 function actualizarBotonSesion() {
     const btnSesion = document.getElementById('btnSesion');
     const token = localStorage.getItem('token');
-    // CAMBIA 'rol' por 'id_rol' para que coincida con tu login:
+    const nombreUsuario = localStorage.getItem('nombre'); // Asegúrate de guardar 'nombre' en el login
     const rol = localStorage.getItem('id_rol'); 
 
     if (token && btnSesion) {
+        // 1. Cambiar el texto del botón
+        // Si tienes el nombre guardado lo ponemos, si no, ponemos "Mi Perfil"
+        const textoMostrar = nombreUsuario ? nombreUsuario : "Mi Perfil";
+        btnSesion.innerHTML = `<i class="fas fa-user-circle"></i> ${textoMostrar}`;
+
+        // 2. Lógica de redirección que ya tenías
         const path = window.location.pathname;
         const enPublic = path.includes('/public/');
 
-        // Verificamos si es Administrador (ID 1 en tu base de datos)
         if (rol == "1") { 
-            // Si es admin, mándalo al de la RAÍZ
             btnSesion.href = enPublic ? '../perfil.html' : 'perfil.html';
         } else {
-            // Si no es admin (es null o es 2), mándalo a PUBLIC
             btnSesion.href = enPublic ? 'perfil.html' : 'public/perfil.html';
         }
     }
