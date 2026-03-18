@@ -25,63 +25,47 @@
                     <i class="fas fa-user-shield" style="color: var(--accent);"></i> 
                     MODO ADMINISTRADOR
                 </span>
-                <a href="./public/perfil.html" class="btn-login">MI PERFIL</a>
+                <a href="perfil.html" class="btn-login" id="btnSesion">MI PERFIL</a>
             </div>
         </div>
     </header>
+
     <nav class="header" style="background-color: var(--primary); border-top: 1px solid rgba(255,255,255,0.1); padding: 5px 0;">
         <div class="header-container main-nav">
             <a href="adminDashboard.html">Inicio</a>
             <a href="inventario.html">Inventario</a>
-            <a href="solicitudes.html">Solicitudes</a>
+            <a href="historial.html">Solicitudes</a>
             <a href="usuario.html">Usuarios</a>
+            
             <div class="dropdown" style="display: inline-block; position: relative;">
                 <a href="#" class="dropbtn">
-                    Catalogos <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+                    Catálogos <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
                 </a>
-
-                <div class="dropdown-content" style="background-color: var(--primary); min-width: 180px; box-shadow: var(--shadow); border-radius: 0 0 10px 10px;">
-                    <a href="marca.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                        <i class="fas fa-arrow-up" style="color: var(--accent); margin-right: 10px;"></i> Marca
-                    </a>
-                    <a href="categoria.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem;">
-                        <i class="fas fa-arrow-down" style="color: var(--accent); margin-right: 10px;"></i> Categoría
-                    </a>
+                <div class="dropdown-content">
+                    <a href="marca.html"><i class="fas fa-tag" style="color: var(--accent);"></i> Marca</a>
+                    <a href="categoria.html"><i class="fas fa-layer-group" style="color: var(--accent);"></i> Categoría</a>
                 </div>
             </div>
+
             <div class="dropdown" style="display: inline-block; position: relative;">
                 <a href="#" class="dropbtn">
                     Movimientos <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
                 </a>
-
-                <div class="dropdown-content" style="background-color: var(--primary); min-width: 180px; box-shadow: var(--shadow); border-radius: 0 0 10px 10px;">
-                    <a href="prestamos.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                        <i class="fas fa-arrow-up" style="color: var(--accent); margin-right: 10px;"></i> Prestamos
-                    </a>
-                    <a href="devoluciones.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem;">
-                        <i class="fas fa-arrow-down" style="color: var(--accent); margin-right: 10px;"></i> Devoluciones
-                    </a>
+                <div class="dropdown-content">
+                    <a href="prestamos.html"><i class="fas fa-arrow-up" style="color: var(--accent);"></i> Préstamos</a>
+                    <a href="devoluciones.html"><i class="fas fa-arrow-down" style="color: var(--accent);"></i> Devoluciones</a>
                 </div>
             </div>
 
             <div class="dropdown" style="display: inline-block; position: relative;">
-
-                <a href="" class="dropbtn">
-                    Acerca de... <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i>
+                <a href="#" class="dropbtn">
+                    Acerca de... <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
                 </a>
-
                 <div class="dropdown-content">
-                    <a href="quienes.html">
-                        <i class="fas fa-users"></i> Quiénes Somos
-                    </a>
-                    <a href="mision.html">
-                        <i class="fas fa-bullseye"></i> Misión
-                    </a>
-                    <a href="vision.html">
-                        <i class="fas fa-eye"></i> Visión
-                    </a>
+                    <a href="quienes.html"><i class="fas fa-users"></i> Quiénes Somos</a>
+                    <a href="mision.html"><i class="fas fa-bullseye"></i> Misión</a>
+                    <a href="vision.html"><i class="fas fa-eye"></i> Visión</a>
                 </div>
-
             </div>
 
             <a href="ajustes_footer.html"><i class="fas fa-cog"></i> Ajustes</a>

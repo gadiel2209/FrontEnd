@@ -12,234 +12,172 @@
 
 <body style="display: flex; flex-direction: column; min-height: 100vh;">
 
-     <header class="header">
+    <header class="header">
         <div class="header-container">
             <div class="logo">
                 <i class="fas fa-microchip"></i>
                 <h1>Loan<span>Ware</span></h1>
             </div>
-            <nav class="main-nav">
-                <a href="home.html">Inicio</a>
-                <a href="equipos.html">Equipos</a>
-                <a href="historial.html">Historial</a>
-                <div class="dropdown" style="display: inline-block; position: relative;">
-                    <a href="" class="dropbtn">
-                        Acerca de... <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i>
-                    </a>
-                    <div class="dropdown-content">
-                        <a href="quienes.html"><i class="fas fa-users"></i> Quiénes Somos</a>
-                        <a href="mision.html"><i class="fas fa-bullseye"></i> Misión</a>
-                        <a href="vision.html"><i class="fas fa-eye"></i> Visión</a>
-                    </div>
-                </div>
-                <a href="contacto.html">Contacto</a>
-            </nav>
-                <div class="user-profile-header">
+
+            <div class="user-profile-header">
                 <div class="user-details">
-                    <span class="user-name"></span>
+                    <span class="user-name" id="userNameHeader"></span>
                     <span class="user-status"><i class="fas fa-circle"></i> En línea</span>
                 </div>
-                <a href="perfil.html" class="user-avatar-link">
+                <a href="perfil.html" class="user-avatar-link" id="btnSesion">
                     <i class="fas fa-user-circle"></i>
                 </a>
             </div>
         </div>
     </header>
 
-    <main style="flex:1; padding: 60px 0;">
-        <div class="container">
+        <nav class="header" style="background-color: var(--primary); border-top: 1px solid rgba(255,255,255,0.1); padding: 5px 0;">
+        <div class="header-container main-nav">
+            <a href="adminDashboard.html">Inicio</a>
+            <a href="inventario.html">Inventario</a>
+            <a href="solicitudes.html">Solicitudes</a>
+            <a href="usuario.html">Usuarios</a>
+            <div class="dropdown" style="display: inline-block; position: relative;">
+                <a href="#" class="dropbtn">
+                    Catalogos <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+                </a>
 
-            <div class="section-header" style="text-align:left; margin-bottom:40px;">
-                <span class="tag">Mi Perfil</span>
-                <h2>Perfil de Usuario</h2>
-                <div class="line" style="margin-left:0;"></div>
-                <p style="color:var(--text-muted);">Gestiona tu información personal y mantén tu cuenta segura.</p>
+                <div class="dropdown-content" style="background-color: var(--primary); min-width: 180px; box-shadow: var(--shadow); border-radius: 0 0 10px 10px;">
+                    <a href="marca.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <i class="fas fa-arrow-up" style="color: var(--accent); margin-right: 10px;"></i> Marca
+                    </a>
+                    <a href="categoria.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem;">
+                        <i class="fas fa-arrow-down" style="color: var(--accent); margin-right: 10px;"></i> Categoría
+                    </a>
+                </div>
+            </div>
+            <div class="dropdown" style="display: inline-block; position: relative;">
+                <a href="#" class="dropbtn">
+                    Movimientos <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+                </a>
+
+                <div class="dropdown-content" style="background-color: var(--primary); min-width: 180px; box-shadow: var(--shadow); border-radius: 0 0 10px 10px;">
+                    <a href="prestamos.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <i class="fas fa-arrow-up" style="color: var(--accent); margin-right: 10px;"></i> Prestamos
+                    </a>
+                    <a href="devoluciones.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem;">
+                        <i class="fas fa-arrow-down" style="color: var(--accent); margin-right: 10px;"></i> Devoluciones
+                    </a>
+                </div>
             </div>
 
-            <div class="about-grid">
+            <div class="dropdown" style="display: inline-block; position: relative;">
 
-                <!-- DATOS DEL USUARIO -->
-                <div class="about-text">
+                <a href="" class="dropbtn">
+                    Acerca de... <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i>
+                </a>
 
-                    <!-- AVATAR + NOMBRE -->
-                    <div style="display:flex; align-items:center; gap:20px; margin-bottom:30px;">
-                        <div id="avatarLetra" style="width:80px; height:80px; background:var(--primary);
-                            color:var(--accent); border-radius:50%; display:flex; align-items:center;
-                            justify-content:center; font-size:2rem; font-weight:700;
-                            border:4px solid rgba(132,204,22,0.2); flex-shrink:0;">
-                            ?
-                        </div>
-                        <div>
-                            <h3 id="perfilNombre" style="color:var(--primary); margin:0;">Cargando...</h3>
-                            <span id="perfilRolTag" class="tag"
-                                style="font-size:0.7rem; margin:4px 0 0 0; display:inline-block;"></span>
-                        </div>
-                    </div>
-
-                    <!-- TARJETAS DE INFO -->
-                    <div class="stat-card" style="text-align:left; margin-bottom:1rem; flex-direction:row;
-                        display:flex; justify-content:space-between; align-items:center; padding:15px 25px;">
-                        <div>
-                            <h4 style="margin:0; font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">
-                                Nombre Completo</h4>
-                            <p id="perfilNombreCompleto" style="margin:5px 0 0; font-weight:700; color:var(--primary);">
-                                —</p>
-                        </div>
-                        <i class="fas fa-id-card" style="font-size:1.2rem; color:var(--accent);"></i>
-                    </div>
-
-                    <div class="stat-card" style="text-align:left; margin-bottom:1rem; flex-direction:row;
-                        display:flex; justify-content:space-between; align-items:center; padding:15px 25px;">
-                        <div>
-                            <h4 style="margin:0; font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">
-                                Usuario</h4>
-                            <p id="perfilUsuario" style="margin:5px 0 0; font-weight:700; color:var(--primary);">—</p>
-                        </div>
-                        <i class="fas fa-at" style="font-size:1.2rem; color:var(--accent);"></i>
-                    </div>
-
-                    <div class="stat-card" style="text-align:left; margin-bottom:1rem; flex-direction:row;
-                        display:flex; justify-content:space-between; align-items:center; padding:15px 25px;">
-                        <div>
-                            <h4 style="margin:0; font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">
-                                Correo Electrónico</h4>
-                            <p id="perfilCorreo" style="margin:5px 0 0; font-weight:700; color:var(--primary);">—</p>
-                        </div>
-                        <i class="fas fa-envelope" style="font-size:1.2rem; color:var(--accent);"></i>
-                    </div>
-
-                    <div class="stat-card" style="text-align:left; flex-direction:row;
-                        display:flex; justify-content:space-between; align-items:center; padding:15px 25px;">
-                        <div>
-                            <h4 style="margin:0; font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">
-                                Rol en el Sistema</h4>
-                            <p id="perfilRol" style="margin:5px 0 0; font-weight:700; color:var(--primary);">—</p>
-                        </div>
-                        <i class="fas fa-user-shield" style="font-size:1.2rem; color:var(--accent);"></i>
-                    </div>
-                </div>
-
-                <!-- SEGURIDAD -->
-                <div>
-                    <div class="card" style="text-align:left; border-top:5px solid var(--accent);">
-                        <div class="card-icon"><i class="fas fa-lock"></i></div>
-                        <h3>Seguridad</h3>
-                        <p style="color:var(--text-muted);">Cambia tu contraseña periódicamente para proteger tu acceso
-                            al sistema LoanWare.</p>
-
-                        <!-- ALERTA -->
-                        <div id="alertaPerfil" style="display:none; padding:12px 16px; border-radius:10px;
-                            font-size:0.85rem; font-weight:600; margin:16px 0; align-items:center; gap:8px;">
-                        </div>
-
-                        <form id="formPassword" style="margin-top:20px;">
-                            <div style="margin-bottom:15px;">
-                                <label
-                                    style="font-weight:700; font-size:0.75rem; color:var(--primary); display:block; margin-bottom:8px;">
-                                    CONTRASEÑA ACTUAL
-                                </label>
-                                <div style="position:relative; display:flex; align-items:center;">
-                                    <i class="fas fa-lock"
-                                        style="position:absolute; left:15px; color:var(--primary); opacity:0.5;"></i>
-                                    <input id="passwordActual" type="password" placeholder="Tu contraseña actual"
-                                        style="width:100%; padding:12px 12px 12px 40px; border-radius:8px;
-                                        border:1px solid #ddd; font-family:'Montserrat'; font-size:0.9rem; box-sizing:border-box;">
-                                </div>
-                            </div>
-
-                            <div style="margin-bottom:20px;">
-                                <label
-                                    style="font-weight:700; font-size:0.75rem; color:var(--primary); display:block; margin-bottom:8px;">
-                                    NUEVA CONTRASEÑA
-                                </label>
-                                <div style="position:relative; display:flex; align-items:center;">
-                                    <i class="fas fa-key"
-                                        style="position:absolute; left:15px; color:var(--primary); opacity:0.5;"></i>
-                                    <input id="passwordNueva" type="password" placeholder="Mínimo 6 caracteres"
-                                        style="width:100%; padding:12px 12px 12px 40px; border-radius:8px;
-                                        border:1px solid #ddd; font-family:'Montserrat'; font-size:0.9rem; box-sizing:border-box;">
-                                </div>
-                            </div>
-
-                            <button type="button" onclick="cambiarPassword()" class="btn-primary"
-                                style="width:100%; border:none; cursor:pointer; padding:15px;">
-                                <i class="fas fa-save"></i> Guardar Nueva Contraseña
-                            </button>
-                        </form>
-
-                        <div style="margin-top:30px; padding-top:20px; border-top:1px solid #eee; text-align:center;">
-                            <button onclick="cerrarSesion()" style="background:none; border:none; cursor:pointer;
-                                color:#ef4444; font-weight:700; font-size:0.85rem; font-family:'Montserrat';
-                                display:inline-flex; align-items:center; gap:8px;">
-                                <i class="fas fa-power-off"></i> CERRAR SESIÓN
-                            </button>
-                        </div>
-                    </div>
+                <div class="dropdown-content">
+                    <a href="quienes.html">
+                        <i class="fas fa-users"></i> Quiénes Somos
+                    </a>
+                    <a href="mision.html">
+                        <i class="fas fa-bullseye"></i> Misión
+                    </a>
+                    <a href="vision.html">
+                        <i class="fas fa-eye"></i> Visión
+                    </a>
                 </div>
 
             </div>
+
+            <a href="ajustes_footer.html"><i class="fas fa-cog"></i> Ajustes</a>
         </div>
+    </nav>
+
+
+    <main style="flex: 1; display: flex; flex-direction: column;">
+        <section class="seccion-about" style="padding: 60px 0;">
+            <div class="container">
+                <div class="section-header" style="text-align: left; margin-bottom: 40px;">
+                    <span class="tag">Mi Perfil</span>
+                    <h2>Perfil de Usuario</h2>
+                    <div class="line" style="margin-left: 0;"></div>
+                    <p>Gestiona tu información personal y mantén tu cuenta segura.</p>
+                </div>
+
+                <div class="about-grid">
+                    <div class="about-text">
+                        <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 30px;">
+                            <div id="avatarLetra" style="width: 80px; height: 80px; background: var(--primary); color: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; border: 4px solid rgba(132, 204, 22, 0.2);">
+                                ?
+                            </div>
+                            <div>
+                                <h3 id="perfilNombre" style="color: var(--primary); margin: 0;">Cargando...</h3>
+                                <p id="perfilRolTag" class="tag" style="font-size: 0.7rem; margin: 0;"></p>
+                            </div>
+                        </div>
+
+                        <div class="stat-card" style="text-align: left; margin-bottom: 1rem; width: 100%; flex-direction: row; display: flex; justify-content: space-between; align-items: center; padding: 15px 25px;">
+                            <div>
+                                <h4 style="margin: 0; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Nombre Completo</h4>
+                                <p id="perfilNombreCompleto" style="margin: 5px 0 0 0; font-weight: 700; color: var(--primary);">—</p>
+                            </div>
+                            <i class="fas fa-id-card" style="font-size: 1.2rem; color: var(--accent);"></i>
+                        </div>
+
+                        <div class="stat-card" style="text-align: left; margin-bottom: 1rem; width: 100%; flex-direction: row; display: flex; justify-content: space-between; align-items: center; padding: 15px 25px;">
+                            <div>
+                                <h4 style="margin: 0; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Correo Electrónico</h4>
+                                <p id="perfilCorreo" style="margin: 5px 0 0 0; font-weight: 700; color: var(--primary);">—</p>
+                            </div>
+                            <i class="fas fa-envelope" style="font-size: 1.2rem; color: var(--accent);"></i>
+                        </div>
+
+                        <div class="stat-card" style="text-align: left; margin-bottom: 1rem; width: 100%; flex-direction: row; display: flex; justify-content: space-between; align-items: center; padding: 15px 25px;">
+                            <div>
+                                <h4 style="margin: 0; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Rol en el Sistema</h4>
+                                <p id="perfilRol" style="margin: 5px 0 0 0; font-weight: 700; color: var(--primary);">—</p>
+                            </div>
+                            <i class="fas fa-user-shield" style="font-size: 1.2rem; color: var(--accent);"></i>
+                        </div>
+                    </div>
+
+                    <div class="noticias" style="padding: 0; background: transparent;">
+                        <div class="card" style="width: 100%; text-align: left; border-top: 5px solid var(--accent);">
+                            <div class="card-icon"><i class="fas fa-lock"></i></div>
+                            <h3>Seguridad</h3>
+                            <p>Cambia tu contraseña periódicamente para proteger tu acceso al sistema LoanWare.</p>
+
+                            <div id="alertaPerfil" style="display:none; padding:10px; border-radius:8px; margin: 10px 0; font-size: 0.8rem;"></div>
+
+                            <form id="formPassword" style="margin-top: 25px;">
+                                <div style="margin-bottom: 20px;">
+                                    <label style="font-weight: 700; font-size: 0.75rem; color: var(--primary); display: block; margin-bottom: 8px;">NUEVA CONTRASEÑA</label>
+                                    <div style="position: relative; display: flex; align-items: center;">
+                                        <i class="fas fa-key" style="position: absolute; left: 15px; color: var(--primary); opacity: 0.5;"></i>
+                                        <input type="password" id="passwordNueva" placeholder="Mínimo 8 caracteres" required style="width: 100%; padding: 12px 12px 12px 40px; border-radius: 8px; border: 1px solid #ddd; font-family: 'Montserrat'; font-size: 0.9rem;">
+                                    </div>
+                                </div>
+
+                                <button type="button" onclick="cambiarPassword()" class="btn-primary" style="width: 100%; border: none; cursor: pointer; text-align: center; padding: 15px;">
+                                    <i class="fas fa-save"></i> Guardar Nueva Contraseña
+                                </button>
+                            </form>
+
+                            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center;">
+                                <button onclick="cerrarSesion()" style="background:none; border:none; color: #ef4444; font-weight: 700; cursor: pointer; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 8px; font-family: 'Montserrat';">
+                                    <i class="fas fa-power-off"></i> CERRAR SESIÓN
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <div class="accessibility-wrapper" id="draggableWrapper">
-        <button class="btn-access" id="accessBtn" title="Opciones de Accesibilidad">
-            <i class="fas fa-universal-access"></i>
-        </button>
-        <div class="access-menu" id="accessMenu">
-            <h4>Centro de Inclusión</h4>
-            <div class="access-section">
-                <small>VISIÓN Y CEGUERA</small>
-                <button type="button" onclick="toggleNarrador()"><i class="fas fa-comment-dots"></i> Narrador de
-                    Voz</button>
-                <button type="button" onclick="toggleDaltonismo()"><i class="fas fa-eye"></i> Modos Daltonismo</button>
-            </div>
-            <div class="access-section">
-                <small>TAMAÑO DE TEXTO</small>
-                <button type="button" onclick="cambiarFontSize('increase')"><i class="fas fa-plus"></i>
-                    Aumentar</button>
-                <button type="button" onclick="cambiarFontSize('decrease')"><i class="fas fa-minus"></i>
-                    Disminuir</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="reading-guide" class="reading-guide"></div>
-
     <footer class="footer">
-        <div class="footer-contenido container">
-            <div class="footer-col">
-                <h3>Loan<span>Ware</span></h3>
-                <p>Optimizando el acceso tecnológico en la educación.</p>
-                <div class="redes-sociales">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
-                    <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
-                </div>
-            </div>
-            <div class="footer-col">
-                <h4>Contacto</h4>
-                <p><i class="fas fa-envelope"></i> LoanWare@gmail.com</p>
-                <p><i class="fas fa-phone"></i> +52 771 234 8743</p>
-                <p><i class="fas fa-location-dot"></i> Huejutla, Hidalgo</p>
-            </div>
-            <div class="footer-col">
-                <h4>Legal</h4>
-                <nav class="footer-links">
-                    <a href="#">Privacidad</a>
-                    <a href="#">Términos</a>
-                    <a href="#">Ayuda</a>
-                </nav>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            &copy; 2026 LoanWare — Diseñado para el éxito educativo
-        </div>
-    </footer>
+        </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    <script src="../js/main.js"></script>
-    <script src="../js/perfil.js"></script>
+    
+    <script src="js/main.js"></script>
+    <script src="js/perfil.js"></script>
 </body>
-
 </html>

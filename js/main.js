@@ -89,14 +89,13 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// --- GESTIÓN DE SESIÓN (CORREGIDA) ---
 // --- GESTIÓN DE SESIÓN MEJORADA ---
 function cerrarSesion() {
     console.log("Cerrando sesión...");
-    localStorage.clear(); // Limpia token, nombre y rol
+    localStorage.clear(); 
     
-    // Al cerrar sesión, siempre mandamos al login de la raíz
     const path = window.location.pathname;
+    // Si estamos en /public/, subimos un nivel para ir al login de la raíz
     if (path.includes('/public/')) {
         window.location.href = '../login.html';
     } else {
@@ -107,37 +106,23 @@ function cerrarSesion() {
 function actualizarBotonSesion() {
     const btnSesion = document.getElementById('btnSesion');
     const token = localStorage.getItem('token');
-    const nombreUsuario = localStorage.getItem('nombre');
-    const rol = localStorage.getItem('rol'); // Obtenemos el rol guardado
+    // CAMBIA 'rol' por 'id_rol' para que coincida con tu login:
+    const rol = localStorage.getItem('id_rol'); 
 
     if (token && btnSesion) {
-        btnSesion.innerHTML = `<i class="fas fa-user-circle"></i> ${nombreUsuario || 'Mi Perfil'}`;
-        
-        // --- LÓGICA DE REDIRECCIÓN SEGÚN ROL ---
-        // Si el rol es 1 (Administrador según tu BD), va a la raíz
-        // Si es otro, va a la carpeta public
-        if (rol == "1") {
-            // Si estamos en public, subimos un nivel para ir al perfil de raíz
-            const path = window.location.pathname;
-            btnSesion.href = path.includes('/public/') ? '../perfil.html' : 'perfil.html';
-        } else {
-            // Para usuarios normales, va al perfil dentro de public
-            const path = window.location.pathname;
-            btnSesion.href = path.includes('/public/') ? 'perfil.html' : 'public/perfil.html';
-        }
-
-        btnSesion.style.background = 'var(--accent)';
-        btnSesion.style.color = 'var(--primary)';
-    } else if (btnSesion) {
-        // Configuración para cuando NO hay sesión
         const path = window.location.pathname;
-        btnSesion.href = path.includes('/public/') ? '../login.html' : 'login.html';
-        btnSesion.innerHTML = `<i class="fas fa-right-to-bracket"></i> Iniciar Sesión`;
+        const enPublic = path.includes('/public/');
+
+        // Verificamos si es Administrador (ID 1 en tu base de datos)
+        if (rol == "1") { 
+            // Si es admin, mándalo al de la RAÍZ
+            btnSesion.href = enPublic ? '../perfil.html' : 'perfil.html';
+        } else {
+            // Si no es admin (es null o es 2), mándalo a PUBLIC
+            btnSesion.href = enPublic ? 'perfil.html' : 'public/perfil.html';
+        }
     }
 }
-
-
-
 // --- LÓGICA DE BURBUJA ---
 document.addEventListener('DOMContentLoaded', () => {
     actualizarBotonSesion();
