@@ -1,16 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <title>Historial de Movimientos - LOANWARE Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="publico.css">
 </head>
-
 <body>
     <header class="header">
         <div class="header-container">
@@ -18,11 +15,9 @@
                 <i class="fas fa-microchip"></i>
                 <h1>Loan<span>Ware</span></h1>
             </div>
-            
             <div class="main-nav">
                 <span style="color:white; margin-right: 15px; font-size: 0.8rem; font-weight: 600;">
-                    <i class="fas fa-user-shield" style="color: var(--accent);"></i> 
-                    MODO ADMINISTRADOR
+                    <i class="fas fa-user-shield" style="color: var(--accent);"></i> MODO ADMINISTRADOR
                 </span>
                 <a href="perfil.html" class="btn-login" id="btnSesion">MI PERFIL</a>
             </div>
@@ -35,50 +30,13 @@
             <a href="inventario.html">Inventario</a>
             <a href="historial.html">Solicitudes</a>
             <a href="usuario.html">Usuarios</a>
-            
-            <div class="dropdown" style="display: inline-block; position: relative;">
-                <a href="#" class="dropbtn">
-                    Catalogos <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
-                </a>
-                <div class="dropdown-content" style="background-color: var(--primary); min-width: 180px; box-shadow: var(--shadow); border-radius: 0 0 10px 10px;">
-                    <a href="marca.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                        <i class="fas fa-arrow-up" style="color: var(--accent); margin-right: 10px;"></i> Marca
-                    </a>
-                    <a href="categoria.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem;">
-                        <i class="fas fa-arrow-down" style="color: var(--accent); margin-right: 10px;"></i> Categoría
-                    </a>
-                </div>
-            </div>
-
-            <div class="dropdown" style="display: inline-block; position: relative;">
-                <a href="#" class="dropbtn">
-                    Movimientos <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
-                </a>
-                <div class="dropdown-content" style="background-color: var(--primary); min-width: 180px; box-shadow: var(--shadow); border-radius: 0 0 10px 10px;">
-                    <a href="prestamos.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                        <i class="fas fa-arrow-up" style="color: var(--accent); margin-right: 10px;"></i> Prestamos
-                    </a>
-                    <a href="devoluciones.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                        <i class="fas fa-arrow-down" style="color: var(--accent); margin-right: 10px;"></i> Devoluciones
-                    </a>
-                    <a href="historial.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem;">
-                        <i class="fas fa-history" style="color: var(--accent); margin-right: 10px;"></i> Historial General
-                    </a>
-                </div>
-            </div>
-            <div class="dropdown" style="display: inline-block; position: relative;">
-                <a href="#" class="dropbtn">
-                    Acerca de... <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
-                </a>
+            <div class="dropdown">
+                <a href="#" class="dropbtn">Catálogos <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i></a>
                 <div class="dropdown-content">
-                    <a href="quienes.html"><i class="fas fa-users"></i> Quiénes Somos</a>
-                    <a href="mision.html"><i class="fas fa-bullseye"></i> Misión</a>
-                    <a href="vision.html"><i class="fas fa-eye"></i> Visión</a>
+                    <a href="marca.html">Marca</a>
+                    <a href="categoria.html">Categoría</a>
                 </div>
             </div>
-
-            
-            
             <a href="ajustes_footer.html"><i class="fas fa-cog"></i> Ajustes</a>
         </div>
     </nav>
@@ -88,124 +46,51 @@
             <span class="tag">Reportes</span>
             <h2>Historial de <span style="color: var(--primary);">Movimientos</span></h2>
             <div class="line"></div>
-            <p style="color: var(--text-muted);">Registro detallado de todas las transacciones, préstamos y devoluciones realizadas.</p>
         </div>
 
         <div class="card" style="margin-bottom: 20px; padding: 20px; display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
             <div style="flex: 1; min-width: 200px;">
-                <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">BUSCAR POR USUARIO/EQUIPO</label>
-                <input type="text" placeholder="Ej. 20240994 o Dell..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">BUSCAR USUARIO O EQUIPO</label>
+                <input type="text" id="inputBusqueda" placeholder="Nombre o matrícula..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
             </div>
             <div style="flex: 1; min-width: 150px;">
-                <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">TIPO DE MOVIMIENTO</label>
-                <select style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
-                    <option>Todos</option>
-                    <option>Préstamo</option>
-                    <option>Devolución</option>
-                    <option>Cancelación</option>
+                <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">ESTADO</label>
+                <select id="selectFiltro" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    <option value="todos">Todos</option>
+                    <option value="aprobada">Préstamos</option>
+                    <option value="devuelta">Devoluciones</option>
+                    <option value="rechazada">Rechazadas</option>
                 </select>
             </div>
-            <button class="btn-login" style="border: none; cursor: pointer; height: 40px; padding: 0 25px;">
-                <i class="fas fa-filter"></i> Filtrar
-            </button>
         </div>
 
-        <div class="card" style="padding: 0; overflow: hidden;">
-            <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                <thead>
-                    <tr style="background-color: var(--primary); color: var(--white);">
-                        <th style="padding: 20px;">ID</th>
-                        <th style="padding: 20px;">Fecha y Hora</th>
-                        <th style="padding: 20px;">Usuario</th>
-                        <th style="padding: 20px;">Equipo/Accesorio</th>
-                        <th style="padding: 20px;">Tipo</th>
-                        <th style="padding: 20px;">Responsable Admin</th>
-                        <th style="padding: 20px;">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="listaHistorial" style="color: var(--text-dark);">
-                    <tr style="border-bottom: 1px solid #eee;">
-                        <td style="padding: 15px 20px; font-weight: 600;">#1245</td>
-                        <td style="padding: 15px 20px;">15/03/2026 10:30 AM</td>
-                        <td style="padding: 15px 20px;">20240994</td>
-                        <td style="padding: 15px 20px;">Laptop Dell Latitude</td>
-                        <td style="padding: 15px 20px;">
-                            <span class="badge" style="background: rgba(5, 150, 105, 0.1); color: #059669;">PRÉSTAMO</span>
-                        </td>
-                        <td style="padding: 15px 20px;">Admin_Juan</td>
-                        <td style="padding: 15px 20px;">
-                            <button style="border: none; background: none; color: var(--primary); cursor: pointer;" title="Imprimir Ticket"><i class="fas fa-print"></i></button>
-                        </td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #eee;">
-                        <td style="padding: 15px 20px; font-weight: 600;">#1244</td>
-                        <td style="padding: 15px 20px;">14/03/2026 04:15 PM</td>
-                        <td style="padding: 15px 20px;">20240882</td>
-                        <td style="padding: 15px 20px;">Cámara Canon EOS</td>
-                        <td style="padding: 15px 20px;">
-                            <span class="badge" style="background: rgba(37, 99, 235, 0.1); color: #2563eb;">DEVOLUCIÓN</span>
-                        </td>
-                        <td style="padding: 15px 20px;">Admin_Maria</td>
-                        <td style="padding: 15px 20px;">
-                            <button style="border: none; background: none; color: var(--primary); cursor: pointer;" title="Imprimir Ticket"><i class="fas fa-print"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="card" style="padding: 0; overflow: hidden; border-radius: 15px;">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="background-color: var(--primary); color: white;">
+                            <th style="padding: 15px;">ID</th>
+                            <th style="padding: 15px;">Fecha</th>
+                            <th style="padding: 15px;">Usuario</th>
+                            <th style="padding: 15px;">Equipo / Accesorio</th>
+                            <th style="padding: 15px;">Tipo</th>
+                            <th style="padding: 15px; text-align: center;">Ticket</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listaHistorial">
+                        <tr>
+                            <td colspan="6" style="padding: 50px; text-align: center;">
+                                <i class="fas fa-circle-notch fa-spin" style="font-size: 2rem; color: var(--primary);"></i>
+                                <p>Cargando registros...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </main>
 
-    <div class="accessibility-wrapper" id="draggableWrapper">
-        <button class="btn-access" id="accessBtn" title="Opciones de Accesibilidad">
-            <i class="fas fa-universal-access"></i> 
-        </button>
-        <div class="access-menu" id="accessMenu">
-            <h4>Centro de Inclusión</h4>
-            <div class="access-section">
-                <small>VISIÓN Y CEGUERA</small>
-                <button type="button" onclick="toggleNarrador()"><i class="fas fa-comment-dots"></i> Narrador de Voz</button>
-                <button type="button" onclick="toggleDaltonismo()"><i class="fas fa-eye"></i> Modos Daltonismo</button>
-            </div>
-            <div class="access-section">
-                <small>TAMAÑO DE TEXTO</small>
-                <button type="button" onclick="cambiarFontSize('increase')"><i class="fas fa-plus"></i> Aumentar</button>
-                <button type="button" onclick="cambiarFontSize('decrease')"><i class="fas fa-minus"></i> Disminuir</button>
-            </div>
-        </div>
-    </div>
-
-    <footer class="footer">
-        <div class="footer-contenido container">
-            <div class="footer-col about">
-                <h3>Loan<span>Ware</span></h3>
-                <p>Optimizando el acceso tecnológico en la educación.</p>
-                <div class="redes-sociales">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-x-twitter"></i></a>
-                    <a href="#"><i class="fab fa-tiktok"></i></a>
-                </div>
-            </div>
-            <div class="footer-col">
-                <h4>Contacto</h4>
-                <p><i class="fas fa-envelope"></i> LoanWare@gmail.com</p>
-                <p><i class="fas fa-phone"></i> +52 771 234 8743</p>
-                <p><i class="fas fa-location-dot"></i> Huejutla, Hidalgo</p>
-            </div>
-            <div class="footer-col">
-                <h4>Legal</h4>
-                <nav class="footer-links">
-                    <a href="#">Privacidad</a>
-                    <a href="#">Términos</a>
-                    <a href="#">Ayuda</a>
-                </nav>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            &copy; 2026 LoanWare — Diseñado para el éxito educativo
-        </div>
-    </footer>
-
     <script src="js/main.js"></script>
+    <script src="js/historial.js"></script>
 </body>
 </html>
