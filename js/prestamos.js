@@ -68,20 +68,27 @@ function renderizarTablaAdmin(datos, targetId, tipo) {
 
 async function ejecutarAccion(id, accion) {
     try {
+        const id_admin = getAdminId(); // ya tienes esta función ✅
+
         const res = await fetch(`${API}/solicitudes/${accion}/${id}`, {
             method: 'PUT',
-            headers: { 'Authorization': `Bearer ${token}` } 
+            headers: { 
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'  // ← agregar
+            },
+            body: JSON.stringify({                   // ← agregar
+                id_admin: id_admin,
+                motivo: 'Rechazado por administrador'
+            })
         });
-        
+
         if (res.ok) {
-            await cargarGestionAdmin(); 
+            await cargarGestionAdmin();
         } else {
-            // Si el servidor responde con error (ej. 401 o 500)
             const error = await res.json();
             alert("Hubo un problema: " + error.message);
         }
     } catch (err) {
-        // Si hay un error de red o el servidor no responde
         console.error("Error de conexión:", err);
         alert("No se pudo conectar con el servidor.");
     }
