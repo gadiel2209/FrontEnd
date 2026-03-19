@@ -67,24 +67,16 @@ function renderizarTablaAdmin(datos, targetId, tipo) {
 }
 
 async function ejecutarAccion(id, accion) {
-    try {
-        const res = await fetch(`${API}/solicitudes/${accion}/${id}`, {
-            method: 'PUT',
-            headers: { 
-                'Authorization': `Bearer ${token}` 
-            }
-            // Ya no enviamos body ni JSON, la URL lleva todo lo necesario
-        });
-
-        if (res.ok) {
-            // Si la DB termina bien, quitamos la fila de la pantalla
-            await cargarGestionAdmin(); 
-        } else {
-            const error = await res.json();
-            alert("Error: " + error.message);
-        }
-    } catch (e) {
-        console.error("Error:", e);
+    // 'id' es el id_solicitud
+    const res = await fetch(`${API}/solicitudes/${accion}/${id}`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}` } 
+        // No enviamos 'body', por eso no necesitamos JSON.stringify
+    });
+    
+    if (res.ok) {
+        await cargarGestionAdmin(); // Esto refresca la tabla
     }
 }
+
 document.addEventListener('DOMContentLoaded', cargarGestionAdmin);
