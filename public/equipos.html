@@ -133,7 +133,11 @@
                 style="color: var(--primary); margin-bottom: 15px; font-size: 1.1rem; border-bottom: 2px solid var(--accent); padding-bottom: 10px;">
                 <i class="fas fa-filter"></i> Categorías
             </h3>
-            <input type="text" id="buscador" placeholder="🔍 Buscar categoría..." oninput="filtrarCategorias()">
+            <input type="text" 
+                   id="buscadorEquipos" 
+                   placeholder="🔍 Buscar por nombre, marca o descripción..." 
+                   oninput="buscarEquipos()"
+                   style="width: 100%; padding: 12px 16px; border: 1.5px solid #e2e8f0; border-radius: 12px; font-family: 'Montserrat', sans-serif; font-size: 0.9rem; outline: none; transition: all 0.3s ease;">
             <ul id="listaCategorias" style="list-style: none; padding: 0; margin: 0;">
                 <li>
                     <a class="categoria-item activa" onclick="seleccionarCategoria(null, this)">

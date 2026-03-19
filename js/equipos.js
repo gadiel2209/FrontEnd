@@ -4,7 +4,7 @@ let todosLosEquipos = []
 let equiposFiltrados = []
 let categoriaActiva = null
 let paginaActual = 1
-const POR_PAGINA = 10
+const POR_PAGINA = 9
 
 // ─── SESIÓN ───────────────────────────────────────────────────────
 const token = localStorage.getItem('token');
@@ -29,6 +29,23 @@ function verificarSesion() {
             btnSesion.href = '../login.html'
         }
     }
+}
+
+function buscarEquipos() {
+    const texto = document.getElementById('buscadorEquipos')?.value.trim().toLowerCase() || ''
+
+    const base = categoriaActiva
+        ? todosLosEquipos.filter(e =>
+            e.categoria.trim().toLowerCase() === categoriaActiva.trim().toLowerCase())
+        : todosLosEquipos
+
+    const filtrados = texto
+        ? base.filter(e => e.nombre.toLowerCase().includes(texto) ||
+            (e.descripcion || '').toLowerCase().includes(texto))
+        : base
+
+    paginaActual = 1
+    renderizarEquipos(filtrados)
 }
 
 // ─── COLORES POR ESTADO ───────────────────────────────────────────
