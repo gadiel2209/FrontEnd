@@ -80,6 +80,7 @@ async function ejecutarAccion(id, accion) {
     const id_admin = getAdminId();
     if (!id_admin) return alert("Sesión expirada.");
 
+    // --- NUEVA ALERTA DE CONFIRMACIÓN ---
     if (accion === 'aprobar') {
         const confirmar = confirm("¿Estás seguro de que deseas AUTORIZAR este préstamo?");
         if (!confirmar) return; // Si el admin cancela, no hace nada
@@ -89,19 +90,37 @@ async function ejecutarAccion(id, accion) {
         const confirmar = confirm("¿Confirmas que el equipo ha sido devuelto?");
         if (!confirmar) return;
     }
+    // ------------------------------------
+
+    let datosBody = { id_admin };
+    
+    if (accion === 'rechazar') {
+        const motivo = prompt("Motivo del rechazo:");
+        if (!motivo) return; // Si cancela el prompt, no hace nada
+        datosBody.motivo = motivo;
+    }
 
     try {
         const res = await fetch(`${API}/solicitudes/${accion}/${id}`, {
             method: 'PUT',
-            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            headers: { 
+                'Authorization': `Bearer ${token}`, 
+                'Content-Type': 'application/json' 
+            },
             body: JSON.stringify(datosBody)
         });
 
         if (res.ok) {
             alert("Éxito al procesar " + accion);
             cargarGestionAdmin();
+        } else {
+            const err = await res.json();
+            alert("Error: " + (err.message || "No se pudo procesar"));
         }
-    } catch (e) { console.error(e); }
+    } catch (e) { 
+        console.error(e); 
+        alert("Error de conexión con el servidor");
+    }
 }
 
 document.addEventListener('DOMContentLoaded', cargarGestionAdmin);
