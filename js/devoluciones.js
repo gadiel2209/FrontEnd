@@ -8,7 +8,8 @@ function getAdminId() {
     if (!token) return null;
     try {
         const payload = JSON.parse(atob(token.split('.')[1]));
-        return payload.id_usuario || payload.id; // ← puede no coincidir con tu JWT
+        console.log('JWT payload:', payload); // ← Ver qué campos tiene
+        return payload.id_usuario || payload.id;
     } catch (e) { return null; }
 }
 
