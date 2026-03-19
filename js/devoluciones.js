@@ -8,7 +8,7 @@ function getAdminId() {
     if (!token) return null;
     try {
         const payload = JSON.parse(atob(token.split('.')[1]));
-        return payload.id_usuario || payload.id;
+        return payload.id_usuario || payload.id; // ← puede no coincidir con tu JWT
     } catch (e) { return null; }
 }
 
@@ -60,19 +60,37 @@ function renderizarTablaDevoluciones(datos, tbody) {
 
 async function confirmarDevolucion(id) {
     const id_admin = getAdminId();
+    
+    // AGREGA ESTA VERIFICACIÓN
+    if (!id_admin) {
+        alert("No se pudo obtener el ID del administrador. Vuelve a iniciar sesión.");
+        return;
+    }
+    
     if (!confirm("¿Confirma que el equipo ha sido devuelto físicamente?")) return;
 
     try {
         const res = await fetch(`${API}/solicitudes/devolver/${id}`, {
             method: 'PUT',
-            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            headers: { 
+                'Authorization': `Bearer ${token}`, 
+                'Content-Type': 'application/json' 
+            },
             body: JSON.stringify({ id_admin })
         });
+
+        // AGREGA ESTO PARA VER EL ERROR EXACTO
+        const data = await res.json();
+        console.log('Respuesta del servidor:', data);
+
         if (res.ok) {
             alert("Devolución registrada con éxito");
             cargarPrestamosActivos();
+        } else {
+            alert("Error: " + data.message);
         }
-    } catch (e) { alert("Error al procesar devolución"); }
+    } catch (e) { 
+        alert("Error al procesar devolución: " + e.message); 
+    }
 }
-
 document.addEventListener('DOMContentLoaded', cargarPrestamosActivos);
