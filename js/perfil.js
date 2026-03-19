@@ -132,9 +132,24 @@ async function cambiarPassword() {
 }
 
 function cerrarSesion() {
+    // 1. Extraemos el rol antes de borrar los datos
+    // Intentamos obtenerlo del objeto data si lo guardaste, 
+    // o directamente del elemento HTML donde se mostró.
+    const perfilRolTag = document.getElementById('perfilRolTag');
+    const rol = perfilRolTag ? perfilRolTag.textContent.toLowerCase() : '';
+
+    // 2. Limpiar el almacenamiento
     localStorage.removeItem('token');
     localStorage.clear();
-    window.location.href = '../login.html';
+
+    // 3. Redirección condicional
+    if (rol.includes('admin')) {
+        // Si el rol es Administrador
+        window.location.href = 'login.html'; 
+    } else {
+        // Si es usuario normal o cualquier otro
+        window.location.href = '../login.html';
+    }
 }
 
 // Ejecutar automáticamente cuando el HTML esté listo

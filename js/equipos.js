@@ -61,15 +61,17 @@ function getBadgeColor(estado) {
 
 // ─── BOTÓN SOLICITAR ──────────────────────────────────────────────
 async function solicitarEquipo(id_equipo, nombre, btn) {
-    console.log("Intentando solicitar equipo ID:", id_equipo);  
     if (!haySession) {
         sessionStorage.setItem('redirectAfterLogin', 'public/equipos.html')
-        // CORRECCIÓN: Salir de public/ para ir al login
         window.location.href = '../login.html'
         return
     }
 
     const id_usuario = parseInt(localStorage.getItem('id_usuario')) 
+    
+    // Guardamos el contenido original del botón por si hay que restaurarlo
+    const contenidoOriginal = '<i class="fas fa-hand-holding"></i> Solicitar';
+    
     btn.disabled = true
     btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Solicitando...'
 
@@ -86,18 +88,31 @@ async function solicitarEquipo(id_equipo, nombre, btn) {
         const data = await res.json()
 
         if (res.ok) {
+            // CASO ÉXITO: El equipo se marca como prestado localmente
             mostrarToast(`✅ Solicitud enviada para "${nombre}"`, 'success')
-            btn.innerHTML = '<i class="fas fa-check"></i> Solicitado'
-            btn.style.background = '#22c55e'
+            
+            const indexTodos = todosLosEquipos.findIndex(e => e.id_equipo === id_equipo);
+            if (indexTodos !== -1) todosLosEquipos[indexTodos].estado = 'prestado';
+
+            const indexFiltrados = equiposFiltrados.findIndex(e => e.id_equipo === id_equipo);
+            if (indexFiltrados !== -1) equiposFiltrados[indexFiltrados].estado = 'prestado';
+
+            renderizarEquipos(equiposFiltrados);
+            cargarCategorias();
+            
         } else {
+            // CASO ERROR (Incluye "usuario ya tiene solicitud activa"):
+            // Solo mostramos el aviso y RESTAURAMOS el botón
             mostrarToast(data.message || 'Error al enviar solicitud', 'error')
+            
             btn.disabled = false
-            btn.innerHTML = '<i class="fas fa-hand-holding"></i> Solicitar'
+            btn.innerHTML = contenidoOriginal;
+            // Al NO cambiar el estado en el array, al renderizar (si se hiciera) seguiría "disponible"
         }
-    } catch {
+    } catch (error) {
         mostrarToast('Error de conexión', 'error')
         btn.disabled = false
-        btn.innerHTML = '<i class="fas fa-hand-holding"></i> Solicitar'
+        btn.innerHTML = contenidoOriginal;
     }
 }
 

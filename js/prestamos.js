@@ -39,10 +39,31 @@ function renderizarTablaAdmin(datos, targetId, tipo) {
 
     datos.forEach(sol => {
         const tr = document.createElement('tr');
-        const botones = tipo === 'solicitud' 
-            ? `<button onclick="ejecutarAccion(${sol.id_solicitud}, 'aprobar')" style="color:#059669; border:none; background:none; cursor:pointer;"><i class="fas fa-check-circle"></i></button>
-               <button onclick="ejecutarAccion(${sol.id_solicitud}, 'rechazar')" style="color:#dc2626; border:none; background:none; cursor:pointer;"><i class="fas fa-times-circle"></i></button>`
-            : `<button onclick="ejecutarAccion(${sol.id_solicitud}, 'devolver')" style="color:#6366f1; border:none; background:none; cursor:pointer;"><i class="fas fa-undo-alt"></i> Devolver</button>`;
+        
+        // Mantenemos las llamadas a ejecutarAccion tal cual las tenías originalmente
+        let botones = "";
+
+        if (tipo === 'solicitud') {
+            botones = `
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="ejecutarAccion(${sol.id_solicitud}, 'aprobar')" 
+                        style="background-color: #059669; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+                        Aceptar
+                    </button>
+                    <button onclick="ejecutarAccion(${sol.id_solicitud}, 'rechazar')" 
+                        style="background-color: #dc2626; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+                        Rechazar
+                    </button>
+                </div>
+            `;
+        } else {
+            botones = `
+                <button onclick="ejecutarAccion(${sol.id_solicitud}, 'devolver')" 
+                    style="background-color: #6366f1; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+                    <i class="fas fa-undo-alt"></i> Devolver
+                </button>
+            `;
+        }
 
         tr.innerHTML = `
             <td style="padding: 15px;"><b>${sol.usuario_nombre || sol.matricula}</b></td>
@@ -59,11 +80,14 @@ async function ejecutarAccion(id, accion) {
     const id_admin = getAdminId();
     if (!id_admin) return alert("Sesión expirada.");
 
-    let datosBody = { id_admin };
-    if (accion === 'rechazar') {
-        const motivo = prompt("Motivo del rechazo:");
-        if (!motivo) return;
-        datosBody.motivo = motivo;
+    if (accion === 'aprobar') {
+        const confirmar = confirm("¿Estás seguro de que deseas AUTORIZAR este préstamo?");
+        if (!confirmar) return; // Si el admin cancela, no hace nada
+    }
+    
+    if (accion === 'devolver') {
+        const confirmar = confirm("¿Confirmas que el equipo ha sido devuelto?");
+        if (!confirmar) return;
     }
 
     try {
