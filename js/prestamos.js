@@ -67,30 +67,24 @@ function renderizarTablaAdmin(datos, targetId, tipo) {
 }
 
 async function ejecutarAccion(id, accion) {
-    const id_admin = getAdminId(); // Esto saca el "5" de tu token
-    if (!id_admin) return alert("Sesión expirada");
-
+    // 'id' aquí es el id_solicitud que viene de la tabla
     try {
         const res = await fetch(`${API}/solicitudes/${accion}/${id}`, {
             method: 'PUT',
             headers: { 
-                'Authorization': `Bearer ${token}`, 
-                'Content-Type': 'application/json' 
-            },
-            body: JSON.stringify({ id_admin }) // Enviamos el ID 5 al servidor
+                'Authorization': `Bearer ${token}` 
+            }
         });
 
         if (res.ok) {
-            // ¡ESTO ES LO MÁS IMPORTANTE!
-            // Si la API responde OK, volvemos a cargar la lista para que la fila desaparezca
+            // Si la base de datos procesa todo bien, refrescamos la tabla
             await cargarGestionAdmin(); 
         } else {
-            const errorData = await res.json();
-            alert("Error: " + errorData.message);
+            const error = await res.json();
+            alert("Error: " + error.message);
         }
     } catch (e) {
-        console.error("Error de conexión:", e);
+        console.error("Error en la petición:", e);
     }
 }
-
 document.addEventListener('DOMContentLoaded', cargarGestionAdmin);
