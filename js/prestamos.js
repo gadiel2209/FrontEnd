@@ -67,15 +67,23 @@ function renderizarTablaAdmin(datos, targetId, tipo) {
 }
 
 async function ejecutarAccion(id, accion) {
-    // 'id' es el id_solicitud
-    const res = await fetch(`${API}/solicitudes/${accion}/${id}`, {
-        method: 'PUT',
-        headers: { 'Authorization': `Bearer ${token}` } 
-        // No enviamos 'body', por eso no necesitamos JSON.stringify
-    });
-    
-    if (res.ok) {
-        await cargarGestionAdmin(); // Esto refresca la tabla
+    try {
+        const res = await fetch(`${API}/solicitudes/${accion}/${id}`, {
+            method: 'PUT',
+            headers: { 'Authorization': `Bearer ${token}` } 
+        });
+        
+        if (res.ok) {
+            await cargarGestionAdmin(); 
+        } else {
+            // Si el servidor responde con error (ej. 401 o 500)
+            const error = await res.json();
+            alert("Hubo un problema: " + error.message);
+        }
+    } catch (err) {
+        // Si hay un error de red o el servidor no responde
+        console.error("Error de conexión:", err);
+        alert("No se pudo conectar con el servidor.");
     }
 }
 
