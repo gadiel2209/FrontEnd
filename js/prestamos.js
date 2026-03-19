@@ -68,7 +68,9 @@ function renderizarTablaAdmin(datos, targetId, tipo) {
 
 async function ejecutarAccion(id, accion) {
     try {
-        const id_admin = getAdminId(); // ya tienes esta función ✅
+        const id_admin = getAdminId();
+        console.log("ID admin extraído del token:", id_admin); // ← agrega esto
+        console.log("Token:", localStorage.getItem('token'));   // ← y esto
 
         const res = await fetch(`${API}/solicitudes/${accion}/${id}`, {
             method: 'PUT',
