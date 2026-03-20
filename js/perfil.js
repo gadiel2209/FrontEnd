@@ -145,7 +145,7 @@ function cerrarSesion() {
     // 3. Redirección condicional
     if (rol.includes('admin')) {
         // Si el rol es Administrador
-        window.location.href = 'login.html'; 
+        window.location.href = '../login.html'; 
     } else {
         // Si es usuario normal o cualquier otro
         window.location.href = '../login.html';
