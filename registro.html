@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,8 +7,165 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="publico.css">
-</head>
+    <style>
+        /* ── MODAL VERIFICACIÓN ──────────────────────── */
+        .modal-verificacion {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+        }
+        .modal-verificacion.open { display: flex; }
 
+        .modal-box-ver {
+            background: white;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 460px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            animation: modalIn 0.25s ease;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-ver-header {
+            background: linear-gradient(135deg, #1a392a, #2d5a3d);
+            padding: 24px 28px;
+            text-align: center;
+        }
+        .modal-ver-header .icono {
+            width: 64px; height: 64px;
+            background: rgba(132,204,22,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+        }
+        .modal-ver-header .icono i { font-size: 1.8rem; color: #84cc16; }
+        .modal-ver-header h3 { color: white; margin: 0 0 6px; font-size: 1.1rem; }
+        .modal-ver-header p  { color: rgba(255,255,255,0.6); font-size: 0.82rem; margin: 0; }
+        .modal-ver-header strong { color: #84cc16; }
+
+        .modal-ver-body { padding: 28px; }
+
+        /* Inputs del código */
+        .codigo-wrap {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+        .codigo-input {
+            width: 48px; height: 56px;
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            outline: none;
+            color: #1a392a;
+            transition: border-color 0.2s;
+            background: #f8fafc;
+        }
+        .codigo-input:focus {
+            border-color: #84cc16;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(132,204,22,0.15);
+        }
+
+        /* Contador */
+        .contador-wrap {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .contador-wrap .label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+        .contador-wrap .tiempo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1a392a;
+            font-family: monospace;
+        }
+
+        /* Error código */
+        #errorCodigo {
+            display: none;
+            background: rgba(239,68,68,0.08);
+            color: #dc2626;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        /* Botón verificar */
+        .btn-verificar {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #1a392a, #2d5a3d);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .btn-verificar:hover { background: linear-gradient(135deg, #84cc16, #65a30d); color: #1a392a; }
+        .btn-verificar:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .modal-ver-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 14px;
+            border-top: 1px solid #f1f5f9;
+        }
+        #btnReenviar {
+            background: none;
+            border: none;
+            color: #1a392a;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        #btnReenviar:disabled { color: #94a3b8; cursor: not-allowed; text-decoration: none; }
+
+        #btnCerrarModal {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        #btnCerrarModal:hover { color: #ef4444; }
+    </style>
+</head>
 <body style="background-color: #f8fafc; font-family: 'Montserrat', sans-serif;">
 
     <header class="header">
@@ -39,26 +195,21 @@
             <p style="color: var(--text-muted); margin-bottom: 30px;">
                 Crea una cuenta para gestionar tus préstamos tecnológicos de forma rápida y sencilla.
             </p>
-
             <div style="display: flex; flex-direction: column; gap: 16px;">
-                <div
-                    style="display: flex; align-items: center; gap: 12px; font-size: 0.9rem; color: var(--text-muted);">
-                    <i class="fas fa-circle-check" style="color: var(--accent); font-size: 1.1rem;"></i>
+                <div style="display:flex; align-items:center; gap:12px; font-size:0.9rem; color:var(--text-muted);">
+                    <i class="fas fa-circle-check" style="color:var(--accent); font-size:1.1rem;"></i>
                     Accede al catálogo completo de equipos
                 </div>
-                <div
-                    style="display: flex; align-items: center; gap: 12px; font-size: 0.9rem; color: var(--text-muted);">
-                    <i class="fas fa-circle-check" style="color: var(--accent); font-size: 1.1rem;"></i>
+                <div style="display:flex; align-items:center; gap:12px; font-size:0.9rem; color:var(--text-muted);">
+                    <i class="fas fa-circle-check" style="color:var(--accent); font-size:1.1rem;"></i>
                     Solicita préstamos en segundos
                 </div>
-                <div
-                    style="display: flex; align-items: center; gap: 12px; font-size: 0.9rem; color: var(--text-muted);">
-                    <i class="fas fa-circle-check" style="color: var(--accent); font-size: 1.1rem;"></i>
+                <div style="display:flex; align-items:center; gap:12px; font-size:0.9rem; color:var(--text-muted);">
+                    <i class="fas fa-circle-check" style="color:var(--accent); font-size:1.1rem;"></i>
                     Revisa tu historial en cualquier momento
                 </div>
-                <div
-                    style="display: flex; align-items: center; gap: 12px; font-size: 0.9rem; color: var(--text-muted);">
-                    <i class="fas fa-circle-check" style="color: var(--accent); font-size: 1.1rem;"></i>
+                <div style="display:flex; align-items:center; gap:12px; font-size:0.9rem; color:var(--text-muted);">
+                    <i class="fas fa-circle-check" style="color:var(--accent); font-size:1.1rem;"></i>
                     Recibe notificaciones de tu solicitud
                 </div>
             </div>
@@ -67,78 +218,66 @@
         <!-- FORMULARIO -->
         <section style="flex: 1;">
             <div class="card" style="padding: 40px;">
-
-                <div style="text-align: center; margin-bottom: 30px;">
-                    <i class="fas fa-user-circle" style="font-size: 4rem; color: var(--primary);"></i>
-                    <h3 style="margin-top: 10px; color: var(--primary);">Crear nueva cuenta</h3>
+                <div style="text-align:center; margin-bottom:30px;">
+                    <i class="fas fa-user-circle" style="font-size:4rem; color:var(--primary);"></i>
+                    <h3 style="margin-top:10px; color:var(--primary);">Crear nueva cuenta</h3>
                 </div>
 
                 <!-- ALERTA ERROR -->
-                <div id="alertaError"
-                    style="display:none; background: rgba(239,68,68,0.1); color: #dc2626; padding: 12px 16px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; margin-bottom: 16px; align-items: center; gap: 8px;">
+                <div id="alertaError" style="display:none; background:rgba(239,68,68,0.1); color:#dc2626; padding:12px 16px; border-radius:10px; font-size:0.85rem; font-weight:600; margin-bottom:16px; align-items:center; gap:8px;">
                     <i class="fas fa-triangle-exclamation"></i>
                     <span id="mensajeError"></span>
                 </div>
 
                 <!-- ALERTA ÉXITO -->
-                <div id="alertaExito"
-                    style="display:none; background: rgba(34,197,94,0.1); color: #16a34a; padding: 12px 16px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; margin-bottom: 16px; align-items: center; gap: 8px;">
+                <div id="alertaExito" style="display:none; background:rgba(34,197,94,0.1); color:#16a34a; padding:12px 16px; border-radius:10px; font-size:0.85rem; font-weight:600; margin-bottom:16px; align-items:center; gap:8px;">
                     <i class="fas fa-circle-check"></i>
                     <span>¡Cuenta creada con éxito! Redirigiendo al login...</span>
                 </div>
 
-                <form id="formRegistro" style="display: flex; flex-direction: column; gap: 15px;">
+                <form id="formRegistro" style="display:flex; flex-direction:column; gap:15px;">
 
                     <!-- NOMBRE Y USUARIO -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
                         <div>
-                            <label
-                                style="font-size: 0.75rem; font-weight: 700; color: var(--primary); display: block; margin-bottom: 5px;">NOMBRE</label>
+                            <label style="font-size:0.75rem; font-weight:700; color:var(--primary); display:block; margin-bottom:5px;">NOMBRE</label>
                             <input id="nombre" type="text" placeholder="Tu nombre"
-                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; box-sizing: border-box;">
+                                style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-family:inherit; box-sizing:border-box;">
                         </div>
                         <div>
-                            <label
-                                style="font-size: 0.75rem; font-weight: 700; color: var(--primary); display: block; margin-bottom: 5px;">USUARIO</label>
+                            <label style="font-size:0.75rem; font-weight:700; color:var(--primary); display:block; margin-bottom:5px;">USUARIO</label>
                             <input id="usuario" type="text" placeholder="Ej: Juan2026"
-                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; box-sizing: border-box;">
+                                style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-family:inherit; box-sizing:border-box;">
                         </div>
                     </div>
 
                     <!-- APELLIDOS -->
                     <div>
-                        <label
-                            style="font-size: 0.75rem; font-weight: 700; color: var(--primary); display: block; margin-bottom: 5px;">APELLIDOS</label>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <label style="font-size:0.75rem; font-weight:700; color:var(--primary); display:block; margin-bottom:5px;">APELLIDOS</label>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
                             <input id="ap_paterno" type="text" placeholder="Paterno"
-                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; box-sizing: border-box;">
+                                style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-family:inherit; box-sizing:border-box;">
                             <input id="ap_materno" type="text" placeholder="Materno"
-                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; box-sizing: border-box;">
+                                style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-family:inherit; box-sizing:border-box;">
                         </div>
                     </div>
 
                     <!-- CORREO -->
                     <div>
-                        <label
-                            style="font-size: 0.75rem; font-weight: 700; color: var(--primary); display: block; margin-bottom: 5px;">CORREO
-                            INSTITUCIONAL</label>
+                        <label style="font-size:0.75rem; font-weight:700; color:var(--primary); display:block; margin-bottom:5px;">CORREO INSTITUCIONAL</label>
                         <input id="correo" type="email" placeholder="matricula@uthh.edu.mx"
-                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; box-sizing: border-box; transition: border-color 0.2s;">
-                        <!-- Feedback validación Abstract API -->
-                        <div id="feedbackCorreo"
-                            style="display:none; align-items:center; gap:6px; font-size:0.78rem; font-weight:600; margin-top:6px;">
-                        </div>
+                            style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-family:inherit; box-sizing:border-box; transition:border-color 0.2s;">
+                        <div id="feedbackCorreo" style="display:none; align-items:center; gap:6px; font-size:0.78rem; font-weight:600; margin-top:6px;"></div>
                     </div>
 
                     <!-- CONTRASEÑA -->
                     <div>
-                        <label
-                            style="font-size: 0.75rem; font-weight: 700; color: var(--primary); display: block; margin-bottom: 5px;">CONTRASEÑA</label>
-                        <div style="position: relative;">
+                        <label style="font-size:0.75rem; font-weight:700; color:var(--primary); display:block; margin-bottom:5px;">CONTRASEÑA</label>
+                        <div style="position:relative;">
                             <input id="password" type="password" placeholder="Mínimo 6 caracteres"
-                                style="width: 100%; padding: 10px 40px 10px 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; box-sizing: border-box;">
-                            <button type="button" onclick="togglePass('password', 'iconoPass1')"
-                                style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #94a3b8;">
+                                style="width:100%; padding:10px 40px 10px 10px; border:1px solid #ddd; border-radius:8px; font-family:inherit; box-sizing:border-box;">
+                            <button type="button" onclick="togglePass('password','iconoPass1')"
+                                style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#94a3b8;">
                                 <i id="iconoPass1" class="fas fa-eye"></i>
                             </button>
                         </div>
@@ -146,34 +285,79 @@
 
                     <!-- CONFIRMAR CONTRASEÑA -->
                     <div>
-                        <label
-                            style="font-size: 0.75rem; font-weight: 700; color: var(--primary); display: block; margin-bottom: 5px;">CONFIRMAR
-                            CONTRASEÑA</label>
-                        <div style="position: relative;">
+                        <label style="font-size:0.75rem; font-weight:700; color:var(--primary); display:block; margin-bottom:5px;">CONFIRMAR CONTRASEÑA</label>
+                        <div style="position:relative;">
                             <input id="confirmar" type="password" placeholder="Repite tu contraseña"
-                                style="width: 100%; padding: 10px 40px 10px 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; box-sizing: border-box;">
-                            <button type="button" onclick="togglePass('confirmar', 'iconoPass2')"
-                                style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #94a3b8;">
+                                style="width:100%; padding:10px 40px 10px 10px; border:1px solid #ddd; border-radius:8px; font-family:inherit; box-sizing:border-box;">
+                            <button type="button" onclick="togglePass('confirmar','iconoPass2')"
+                                style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#94a3b8;">
                                 <i id="iconoPass2" class="fas fa-eye"></i>
                             </button>
                         </div>
                     </div>
 
-                    <button id="btnRegistro" type="button" onclick="registrarse()" class="btn-primary"
-                        style="padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; margin-top: 10px; letter-spacing: 1px;">
+                    <button id="btnRegistro" type="button" onclick="registrarse()"
+                        class="btn-primary" style="padding:15px; border:none; border-radius:10px; cursor:pointer; font-weight:700; margin-top:10px; letter-spacing:1px;">
                         <i class="fas fa-user-plus"></i> REGISTRARSE AHORA
                     </button>
                 </form>
 
-                <p style="text-align: center; margin-top: 25px; font-size: 0.85rem; color: var(--text-muted);">
+                <p style="text-align:center; margin-top:25px; font-size:0.85rem; color:var(--text-muted);">
                     ¿Ya tienes cuenta?
-                    <a href="login.html" style="color: var(--primary); font-weight: 700; text-decoration: none;">Inicia
-                        sesión aquí</a>
+                    <a href="login.html" style="color:var(--primary); font-weight:700; text-decoration:none;">Inicia sesión aquí</a>
                 </p>
             </div>
         </section>
-
     </main>
+
+    <!-- ── MODAL VERIFICACIÓN ──────────────────────────────────── -->
+    <div id="modalVerificacion" class="modal-verificacion">
+        <div class="modal-box-ver">
+
+            <div class="modal-ver-header">
+                <div class="icono"><i class="fas fa-envelope-open-text"></i></div>
+                <h3>Verifica tu correo</h3>
+                <p>Enviamos un código de 6 dígitos a<br>
+                    <strong id="modalCorreoDestino">correo@uthh.edu.mx</strong>
+                </p>
+            </div>
+
+            <div class="modal-ver-body">
+
+                <!-- Contador -->
+                <div class="contador-wrap">
+                    <p class="label">El código expira en</p>
+                    <span class="tiempo" id="contadorTiempo">10:00</span>
+                </div>
+
+                <!-- Inputs código -->
+                <div class="codigo-wrap">
+                    <input type="text" class="codigo-input" maxlength="1" inputmode="numeric">
+                    <input type="text" class="codigo-input" maxlength="1" inputmode="numeric">
+                    <input type="text" class="codigo-input" maxlength="1" inputmode="numeric">
+                    <input type="text" class="codigo-input" maxlength="1" inputmode="numeric">
+                    <input type="text" class="codigo-input" maxlength="1" inputmode="numeric">
+                    <input type="text" class="codigo-input" maxlength="1" inputmode="numeric">
+                </div>
+
+                <!-- Error -->
+                <div id="errorCodigo"></div>
+
+                <!-- Botón verificar -->
+                <button id="btnVerificar" class="btn-verificar" onclick="verificarYRegistrar()">
+                    <i class="fas fa-check-circle"></i> VERIFICAR Y CREAR CUENTA
+                </button>
+
+                <!-- Footer modal -->
+                <div class="modal-ver-footer">
+                    <button id="btnReenviar" onclick="reenviarCodigo()">Reenviar código</button>
+                    <button id="btnCerrarModal" onclick="cerrarModalCodigo()">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="accessibility-wrapper" id="draggableWrapper">
         <button class="btn-access" id="accessBtn" title="Opciones de Accesibilidad">
@@ -183,20 +367,16 @@
             <h4>Centro de Inclusión</h4>
             <div class="access-section">
                 <small>VISIÓN Y CEGUERA</small>
-                <button type="button" onclick="toggleNarrador()"><i class="fas fa-comment-dots"></i> Narrador de
-                    Voz</button>
+                <button type="button" onclick="toggleNarrador()"><i class="fas fa-comment-dots"></i> Narrador de Voz</button>
                 <button type="button" onclick="toggleDaltonismo()"><i class="fas fa-eye"></i> Modos Daltonismo</button>
             </div>
             <div class="access-section">
                 <small>TAMAÑO DE TEXTO</small>
-                <button type="button" onclick="cambiarFontSize('increase')"><i class="fas fa-plus"></i>
-                    Aumentar</button>
-                <button type="button" onclick="cambiarFontSize('decrease')"><i class="fas fa-minus"></i>
-                    Disminuir</button>
+                <button type="button" onclick="cambiarFontSize('increase')"><i class="fas fa-plus"></i> Aumentar</button>
+                <button type="button" onclick="cambiarFontSize('decrease')"><i class="fas fa-minus"></i> Disminuir</button>
             </div>
         </div>
     </div>
-
     <div id="reading-guide" class="reading-guide"></div>
 
     <footer class="footer">
@@ -205,10 +385,10 @@
                 <h3>Loan<span>Ware</span></h3>
                 <p>Optimizando el acceso tecnológico en la educación.</p>
                 <div class="redes-sociales">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
-                    <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-x-twitter"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
                 </div>
             </div>
             <div class="footer-col">
@@ -226,14 +406,13 @@
                 </nav>
             </div>
         </div>
-        <div class="footer-bottom">
-            &copy; 2026 LoanWare — Diseñado para el éxito educativo
-        </div>
+        <div class="footer-bottom">&copy; 2026 LoanWare — Diseñado para el éxito educativo</div>
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script src="./js/main.js"></script>
+    <script src="./js/emailjs.js"></script>
     <script src="./js/registro.js"></script>
 </body>
-
 </html>
