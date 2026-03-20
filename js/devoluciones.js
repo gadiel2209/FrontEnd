@@ -1,20 +1,10 @@
 /**
  * LOANWARE - Gestión de Devoluciones (Admin)
- * Muestra solicitudes en estado 'aprobada' (equipo en manos del usuario) y permite marcar devolución.
- *
- * Rutas que usa:
- *   GET /api/solicitudes              → lista completa, filtramos por estado='aprobada'
- *   PUT /api/solicitudes/devolver/:id → SP MarcarDevuelta
- *                                       ⚡ trigger ActualizarEquipoDevuelto → equipo vuelve a 'disponible'
- *                                       ⚡ trigger tg_auditoria_solicitudes
- *                                       ⚡ trigger AuditoriaCambioEquipo
- *
- * Campos que llegan en cada objeto:
- *   id_solicitud, estado, fecha_solicitud,
- *   usuario_nombre, matricula, equipo_nombre, ruta_imagen
+ * GET /api/solicitudes              → filtramos por estado='aprobada'
+ * PUT /api/solicitudes/devolver/:id → SP MarcarDevuelta
  */
 
-const API   = 'https://prestamos-xi.vercel.app/api';
+const API = 'https://prestamos-xi.vercel.app/api';
 const token = localStorage.getItem('token');
 
 function getAdminId() {
@@ -25,82 +15,103 @@ function getAdminId() {
     } catch (e) { return null; }
 }
 
-// ─── CARGA ────────────────────────────────────────────────────────
+function getIniciales(nombre) {
+    if (!nombre) return '?';
+    return nombre.trim().split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase();
+}
+
+function getDiasChip(fecha) {
+    const dias = Math.floor((new Date() - new Date(fecha)) / (1000 * 60 * 60 * 24));
+    if (dias > 7) return `<span class="dias-chip danger"><i class="fas fa-triangle-exclamation"></i> ${dias} días — VENCIDO</span>`;
+    if (dias >= 5) return `<span class="dias-chip warning"><i class="fas fa-clock"></i> ${dias} días — Por vencer</span>`;
+    return `<span class="dias-chip normal"><i class="fas fa-check-circle"></i> ${dias} día${dias !== 1 ? 's' : ''} en préstamo</span>`;
+}
+
 async function cargarDevoluciones() {
-    const tbody = document.getElementById('listaDevolucionesAdmin');
-    if (!tbody) return;
-
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px;">Cargando préstamos activos...</td></tr>`;
-
+    const contenedor = document.getElementById('contenedorDevoluciones');
     try {
         const res = await fetch(`${API}/solicitudes`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-
         if (!res.ok) throw new Error(`Error ${res.status}`);
 
         const solicitudes = await res.json();
-        const activos     = solicitudes.filter(s => s.estado === 'aprobada');
+        const activos = solicitudes.filter(s => s.estado === 'aprobada');
 
-        renderizarTabla(activos, tbody);
+        const contador = document.getElementById('contadorActivos');
+        if (contador) contador.textContent = activos.length;
+
+        if (activos.length === 0) {
+            contenedor.innerHTML = `
+                <div class="dev-empty">
+                    <div class="icon-wrap"><i class="fas fa-check-double"></i></div>
+                    <h3>Todo en orden</h3>
+                    <p>No hay equipos pendientes de devolución en este momento.</p>
+                </div>`;
+            return;
+        }
+
+        contenedor.innerHTML = `<div class="dev-grid">${activos.map((sol, i) => `
+            <div class="dev-card" style="animation-delay: ${i * 0.06}s">
+                <div class="dev-card-header">
+                    <span class="sol-id">SOLICITUD #${sol.id_solicitud}</span>
+                    <span class="estado-badge"><i class="fas fa-circle" style="font-size:0.5rem;"></i> En préstamo</span>
+                </div>
+                <div class="dev-card-body">
+                    <div class="equipo-row">
+                        <img class="equipo-img"
+                             src="${sol.ruta_imagen || 'https://placehold.co/56x56?text=?'}"
+                             alt="${sol.equipo_nombre}"
+                             onerror="this.src='https://placehold.co/56x56?text=?'">
+                        <div class="equipo-info">
+                            <p class="nombre">${sol.equipo_nombre || '—'}</p>
+                            <p class="sub"><i class="fas fa-laptop" style="margin-right:4px;"></i>Equipo en préstamo</p>
+                        </div>
+                    </div>
+
+                    <div class="usuario-row">
+                        <div class="avatar">${getIniciales(sol.usuario_nombre)}</div>
+                        <div class="usuario-info">
+                            <p class="nombre">${sol.usuario_nombre || '—'}</p>
+                            <p class="mat"><i class="fas fa-id-badge" style="margin-right:4px; color:#84cc16;"></i>${sol.matricula || '—'}</p>
+                        </div>
+                    </div>
+
+                    <div class="fecha-row">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Prestado el ${new Date(sol.fecha_solicitud).toLocaleDateString('es-MX', {
+            day: '2-digit', month: 'long', year: 'numeric'
+        })}</span>
+                    </div>
+
+                    ${getDiasChip(sol.fecha_solicitud)}
+
+                    <button class="btn-devolver" onclick="confirmarDevolucion(${sol.id_solicitud}, this)">
+                        <i class="fas fa-rotate-left"></i> Registrar Devolución
+                    </button>
+                </div>
+            </div>
+        `).join('')}</div>`;
 
     } catch (error) {
-        tbody.innerHTML = `<tr><td colspan="6" style="color:red; text-align:center; padding:20px;">
-            Error al cargar: ${error.message}</td></tr>`;
-    }
-}
-
-// ─── RENDER ───────────────────────────────────────────────────────
-function renderizarTabla(datos, tbody) {
-    if (datos.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px;">
-            No hay equipos pendientes de devolución.</td></tr>`;
-        return;
-    }
-
-    tbody.innerHTML = datos.map(sol => `
-        <tr style="border-bottom: 1px solid #eee;">
-            <td style="padding: 15px 20px; font-weight: 600;">
-                ${sol.usuario_nombre}
-                <div style="font-size:0.75rem; color:#666;">Mat: ${sol.matricula}</div>
-            </td>
-            <td style="padding: 15px 20px;">
-                <div style="display:flex; align-items:center; gap:10px;">
-                    <img src="${sol.ruta_imagen || 'https://placehold.co/40x40?text=?'}"
-                         alt="${sol.equipo_nombre}"
-                         style="width:40px; height:40px; object-fit:contain; border-radius:6px;
-                                background:#f1f5f9; padding:3px;"
-                         onerror="this.src='https://placehold.co/40x40?text=?'">
-                    <span style="font-weight:600;">${sol.equipo_nombre}</span>
+        document.getElementById('contenedorDevoluciones').innerHTML = `
+            <div class="dev-empty">
+                <div class="icon-wrap" style="background:#fee2e2;">
+                    <i class="fas fa-triangle-exclamation" style="color:#ef4444;"></i>
                 </div>
-            </td>
-            <td style="padding: 15px 20px;">
-                ${new Date(sol.fecha_solicitud).toLocaleDateString('es-MX')}
-            </td>
-            <td style="padding: 15px 20px;">
-                <span style="background:#dcfce7; color:#166534; padding:5px 10px;
-                             border-radius:15px; font-size:0.78rem; font-weight:700;">
-                    EN PRÉSTAMO
-                </span>
-            </td>
-            <td style="padding: 15px 20px;">
-                <button onclick="confirmarDevolucion(${sol.id_solicitud})"
-                    style="background:#6366f1; color:white; border:none; padding:8px 15px;
-                           border-radius:6px; cursor:pointer; font-weight:bold;">
-                    <i class="fas fa-undo-alt"></i> Recibir Equipo
-                </button>
-            </td>
-        </tr>
-    `).join('');
+                <h3 style="color:#ef4444;">Error al cargar</h3>
+                <p>${error.message}</p>
+            </div>`;
+    }
 }
 
-// ─── DEVOLVER ─────────────────────────────────────────────────────
-// Llama al SP MarcarDevuelta → dispara trigger ActualizarEquipoDevuelto
-// que pone el equipo en 'disponible' automáticamente en la BD
-async function confirmarDevolucion(id) {
+async function confirmarDevolucion(id, btn) {
     const id_admin = getAdminId();
     if (!id_admin) return alert('Sesión expirada.');
     if (!confirm('¿Confirma que el equipo ha sido devuelto físicamente?')) return;
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Procesando...';
 
     try {
         const res = await fetch(`${API}/solicitudes/devolver/${id}`, {
@@ -115,11 +126,16 @@ async function confirmarDevolucion(id) {
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || `Error ${res.status}`);
 
-        alert('📦 Devolución registrada. El equipo ya está disponible nuevamente.');
-        cargarDevoluciones(); // refrescar tabla
+        const card = btn.closest('.dev-card');
+        card.style.transition = 'all 0.3s ease';
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.9)';
+        setTimeout(() => cargarDevoluciones(), 350);
 
     } catch (e) {
         alert('Error al procesar devolución: ' + e.message);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-rotate-left"></i> Registrar Devolución';
     }
 }
 
