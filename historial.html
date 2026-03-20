@@ -1,24 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historial de Movimientos - LOANWARE Admin</title>
     <script>
-    (function() {
-        const token = localStorage.getItem('token');
-        const id_rol = localStorage.getItem('id_rol');
+        (function () {
+            const token = localStorage.getItem('token');
+            const id_rol = localStorage.getItem('id_rol');
 
-        // Si no hay token O el rol no es 1 (Admin), lo sacamos de aquí
-        if (!token || id_rol !== "1") {
-            window.location.href = "./public/home.html"; // O la ruta de tu login
-        }
-    })();
-</script>
+            // Si no hay token O el rol no es 1 (Admin), lo sacamos de aquí
+            if (!token || id_rol !== "1") {
+                window.location.href = "./public/home.html"; // O la ruta de tu login
+            }
+        })();
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="publico.css">
 </head>
+
 <body>
     <header class="header">
         <div class="header-container">
@@ -35,7 +37,8 @@
         </div>
     </header>
 
-    <nav class="header" style="background-color: var(--primary); border-top: 1px solid rgba(255,255,255,0.1); padding: 5px 0;">
+    <nav class="header"
+        style="background-color: var(--primary); border-top: 1px solid rgba(255,255,255,0.1); padding: 5px 0;">
         <div class="header-container main-nav">
             <a href="adminDashboard.html">Inicio</a>
             <a href="inventario.html">Inventario</a>
@@ -54,7 +57,8 @@
                 </a>
                 <div class="dropdown-content">
                     <a href="prestamos.html"><i class="fas fa-arrow-up" style="color: var(--accent);"></i> Préstamos</a>
-                    <a href="devoluciones.html"><i class="fas fa-arrow-down" style="color: var(--accent);"></i> Devoluciones</a>
+                    <a href="devoluciones.html"><i class="fas fa-arrow-down" style="color: var(--accent);"></i>
+                        Devoluciones</a>
                 </div>
             </div>
 
@@ -79,14 +83,18 @@
             <div class="line"></div>
         </div>
 
-        <div class="card" style="margin-bottom: 20px; padding: 20px; display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
+        <div class="card"
+            style="margin-bottom: 20px; padding: 20px; display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
             <div style="flex: 1; min-width: 200px;">
-                <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">BUSCAR USUARIO O EQUIPO</label>
-                <input type="text" id="inputBusqueda" placeholder="Nombre o matrícula..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">BUSCAR USUARIO O
+                    EQUIPO</label>
+                <input type="text" id="inputBusqueda" placeholder="Nombre o matrícula..."
+                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
             </div>
             <div style="flex: 1; min-width: 150px;">
                 <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">ESTADO</label>
-                <select id="selectFiltro" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <select id="selectFiltro"
+                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
                     <option value="todos">Todos</option>
                     <option value="aprobada">Préstamos</option>
                     <option value="devuelta">Devoluciones</option>
@@ -111,12 +119,18 @@
                     <tbody id="listaHistorial">
                         <tr>
                             <td colspan="6" style="padding: 50px; text-align: center;">
-                                <i class="fas fa-circle-notch fa-spin" style="font-size: 2rem; color: var(--primary);"></i>
+                                <i class="fas fa-circle-notch fa-spin"
+                                    style="font-size: 2rem; color: var(--primary);"></i>
                                 <p>Cargando registros...</p>
                             </td>
                         </tr>
                     </tbody>
                 </table>
+                <div style="display:flex; justify-content:space-between; align-items:center;
+            padding:16px 20px; border-top:1px solid #f1f5f9; flex-wrap:wrap; gap:12px;">
+                    <span id="paginacionInfo" style="font-size:0.82rem; color:#94a3b8;"></span>
+                    <div id="paginacionBotones" style="display:flex; align-items:center; gap:6px;"></div>
+                </div>
             </div>
         </div>
     </main>
@@ -124,4 +138,5 @@
     <script src="js/main.js"></script>
     <script src="js/solicitudes.js"></script>
 </body>
+
 </html>
