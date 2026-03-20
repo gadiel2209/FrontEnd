@@ -17,55 +17,269 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="publico.css">
+
     <style>
-        .btn-aprobar {
-            background: #059669;
-            color: white;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 0.82rem;
-            font-family: 'Montserrat', sans-serif;
+        /* ── PÁGINA ──────────────────────────────────── */
+        .prest-page-bg {
+            background: linear-gradient(135deg, #f0f7f4 0%, #e8f5e9 100%);
+            min-height: 100vh;
+        }
+
+        /* ── HERO ────────────────────────────────────── */
+        .prest-hero {
+            background: linear-gradient(135deg, #1a392a 0%, #2d5a3d 60%, #1a392a 100%);
+            padding: 48px 0 36px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .prest-hero::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: rgba(132, 204, 22, 0.08);
+        }
+
+        .prest-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: 10%;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: rgba(132, 204, 22, 0.05);
+        }
+
+        .prest-hero-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 32px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .prest-hero-left .tag-pill {
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            background: rgba(132, 204, 22, 0.15);
+            border: 1px solid rgba(132, 204, 22, 0.35);
+            color: #84cc16;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 14px;
+        }
+
+        .prest-hero-left h1 {
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 0 8px;
+            line-height: 1.2;
+        }
+
+        .prest-hero-left h1 span {
+            color: #84cc16;
+        }
+
+        .prest-hero-left p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.88rem;
+            margin: 0;
+        }
+
+        /* Contador hero */
+        .prest-counter-badge {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            padding: 20px 32px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            display: flex;
+            gap: 32px;
+        }
+
+        .prest-counter-badge .stat {
+            text-align: center;
+        }
+
+        .prest-counter-badge .num {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: #84cc16;
+            line-height: 1;
+        }
+
+        .prest-counter-badge .lbl {
+            font-size: 0.68rem;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        /* ── CONTENIDO ───────────────────────────────── */
+        .prest-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 36px 32px 60px;
+        }
+
+        /* Barra superior */
+        .prest-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .prest-toolbar .info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        .prest-toolbar .info i {
+            color: #d97706;
+        }
+
+        .btn-refresh {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #1a392a;
+            color: white;
+            border: none;
+            padding: 9px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 700;
             transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-refresh:hover {
+            background: #2d5a3d;
+            transform: translateY(-1px);
+        }
+
+        /* ── TABLA ───────────────────────────────────── */
+        .prest-table-wrap {
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 2px 16px rgba(26, 57, 42, 0.08);
+            border: 1px solid rgba(26, 57, 42, 0.06);
+        }
+
+        .prest-table-wrap table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.88rem;
+        }
+
+        .prest-table-wrap thead tr {
+            background: linear-gradient(135deg, #1a392a, #2d5a3d);
+            color: white;
+        }
+
+        .prest-table-wrap thead th {
+            padding: 16px 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .prest-table-wrap tbody tr {
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.15s;
+        }
+
+        .prest-table-wrap tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .prest-table-wrap tbody td {
+            padding: 16px 20px;
+        }
+
+        /* Badge pendiente */
+        .badge-pendiente {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        /* Botones acción */
+        .btn-aprobar {
+            background: linear-gradient(135deg, #059669, #047857);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.78rem;
+            font-family: 'Montserrat', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
         }
 
         .btn-aprobar:hover {
-            background: #047857;
-            transform: translateY(-1px);
-        }
-
-        .btn-aprobar:active {
-            transform: translateY(0);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
         }
 
         .btn-rechazar {
-            background: #dc2626;
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
             color: white;
             border: none;
-            padding: 8px 18px;
+            padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 700;
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             font-family: 'Montserrat', sans-serif;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            transition: background 0.2s, transform 0.1s;
+            gap: 5px;
+            transition: all 0.2s;
         }
 
         .btn-rechazar:hover {
-            background: #b91c1c;
-            transform: translateY(-1px);
-        }
-
-        .btn-rechazar:active {
-            transform: translateY(0);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
         }
 
         .btn-aprobar:disabled,
@@ -73,25 +287,46 @@
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
 
-        tbody tr:hover {
-            background: #f8fafc;
+        /* Animación entrada filas */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
-        .badge-pendiente {
-            background: rgba(245, 158, 11, 0.1);
-            color: #d97706;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            white-space: nowrap;
+        .prest-table-wrap tbody tr {
+            animation: fadeIn 0.3s ease both;
+        }
+
+        /* ── RESPONSIVE ──────────────────────────────── */
+        @media (max-width: 768px) {
+            .prest-hero-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .prest-content {
+                padding: 24px 16px 48px;
+            }
+
+            .prest-counter-badge {
+                gap: 20px;
+            }
         }
     </style>
 </head>
 
-<body>
+<body class="prest-page-bg">
+
     <header class="header">
         <div class="header-container">
             <div class="logo">
@@ -115,37 +350,25 @@
             <a href="historial.html" style="color:var(--accent);">Solicitudes</a>
             <a href="usuario.html">Usuarios</a>
             <div class="dropdown" style="display:inline-block; position:relative;">
-                <a href="#" class="dropbtn">Catalogos <i class="fas fa-chevron-down" style="font-size:0.7rem;"></i></a>
-                <div class="dropdown-content"
-                    style="background-color:var(--primary); min-width:180px; box-shadow:var(--shadow); border-radius:0 0 10px 10px;">
-                    <a href="marca.html"
-                        style="display:block; padding:12px 20px; color:white; text-decoration:none; font-size:0.8rem; border-bottom:1px solid rgba(255,255,255,0.1);">
-                        <i class="fas fa-tag" style="color:var(--accent); margin-right:10px;"></i> Marca
-                    </a>
-                    <a href="categoria.html"
-                        style="display:block; padding:12px 20px; color:white; text-decoration:none; font-size:0.8rem;">
-                        <i class="fas fa-layer-group" style="color:var(--accent); margin-right:10px;"></i> Categoría
-                    </a>
+                <a href="#" class="dropbtn">Catálogos <i class="fas fa-chevron-down" style="font-size:0.7rem;"></i></a>
+                <div class="dropdown-content">
+                    <a href="marca.html"><i class="fas fa-tag" style="color:var(--accent);"></i> Marca</a>
+                    <a href="categoria.html"><i class="fas fa-layer-group" style="color:var(--accent);"></i>
+                        Categoría</a>
                 </div>
             </div>
             <div class="dropdown" style="display:inline-block; position:relative;">
                 <a href="#" class="dropbtn">Movimientos <i class="fas fa-chevron-down"
                         style="font-size:0.7rem;"></i></a>
-                <div class="dropdown-content"
-                    style="background-color:var(--primary); min-width:180px; box-shadow:var(--shadow); border-radius:0 0 10px 10px;">
-                    <a href="prestamos.html"
-                        style="display:block; padding:12px 20px; color:white; text-decoration:none; font-size:0.8rem; border-bottom:1px solid rgba(255,255,255,0.1);">
-                        <i class="fas fa-arrow-up" style="color:var(--accent); margin-right:10px;"></i> Prestamos
-                    </a>
-                    <a href="devoluciones.html"
-                        style="display:block; padding:12px 20px; color:white; text-decoration:none; font-size:0.8rem;">
-                        <i class="fas fa-arrow-down" style="color:var(--accent); margin-right:10px;"></i> Devoluciones
-                    </a>
+                <div class="dropdown-content">
+                    <a href="prestamos.html"><i class="fas fa-arrow-up" style="color:var(--accent);"></i> Préstamos</a>
+                    <a href="devoluciones.html"><i class="fas fa-arrow-down" style="color:var(--accent);"></i>
+                        Devoluciones</a>
                 </div>
             </div>
             <div class="dropdown" style="display:inline-block; position:relative;">
-                <a href="" class="dropbtn">Acerca de... <i class="fas fa-chevron-down"
-                        style="font-size:0.7rem; margin-left:5px;"></i></a>
+                <a href="#" class="dropbtn">Acerca de... <i class="fas fa-chevron-down"
+                        style="font-size:0.7rem;"></i></a>
                 <div class="dropdown-content">
                     <a href="quienes.html"><i class="fas fa-users"></i> Quiénes Somos</a>
                     <a href="mision.html"><i class="fas fa-bullseye"></i> Misión</a>
@@ -156,48 +379,57 @@
         </div>
     </nav>
 
-    <main class="container seccion-about">
-
-        <div class="section-header">
-            <span class="tag">Panel de Administración</span>
-            <h2>Solicitudes de <span style="color:var(--primary);">Préstamo</span></h2>
-            <div class="line"></div>
-            <p style="color:var(--text-muted);">Gestiona las peticiones de equipo y accesorios de cómputo de los
-                usuarios.</p>
+    <!-- HERO -->
+    <div class="prest-hero">
+        <div class="prest-hero-inner">
+            <div class="prest-hero-left">
+                <div class="tag-pill">
+                    <i class="fas fa-hourglass-half"></i> Panel de Administración
+                </div>
+                <h1>Solicitudes de <span>Préstamo</span></h1>
+                <p>Gestiona las peticiones de equipos pendientes de revisión.</p>
+            </div>
+            <div class="prest-counter-badge">
+                <div class="stat">
+                    <div class="num" id="numPendientes">--</div>
+                    <div class="lbl">Pendientes</div>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <!-- CONTADOR -->
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <p style="color:var(--text-muted); font-size:0.88rem; margin:0;">
-                <i class="fas fa-clock" style="color:#d97706;"></i>
+    <!-- CONTENIDO -->
+    <div class="prest-content">
+
+        <div class="prest-toolbar">
+            <div class="info">
+                <i class="fas fa-clock"></i>
                 <span id="contadorPendientes">Cargando...</span>
-            </p>
-            <button onclick="cargarPrestamos()" style="background:var(--primary); color:white; border:none; padding:8px 18px;
-                border-radius:8px; cursor:pointer; font-family:'Montserrat',sans-serif;
-                font-size:0.82rem; font-weight:700; display:flex; align-items:center; gap:6px;">
+            </div>
+            <button class="btn-refresh" onclick="cargarPrestamos()">
                 <i class="fas fa-rotate-right"></i> Actualizar
             </button>
         </div>
 
-        <div class="card" style="padding:0; overflow:hidden;">
+        <div class="prest-table-wrap">
             <div style="overflow-x:auto;">
-                <table style="width:100%; border-collapse:collapse; text-align:left; font-size:0.88rem;">
+                <table>
                     <thead>
-                        <tr style="background-color:var(--primary); color:white;">
-                            <th style="padding:16px 20px;">#</th>
-                            <th style="padding:16px 20px;">Usuario</th>
-                            <th style="padding:16px 20px;">Equipo</th>
-                            <th style="padding:16px 20px;">Fecha Solicitud</th>
-                            <th style="padding:16px 20px;">Estado</th>
-                            <th style="padding:16px 20px; text-align:center;">Acciones</th>
+                        <tr>
+                            <th>#</th>
+                            <th>Usuario</th>
+                            <th>Equipo</th>
+                            <th>Fecha Solicitud</th>
+                            <th>Estado</th>
+                            <th style="text-align:center;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="listaSolicitudesAdmin">
                         <tr>
-                            <td colspan="6" style="text-align:center; padding:40px; color:var(--text-muted);">
+                            <td colspan="6" style="text-align:center; padding:50px; color:var(--text-muted);">
                                 <i class="fas fa-circle-notch fa-spin"
-                                    style="font-size:1.5rem; color:var(--primary);"></i>
-                                <p style="margin-top:10px;">Cargando solicitudes...</p>
+                                    style="font-size:1.5rem; color:var(--primary); display:block; margin-bottom:10px;"></i>
+                                Cargando solicitudes...
                             </td>
                         </tr>
                     </tbody>
@@ -205,8 +437,9 @@
             </div>
         </div>
 
-    </main>
+    </div>
 
+    <!-- ACCESIBILIDAD -->
     <div class="accessibility-wrapper" id="draggableWrapper">
         <button class="btn-access" id="accessBtn" title="Opciones de Accesibilidad">
             <i class="fas fa-universal-access"></i>
@@ -228,19 +461,18 @@
             </div>
         </div>
     </div>
-
     <div id="reading-guide" class="reading-guide"></div>
 
     <footer class="footer">
         <div class="footer-contenido container">
-            <div class="footer-col">
+            <div class="footer-col about">
                 <h3>Loan<span>Ware</span></h3>
                 <p>Optimizando el acceso tecnológico en la educación.</p>
                 <div class="redes-sociales">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
-                    <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-x-twitter"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
                 </div>
             </div>
             <div class="footer-col">
@@ -268,6 +500,7 @@
     <script src="js/main.js"></script>
     <script src="js/emailjs.js"></script>
     <script src="js/prestamos.js"></script>
+
 </body>
 
 </html>
