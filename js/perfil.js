@@ -132,24 +132,18 @@ async function cambiarPassword() {
 }
 
 function cerrarSesion() {
-    // 1. Extraemos el rol antes de borrar los datos
-    // Intentamos obtenerlo del objeto data si lo guardaste, 
-    // o directamente del elemento HTML donde se mostró.
     const perfilRolTag = document.getElementById('perfilRolTag');
     const rol = perfilRolTag ? perfilRolTag.textContent.toLowerCase() : '';
 
-    // 2. Limpiar el almacenamiento
     localStorage.removeItem('token');
     localStorage.clear();
 
-    // 3. Redirección condicional
-    if (rol.includes('admin')) {
-        // Si el rol es Administrador
-        window.location.href = '../login.html'; 
-    } else {
-        // Si es usuario normal o cualquier otro
-        window.location.href = '../login.html';
-    }
+    // Cambia '/nombre-de-tu-repo' por el nombre real de tu repositorio
+    const basePath = window.location.hostname === 'localhost' 
+        ? '' 
+        : '/Frontend'; // Ajusta según tu estructura de carpetas
+
+    window.location.href = basePath + '/login.html';
 }
 
 // Ejecutar automáticamente cuando el HTML esté listo
