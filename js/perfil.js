@@ -141,7 +141,7 @@ function cerrarSesion() {
     // Cambia '/nombre-de-tu-repo' por el nombre real de tu repositorio
     const basePath = window.location.hostname === 'localhost' 
         ? '' 
-        : '/Frontend'; // Ajusta según tu estructura de carpetas
+        : '/FrontEnd'; // Ajusta según tu estructura de carpetas
 
     window.location.href = basePath + '/login.html';
 }
