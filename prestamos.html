@@ -6,19 +6,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solicitudes - LOANWARE Admin</title>
     <script>
-    (function() {
-        const token = localStorage.getItem('token');
-        const id_rol = localStorage.getItem('id_rol');
-
-        // Si no hay token O el rol no es 1 (Admin), lo sacamos de aquí
-        if (!token || id_rol !== "1") {
-            window.location.href = "./public/home.html"; // O la ruta de tu login
-        }
-    })();
-</script>
+        (function () {
+            const token = localStorage.getItem('token')
+            const id_rol = localStorage.getItem('id_rol')
+            if (!token || id_rol !== '1') {
+                window.location.href = './public/home.html'
+            }
+        })()
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="publico.css">
+    <style>
+        .btn-aprobar {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.82rem;
+            font-family: 'Montserrat', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-aprobar:hover {
+            background: #047857;
+            transform: translateY(-1px);
+        }
+
+        .btn-aprobar:active {
+            transform: translateY(0);
+        }
+
+        .btn-rechazar {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.82rem;
+            font-family: 'Montserrat', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-rechazar:hover {
+            background: #b91c1c;
+            transform: translateY(-1px);
+        }
+
+        .btn-rechazar:active {
+            transform: translateY(0);
+        }
+
+        .btn-aprobar:disabled,
+        .btn-rechazar:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .badge-pendiente {
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+    </style>
 </head>
 
 <body>
@@ -28,164 +98,176 @@
                 <i class="fas fa-microchip"></i>
                 <h1>Loan<span>Ware</span></h1>
             </div>
-            
             <div class="main-nav">
-                <span style="color:white; margin-right: 15px; font-size: 0.8rem; font-weight: 600;">
-                    <i class="fas fa-user-shield" style="color: var(--accent);"></i> 
-                    MODO ADMINISTRADOR
+                <span style="color:white; margin-right:15px; font-size:0.8rem; font-weight:600;">
+                    <i class="fas fa-user-shield" style="color:var(--accent);"></i> MODO ADMINISTRADOR
                 </span>
                 <a href="perfil.html" class="btn-login" id="btnSesion">MI PERFIL</a>
             </div>
         </div>
     </header>
-    <nav class="header" style="background-color: var(--primary); border-top: 1px solid rgba(255,255,255,0.1); padding: 5px 0;">
+
+    <nav class="header"
+        style="background-color:var(--primary); border-top:1px solid rgba(255,255,255,0.1); padding:5px 0;">
         <div class="header-container main-nav">
             <a href="adminDashboard.html">Inicio</a>
             <a href="inventario.html">Inventario</a>
-            <a href="historial.html">Solicitudes</a>
+            <a href="historial.html" style="color:var(--accent);">Solicitudes</a>
             <a href="usuario.html">Usuarios</a>
-            <div class="dropdown" style="display: inline-block; position: relative;">
-                <a href="#" class="dropbtn">
-                    Catalogos <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
-                </a>
-                
-                <div class="dropdown-content" style="background-color: var(--primary); min-width: 180px; box-shadow: var(--shadow); border-radius: 0 0 10px 10px;">
-                    <a href="marca.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                        <i class="fas fa-arrow-up" style="color: var(--accent); margin-right: 10px;"></i> Marca
+            <div class="dropdown" style="display:inline-block; position:relative;">
+                <a href="#" class="dropbtn">Catalogos <i class="fas fa-chevron-down" style="font-size:0.7rem;"></i></a>
+                <div class="dropdown-content"
+                    style="background-color:var(--primary); min-width:180px; box-shadow:var(--shadow); border-radius:0 0 10px 10px;">
+                    <a href="marca.html"
+                        style="display:block; padding:12px 20px; color:white; text-decoration:none; font-size:0.8rem; border-bottom:1px solid rgba(255,255,255,0.1);">
+                        <i class="fas fa-tag" style="color:var(--accent); margin-right:10px;"></i> Marca
                     </a>
-                    <a href="categoria.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem;">
-                        <i class="fas fa-arrow-down" style="color: var(--accent); margin-right: 10px;"></i> Categoría
-                    </a>
-                </div>
-            </div>
-            <div class="dropdown" style="display: inline-block; position: relative;">
-                <a href="#" class="dropbtn">
-                    Movimientos <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
-                </a>
-                
-                <div class="dropdown-content" style="background-color: var(--primary); min-width: 180px; box-shadow: var(--shadow); border-radius: 0 0 10px 10px;">
-                    <a href="prestamos.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                        <i class="fas fa-arrow-up" style="color: var(--accent); margin-right: 10px;"></i> Prestamos
-                    </a>
-                    <a href="devoluciones.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem;">
-                        <i class="fas fa-arrow-down" style="color: var(--accent); margin-right: 10px;"></i> Devoluciones
+                    <a href="categoria.html"
+                        style="display:block; padding:12px 20px; color:white; text-decoration:none; font-size:0.8rem;">
+                        <i class="fas fa-layer-group" style="color:var(--accent); margin-right:10px;"></i> Categoría
                     </a>
                 </div>
             </div>
-
-            <div class="dropdown" style="display: inline-block; position: relative;">
-    
-                <a href="" class="dropbtn">
-                    Acerca de... <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i>
-                </a>
-                
+            <div class="dropdown" style="display:inline-block; position:relative;">
+                <a href="#" class="dropbtn">Movimientos <i class="fas fa-chevron-down"
+                        style="font-size:0.7rem;"></i></a>
+                <div class="dropdown-content"
+                    style="background-color:var(--primary); min-width:180px; box-shadow:var(--shadow); border-radius:0 0 10px 10px;">
+                    <a href="prestamos.html"
+                        style="display:block; padding:12px 20px; color:white; text-decoration:none; font-size:0.8rem; border-bottom:1px solid rgba(255,255,255,0.1);">
+                        <i class="fas fa-arrow-up" style="color:var(--accent); margin-right:10px;"></i> Prestamos
+                    </a>
+                    <a href="devoluciones.html"
+                        style="display:block; padding:12px 20px; color:white; text-decoration:none; font-size:0.8rem;">
+                        <i class="fas fa-arrow-down" style="color:var(--accent); margin-right:10px;"></i> Devoluciones
+                    </a>
+                </div>
+            </div>
+            <div class="dropdown" style="display:inline-block; position:relative;">
+                <a href="" class="dropbtn">Acerca de... <i class="fas fa-chevron-down"
+                        style="font-size:0.7rem; margin-left:5px;"></i></a>
                 <div class="dropdown-content">
-                    <a href="quienes.html">
-                        <i class="fas fa-users"></i> Quiénes Somos
-                    </a>
-                    <a href="mision.html">
-                        <i class="fas fa-bullseye"></i> Misión
-                    </a>
-                    <a href="vision.html">
-                        <i class="fas fa-eye"></i> Visión
-                    </a>
+                    <a href="quienes.html"><i class="fas fa-users"></i> Quiénes Somos</a>
+                    <a href="mision.html"><i class="fas fa-bullseye"></i> Misión</a>
+                    <a href="vision.html"><i class="fas fa-eye"></i> Visión</a>
                 </div>
-
             </div>
-            
             <a href="ajustes_footer.html"><i class="fas fa-cog"></i> Ajustes</a>
         </div>
     </nav>
 
     <main class="container seccion-about">
-        
+
         <div class="section-header">
             <span class="tag">Panel de Administración</span>
-            <h2>Solicitudes de <span style="color: var(--primary);">Préstamo</span></h2>
+            <h2>Solicitudes de <span style="color:var(--primary);">Préstamo</span></h2>
             <div class="line"></div>
-            <p style="color: var(--text-muted);">Gestiona las peticiones de equipo y accesorios de cómputo de los usuarios.</p>
+            <p style="color:var(--text-muted);">Gestiona las peticiones de equipo y accesorios de cómputo de los
+                usuarios.</p>
         </div>
 
-        <div class="card" style="padding: 0; overflow: hidden;">
-            <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                <thead>
-                    <tr style="background-color: var(--primary); color: var(--white);">
-                        <th style="padding: 20px;">Usuario</th>
-                        <th style="padding: 20px;">Equipo</th>
-                        <th style="padding: 20px;">Fecha Solicitud</th>
-                        <th style="padding: 20px;">Estado</th>
-                        <th style="padding: 20px;">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="listaSolicitudesAdmin" style="color: var(--text-dark);">
-                    <tr>
-                        <td colspan="6" style="text-align:center; padding:20px;">Cargando datos...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </main>
-    <div class="accessibility-wrapper" id="draggableWrapper">
-            <button class="btn-access" id="accessBtn" title="Opciones de Accesibilidad">
-                <i class="fas fa-universal-access"></i> 
+        <!-- CONTADOR -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <p style="color:var(--text-muted); font-size:0.88rem; margin:0;">
+                <i class="fas fa-clock" style="color:#d97706;"></i>
+                <span id="contadorPendientes">Cargando...</span>
+            </p>
+            <button onclick="cargarPrestamos()" style="background:var(--primary); color:white; border:none; padding:8px 18px;
+                border-radius:8px; cursor:pointer; font-family:'Montserrat',sans-serif;
+                font-size:0.82rem; font-weight:700; display:flex; align-items:center; gap:6px;">
+                <i class="fas fa-rotate-right"></i> Actualizar
             </button>
-            
-            <div class="access-menu" id="accessMenu">
-        <h4>Centro de Inclusión</h4>
-        <div class="access-section">
-            <small>VISIÓN Y CEGUERA</small>
-            <button  type="button" onclick="toggleNarrador()"><i class="fas fa-comment-dots"></i> Narrador de Voz</button>
-            <button type="button" onclick="toggleDaltonismo()"><i class="fas fa-eye"></i> Modos Daltonismo</button>
         </div>
-        <div class="access-section">
-            <small>TAMAÑO DE TEXTO</small>
-            <button type="button" onclick="cambiarFontSize('increase')"><i class="fas fa-plus"></i> Aumentar</button>
-            <button type="button" onclick="cambiarFontSize('decrease')"><i class="fas fa-minus"></i> Disminuir</button>
+
+        <div class="card" style="padding:0; overflow:hidden;">
+            <div style="overflow-x:auto;">
+                <table style="width:100%; border-collapse:collapse; text-align:left; font-size:0.88rem;">
+                    <thead>
+                        <tr style="background-color:var(--primary); color:white;">
+                            <th style="padding:16px 20px;">#</th>
+                            <th style="padding:16px 20px;">Usuario</th>
+                            <th style="padding:16px 20px;">Equipo</th>
+                            <th style="padding:16px 20px;">Fecha Solicitud</th>
+                            <th style="padding:16px 20px;">Estado</th>
+                            <th style="padding:16px 20px; text-align:center;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listaSolicitudesAdmin">
+                        <tr>
+                            <td colspan="6" style="text-align:center; padding:40px; color:var(--text-muted);">
+                                <i class="fas fa-circle-notch fa-spin"
+                                    style="font-size:1.5rem; color:var(--primary);"></i>
+                                <p style="margin-top:10px;">Cargando solicitudes...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <div class="accessibility-wrapper" id="draggableWrapper">
+        <button class="btn-access" id="accessBtn" title="Opciones de Accesibilidad">
+            <i class="fas fa-universal-access"></i>
+        </button>
+        <div class="access-menu" id="accessMenu">
+            <h4>Centro de Inclusión</h4>
+            <div class="access-section">
+                <small>VISIÓN Y CEGUERA</small>
+                <button type="button" onclick="toggleNarrador()"><i class="fas fa-comment-dots"></i> Narrador de
+                    Voz</button>
+                <button type="button" onclick="toggleDaltonismo()"><i class="fas fa-eye"></i> Modos Daltonismo</button>
+            </div>
+            <div class="access-section">
+                <small>TAMAÑO DE TEXTO</small>
+                <button type="button" onclick="cambiarFontSize('increase')"><i class="fas fa-plus"></i>
+                    Aumentar</button>
+                <button type="button" onclick="cambiarFontSize('decrease')"><i class="fas fa-minus"></i>
+                    Disminuir</button>
+            </div>
         </div>
     </div>
-        </div>
 
     <div id="reading-guide" class="reading-guide"></div>
+
+    <footer class="footer">
+        <div class="footer-contenido container">
+            <div class="footer-col">
+                <h3>Loan<span>Ware</span></h3>
+                <p>Optimizando el acceso tecnológico en la educación.</p>
+                <div class="redes-sociales">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+                    <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Contacto</h4>
+                <p><i class="fas fa-envelope"></i> LoanWare@gmail.com</p>
+                <p><i class="fas fa-phone"></i> +52 771 234 8743</p>
+                <p><i class="fas fa-location-dot"></i> Huejutla, Hidalgo</p>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <nav class="footer-links">
+                    <a href="#">Privacidad</a>
+                    <a href="#">Términos</a>
+                    <a href="#">Ayuda</a>
+                </nav>
+            </div>
         </div>
+        <div class="footer-bottom">
+            &copy; 2026 LoanWare — Diseñado para el éxito educativo
+        </div>
+    </footer>
 
-        <footer class="footer">
-            <div class="footer-contenido container">
-                <div class="footer-col about">
-                    <h3>Loan<span>Ware</span></h3>
-                    <p>Optimizando el acceso tecnológico en la educación.</p>
-                    <div class="redes-sociales">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-x-twitter"></i></a>
-                        <a href="#"><i class="fab fa-tiktok"></i></a>
-                    </div>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Contacto</h4>
-                    <p><i class="fas fa-envelope"></i> LoanWare@gmail.com</p>
-                    <p><i class="fas fa-phone"></i> +52 771 234 8743</p>
-                    <p><i class="fas fa-location-dot"></i> Huejutla, Hidalgo</p>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Legal</h4>
-                    <nav class="footer-links">
-                        <a href="#">Privacidad</a>
-                        <a href="#">Términos</a>
-                        <a href="#">Ayuda</a>
-                    </nav>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                &copy; 2026 LoanWare — Diseñado para el éxito educativo
-            </div>
-        </footer>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-        
-        <script src="js/main.js"></script>
-        <script src="js/prestamos.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/emailjs.js"></script>
+    <script src="js/prestamos.js"></script>
 </body>
 
 </html>
