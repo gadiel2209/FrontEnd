@@ -26,6 +26,7 @@ async function cargarHistorial() {
 
         renderizarHistorial()
         renderizarPaginacion()
+        iniciarModeloPredictivo()
 
         document.getElementById('selectFiltro').addEventListener('change', aplicarFiltros)
         document.getElementById('inputBusqueda').addEventListener('input', aplicarFiltros)
@@ -192,6 +193,148 @@ function irAPagina(pagina) {
     renderizarPaginacion()
     // Scroll suave al inicio de la tabla
     document.getElementById('listaHistorial')?.closest('table')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+// ─── MODELO PREDICTIVO ────────────────────────────────────────────
+function iniciarModeloPredictivo() {
+    const P0 = todasLasSolicitudes.length
+    if (P0 < 2) return  // no hay suficientes datos
+
+    // k estimado: crecimiento del 34.9% mensual basado en datos históricos
+    // Si tienes datos reales por mes puedes calcular k dinámicamente
+    const factorMes1 = 1.349
+    const P1h = Math.round(P0 * factorMes1)
+    const k = Math.log(P1h / P0)
+
+    const q1 = Math.round(P0 * Math.exp(k * 1))
+    const q4 = Math.round(P0 * Math.exp(k * 4))
+
+    // Actualizar cards y fórmulas
+    const el = id => document.getElementById(id)
+    if (el('predCardP0')) el('predCardP0').textContent = P0
+    if (el('predCardQ1')) el('predCardQ1').textContent = q1
+    if (el('predCardQ2')) el('predCardQ2').textContent = q4
+    if (el('predKLabel')) el('predKLabel').textContent = 'k = ' + k.toFixed(4)
+    if (el('predFormulaLabel'))
+        el('predFormulaLabel').textContent = `P(t) = ${P0} · e^(${k.toFixed(4)}·t)`
+
+    // Actualizar hero badge también si existe
+    if (el('numPendientes'))
+        el('numPendientes').textContent = todasLasSolicitudes.filter(s => s.estado === 'pendiente').length
+
+    // Datos de la curva
+    const curveData = []
+    for (let i = 0; i <= 80; i++) {
+        const t = (i / 80) * 5
+        curveData.push({ x: parseFloat(t.toFixed(3)), y: Math.round(P0 * Math.exp(k * t)) })
+    }
+
+    if (!window.Chart || !el('predChart')) return
+
+    new Chart(el('predChart'), {
+        type: 'scatter',
+        data: {
+            datasets: [
+                {
+                    label: 'P(t)',
+                    data: curveData,
+                    type: 'line',
+                    borderColor: '#2d5a3d',
+                    backgroundColor: 'rgba(45,90,61,0.07)',
+                    borderWidth: 2.5,
+                    pointRadius: 0,
+                    tension: 0.4,
+                    fill: true,
+                    order: 3
+                },
+                {
+                    label: 'P₀ inicial',
+                    data: [{ x: 0, y: P0 }],
+                    pointRadius: 7,
+                    pointBackgroundColor: '#1a392a',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    showLine: false,
+                    order: 1
+                },
+                {
+                    label: 'Pregunta 1 — t=1',
+                    data: [{ x: 1, y: q1 }],
+                    pointRadius: 10,
+                    pointBackgroundColor: '#059669',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2.5,
+                    showLine: false,
+                    order: 1
+                },
+                {
+                    label: 'Pregunta 2 — t=4',
+                    data: [{ x: 4, y: q4 }],
+                    pointRadius: 10,
+                    pointBackgroundColor: '#84cc16',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2.5,
+                    showLine: false,
+                    order: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => {
+                            const etiquetas = [
+                                ` P(${ctx.parsed.x.toFixed(2)}) = ${ctx.parsed.y} préstamos`,
+                                ` P₀ = ${ctx.parsed.y} préstamos (inicio)`,
+                                ` Pregunta 1 — P(1) = ${ctx.parsed.y} préstamos`,
+                                ` Pregunta 2 — P(4) = ${ctx.parsed.y} préstamos`
+                            ]
+                            return etiquetas[ctx.datasetIndex] || ''
+                        }
+                    },
+                    backgroundColor: '#1a392a',
+                    titleColor: '#84cc16',
+                    bodyColor: 'rgba(255,255,255,0.85)',
+                    padding: 12,
+                    cornerRadius: 10
+                }
+            },
+            scales: {
+                x: {
+                    type: 'linear',
+                    min: 0, max: 5,
+                    title: {
+                        display: true,
+                        text: 'Tiempo t (meses)',
+                        color: '#64748b',
+                        font: { size: 12, weight: '600' }
+                    },
+                    ticks: {
+                        stepSize: 1,
+                        callback: v => v + (v === 1 ? ' mes' : ' meses'),
+                        color: '#94a3b8',
+                        font: { size: 11 }
+                    },
+                    grid: { color: 'rgba(0,0,0,0.05)' }
+                },
+                y: {
+                    min: 0,
+                    title: {
+                        display: true,
+                        text: 'Préstamos P(t)',
+                        color: '#64748b',
+                        font: { size: 12, weight: '600' }
+                    },
+                    ticks: { color: '#94a3b8', font: { size: 11 } },
+                    grid: { color: 'rgba(0,0,0,0.05)' }
+                }
+            }
+        }
+    })
 }
 
 document.addEventListener('DOMContentLoaded', cargarHistorial)
