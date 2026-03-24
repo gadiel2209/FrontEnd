@@ -198,10 +198,8 @@ function irAPagina(pagina) {
 // ─── MODELO PREDICTIVO ────────────────────────────────────────────
 function iniciarModeloPredictivo() {
     const P0 = todasLasSolicitudes.length
-    if (P0 < 2) return  // no hay suficientes datos
+    if (P0 < 2) return
 
-    // k estimado: crecimiento del 34.9% mensual basado en datos históricos
-    // Si tienes datos reales por mes puedes calcular k dinámicamente
     const factorMes1 = 1.349
     const P1h = Math.round(P0 * factorMes1)
     const k = Math.log(P1h / P0)
@@ -209,7 +207,6 @@ function iniciarModeloPredictivo() {
     const q1 = Math.round(P0 * Math.exp(k * 1))
     const q4 = Math.round(P0 * Math.exp(k * 4))
 
-    // Actualizar cards y fórmulas
     const el = id => document.getElementById(id)
     if (el('predCardP0')) el('predCardP0').textContent = P0
     if (el('predCardQ1')) el('predCardQ1').textContent = q1
@@ -218,20 +215,21 @@ function iniciarModeloPredictivo() {
     if (el('predFormulaLabel'))
         el('predFormulaLabel').textContent = `P(t) = ${P0} · e^(${k.toFixed(4)}·t)`
 
-    // Actualizar hero badge también si existe
-    if (el('numPendientes'))
-        el('numPendientes').textContent = todasLasSolicitudes.filter(s => s.estado === 'pendiente').length
+    // ── Esperar a que el canvas exista y Chart.js esté disponible ──
+    const canvas = el('predChart')
+    if (!canvas) { console.warn('predChart no encontrado'); return }
+    if (!window.Chart) { console.warn('Chart.js no cargado'); return }
 
-    // Datos de la curva
+    // Destruir instancia previa si existe (evita error de canvas en uso)
+    if (canvas._chartInstance) canvas._chartInstance.destroy()
+
     const curveData = []
     for (let i = 0; i <= 80; i++) {
-        const t = (i / 80) * 5
-        curveData.push({ x: parseFloat(t.toFixed(3)), y: Math.round(P0 * Math.exp(k * t)) })
+        const t = parseFloat(((i / 80) * 5).toFixed(3))
+        curveData.push({ x: t, y: Math.round(P0 * Math.exp(k * t)) })
     }
 
-    if (!window.Chart || !el('predChart')) return
-
-    new Chart(el('predChart'), {
+    canvas._chartInstance = new Chart(canvas, {
         type: 'scatter',
         data: {
             datasets: [
