@@ -1,278 +1,99 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contacto | LoanWare</title>
-    <script>
-    (function() {
-        const token = localStorage.getItem('token');
-        const id_rol = localStorage.getItem('id_rol');
-
-        // Si no hay token O el rol no es 1 (Admin), lo sacamos de aquí
-        if (!token || id_rol !== "1") {
-            window.location.href = "./public/home.html"; // O la ruta de tu login
-        }
-    })();
-</script>
+    <title>Buzón Admin | LoanWare</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="publico.css">
+    <style>
+        .mailbox-layout { display: grid; grid-template-columns: 380px 1fr; gap: 25px; margin-top: 30px; }
+        .msg-list-container { max-height: 650px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .msg-item { background: white; padding: 20px; border-radius: 15px; cursor: pointer; border: 2px solid transparent; box-shadow: var(--shadow); position: relative; }
+        .msg-item:hover { border-color: var(--accent); }
+        .msg-item.unread::before { content: ''; position: absolute; top: 15px; right: 15px; width: 10px; height: 10px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent); }
+        .msg-date-tag { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); margin-top: 10px; display: block; }
+        .viewer-header { border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
+        @media (max-width: 992px) { .mailbox-layout { grid-template-columns: 1fr; } }
+    </style>
 </head>
-
 <body>
 
     <header class="header">
         <div class="header-container">
-            <div class="logo">
-                <i class="fas fa-microchip"></i>
-                <h1>Loan<span>Ware</span></h1>
-            </div>
-
+            <div class="logo"><i class="fas fa-microchip"></i><h1>Loan<span>Ware</span></h1></div>
             <div class="main-nav">
-                <span style="color:white; margin-right: 15px; font-size: 0.8rem; font-weight: 600;">
-                    <i class="fas fa-user-shield" style="color: var(--accent);"></i> 
-                    MODO ADMINISTRADOR
-                </span>
-                <a href="perfil.html" class="btn-login" id="btnSesion">MI PERFIL</a>
+                <span style="color:white; font-size: 0.8rem;"><i class="fas fa-user-shield" style="color: var(--accent);"></i> ADMIN</span>
+                <a href="perfil.html" class="btn-login">MI PERFIL</a>
             </div>
         </div>
     </header>
+
     <nav class="header" style="background-color: var(--primary); border-top: 1px solid rgba(255,255,255,0.1); padding: 5px 0;">
         <div class="header-container main-nav">
             <a href="adminDashboard.html">Inicio</a>
             <a href="inventario.html">Inventario</a>
             <a href="historial.html">Solicitudes</a>
             <a href="usuario.html">Usuarios</a>
+            
             <div class="dropdown" style="display: inline-block; position: relative;">
                 <a href="#" class="dropbtn">
-                    Catalogos <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+                    Catálogos <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
                 </a>
-
-                <div class="dropdown-content" style="background-color: var(--primary); min-width: 180px; box-shadow: var(--shadow); border-radius: 0 0 10px 10px;">
-                    <a href="marca.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                        <i class="fas fa-arrow-up" style="color: var(--accent); margin-right: 10px;"></i> Marca
-                    </a>
-                    <a href="categoria.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem;">
-                        <i class="fas fa-arrow-down" style="color: var(--accent); margin-right: 10px;"></i> Categoría
-                    </a>
+                <div class="dropdown-content">
+                    <a href="marca.html"><i class="fas fa-tag" style="color: var(--accent);"></i> Marca</a>
+                    <a href="categoria.html"><i class="fas fa-layer-group" style="color: var(--accent);"></i> Categoría</a>
                 </div>
             </div>
+
             <div class="dropdown" style="display: inline-block; position: relative;">
                 <a href="#" class="dropbtn">
                     Movimientos <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
                 </a>
-
-                <div class="dropdown-content" style="background-color: var(--primary); min-width: 180px; box-shadow: var(--shadow); border-radius: 0 0 10px 10px;">
-                    <a href="prestamos.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                        <i class="fas fa-arrow-up" style="color: var(--accent); margin-right: 10px;"></i> Prestamos
-                    </a>
-                    <a href="devoluciones.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem;">
-                        <i class="fas fa-arrow-down" style="color: var(--accent); margin-right: 10px;"></i> Devoluciones
-                    </a>
+                <div class="dropdown-content">
+                    <a href="prestamos.html"><i class="fas fa-arrow-up" style="color: var(--accent);"></i> Préstamos</a>
+                    <a href="devoluciones.html"><i class="fas fa-arrow-down" style="color: var(--accent);"></i> Devoluciones</a>
                 </div>
             </div>
 
             <div class="dropdown" style="display: inline-block; position: relative;">
-
-                <a href="" class="dropbtn">
-                    Acerca de... <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i>
+                <a href="#" class="dropbtn">
+                    Acerca de... <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
                 </a>
-
                 <div class="dropdown-content">
-                    <a href="quienes.html">
-                        <i class="fas fa-users"></i> Quiénes Somos
-                    </a>
-                    <a href="mision.html">
-                        <i class="fas fa-bullseye"></i> Misión
-                    </a>
-                    <a href="vision.html">
-                        <i class="fas fa-eye"></i> Visión
-                    </a>
+                    <a href="quienes.html"><i class="fas fa-users"></i> Quiénes Somos</a>
+                    <a href="mision.html"><i class="fas fa-bullseye"></i> Misión</a>
+                    <a href="vision.html"><i class="fas fa-eye"></i> Visión</a>
                 </div>
-
             </div>
 
             <a href="ajustes_footer.html"><i class="fas fa-cog"></i> Ajustes</a>
-            <a href="contacto.html"><i class="fas fa-envelope"></i> Contacto</a>
+            <a href="contacto.html"><i class="fas fa-envelope"></i> Buzon</a>
+
         </div>
     </nav>
-            <div class="login-container">
-                <a href="login.html" class="btn-login">
-                    <i class="fas fa-user-circle" id="btnSesion"></i> Iniciar Sesión
-                </a>
-            </div>
-        </div>
-    </header>
 
-    <main class="container" style="padding: 60px 20px;">
-
-        <div class="section-header" style="margin-bottom: 50px;">
-            <span class="tag">Soporte</span>
-            <h2>Formulario de <span style="color: var(--primary);">Contacto</span></h2>
+    <main class="container" style="padding: 40px 20px;">
+        <div class="section-header">
+            <span class="tag">Administración</span>
+            <h2>Buzón de <span style="color: var(--primary);">Mensajes</span></h2>
             <div class="line"></div>
-            <p style="color: var(--text-muted); margin-top: 15px;">Estamos aquí para resolver tus dudas sobre el
-                préstamo de equipos.</p>
         </div>
 
-        <div class="about-grid" style="align-items: start;">
-
-            <!-- FORMULARIO -->
-            <div class="card" style="padding: 35px;">
-                <h3 style="color: var(--primary); margin-bottom: 25px;">
-                    <i class="fas fa-paper-plane" style="color: var(--accent);"></i> Envíanos un mensaje
-                </h3>
-                <form id="formContacto" style="display: flex; flex-direction: column; gap: 20px;">
-                    <div>
-                        <label
-                            style="display: block; font-weight: 700; font-size: 0.8rem; color: var(--primary); margin-bottom: 8px;">NOMBRE
-                            COMPLETO</label>
-                        <input type="text" id="nombre" placeholder="Ej. Johan Hernández" required
-                            style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-family: inherit; font-size: 0.95rem; outline-color: var(--accent); box-sizing: border-box;">
-                    </div>
-
-                    <div>
-                        <label
-                            style="display: block; font-weight: 700; font-size: 0.8rem; color: var(--primary); margin-bottom: 8px;">CORREO
-                            ELECTRÓNICO</label>
-                        <input type="email" id="correo" placeholder="usuario@escuela.edu.mx" required
-                            style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-family: inherit; font-size: 0.95rem; outline-color: var(--accent); box-sizing: border-box;">
-                    </div>
-
-                    <div>
-                        <label
-                            style="display: block; font-weight: 700; font-size: 0.8rem; color: var(--primary); margin-bottom: 8px;">ASUNTO</label>
-                        <select id="asunto"
-                            style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-family: inherit; font-size: 0.95rem; outline-color: var(--accent); background: white; box-sizing: border-box;">
-                            <option value="">Selecciona un asunto...</option>
-                            <option value="prestamo">Dudas sobre préstamo</option>
-                            <option value="devolucion">Devolución de equipo</option>
-                            <option value="tecnico">Problema técnico</option>
-                            <option value="otro">Otro</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label
-                            style="display: block; font-weight: 700; font-size: 0.8rem; color: var(--primary); margin-bottom: 8px;">MENSAJE</label>
-                        <textarea id="mensaje" rows="5" placeholder="Describe tu solicitud o duda..." required
-                            style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-family: inherit; font-size: 0.95rem; resize: none; outline-color: var(--accent); box-sizing: border-box;"></textarea>
-                    </div>
-
-                    <button type="button" onclick="enviarMensaje()" class="btn-primary"
-                        style="border: none; cursor: pointer; width: 100%; padding: 14px; letter-spacing: 1px;">
-                        <i class="fas fa-paper-plane"></i> ENVIAR MENSAJE
-                    </button>
-
-                    <div id="mensajeExito"
-                        style="display: none; background: rgba(34,197,94,0.1); color: #16a34a; padding: 14px; border-radius: 10px; font-weight: 600; text-align: center; font-size: 0.9rem;">
-                        <i class="fas fa-circle-check"></i> ¡Mensaje enviado correctamente! Te responderemos pronto.
-                    </div>
-                </form>
-            </div>
-
-            <!-- INFO DE CONTACTO -->
-            <div style="display: flex; flex-direction: column; gap: 20px;">
-                <div class="stat-card">
-                    <i class="fas fa-envelope"
-                        style="font-size: 1.8rem; color: var(--primary); margin-bottom: 12px;"></i>
-                    <h4 style="color: var(--primary); margin-bottom: 6px;">Correo</h4>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">LoanWare@gmail.com</p>
+        <div class="mailbox-layout">
+            <div class="msg-list-container" id="listaMensajes">
                 </div>
 
-                <div class="stat-card">
-                    <i class="fas fa-phone" style="font-size: 1.8rem; color: var(--primary); margin-bottom: 12px;"></i>
-                    <h4 style="color: var(--primary); margin-bottom: 6px;">Teléfono</h4>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">+52 771 234 8743</p>
-                </div>
-
-                <div class="stat-card">
-                    <i class="fas fa-location-dot"
-                        style="font-size: 1.8rem; color: var(--primary); margin-bottom: 12px;"></i>
-                    <h4 style="color: var(--primary); margin-bottom: 6px;">Ubicación</h4>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">Huejutla de Reyes, Hidalgo</p>
-                </div>
-
-                <div class="stat-card">
-                    <i class="fas fa-clock" style="font-size: 1.8rem; color: var(--primary); margin-bottom: 12px;"></i>
-                    <h4 style="color: var(--primary); margin-bottom: 6px;">Horario de atención</h4>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">Lunes a Viernes · 8:00 AM – 6:00 PM</p>
+            <div class="card" id="visorMensaje" style="min-height: 500px; display: flex; flex-direction: column; padding: 30px;">
+                <div style="text-align: center; margin-top: 100px; color: var(--text-muted);">
+                    <i class="fas fa-envelope-open-text" style="font-size: 4rem; opacity: 0.2;"></i>
+                    <p>Selecciona un mensaje para leerlo</p>
                 </div>
             </div>
-
         </div>
     </main>
 
-    <div class="accessibility-wrapper" id="draggableWrapper">
-        <button class="btn-access" id="accessBtn" title="Opciones de Accesibilidad">
-            <i class="fas fa-universal-access"></i>
-        </button>
-        <div class="access-menu" id="accessMenu">
-            <h4>Centro de Inclusión</h4>
-            <div class="access-section">
-                <small>VISIÓN Y CEGUERA</small>
-                <button type="button" onclick="toggleNarrador()"><i class="fas fa-comment-dots"></i> Narrador de
-                    Voz</button>
-                <button type="button" onclick="toggleDaltonismo()"><i class="fas fa-eye"></i> Modos Daltonismo</button>
-            </div>
-            <div class="access-section">
-                <small>TAMAÑO DE TEXTO</small>
-                <button type="button" onclick="cambiarFontSize('increase')"><i class="fas fa-plus"></i>
-                    Aumentar</button>
-                <button type="button" onclick="cambiarFontSize('decrease')"><i class="fas fa-minus"></i>
-                    Disminuir</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="reading-guide" class="reading-guide"></div>
-
-
-    <footer class="footer">
-        <div class="footer-contenido container">
-            <div class="footer-col">
-                <h3>Loan<span>Ware</span></h3>
-                <p>Sistema de gestión de préstamo de equipos y accesorios escolares. Potenciando la educación
-                    tecnológica.</p>
-                <div class="redes-sociales">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
-                    <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
-                </div>
-            </div>
-            <div class="footer-col">
-                <h4>Contacto</h4>
-                <p><i class="fas fa-envelope"></i> LoanWare@gmail.com</p>
-                <p><i class="fas fa-phone"></i> +52 771 234 8743</p>
-                <p><i class="fas fa-location-dot"></i> Huejutla de Reyes, Hidalgo</p>
-            </div>
-            <div class="footer-col">
-                <h4>Navegación</h4>
-                <div class="footer-links">
-                    <a href="index.html">Inicio</a>
-                    <a href="equipos.html">Catálogo de Equipos</a>
-                    <a href="quienes.html">Sobre Nosotros</a>
-                    <a href="contacto.html">Soporte Técnico</a>
-                </div>
-            </div>
-            <div class="footer-col">
-                <h4>Legal</h4>
-                <div class="footer-links">
-                    <a href="#">Aviso de Privacidad</a>
-                    <a href="#">Términos y Condiciones</a>
-                    <a href="#">Reglamento de Préstamos</a>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            &copy; 2026 <strong>LoanWare</strong> — Diseñado para el éxito educativo.
-        </div>
-    </footer>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-
-    <script src="js/main.js"></script>
+    <script src="js/contacto.js"></script>
 </body>
-
 </html>
