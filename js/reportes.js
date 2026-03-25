@@ -1,4 +1,14 @@
+// ============================================================
+//  reportes.js  —  Generación de reportes PDF y Excel
+//  Dependencias (agregar en el HTML antes de este script):
+//    jsPDF:       https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js
+//    AutoTable:   https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js
+//    SheetJS:     https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js
+// ============================================================
+
 const API = 'https://prestamos-xi.vercel.app/api'
+
+// ── Helpers ─────────────────────────────────────────────────
 
 function fechaHoy() {
     return new Date().toLocaleDateString('es-MX', {
@@ -48,7 +58,7 @@ function setBtnLoading(btn, loading) {
 
 // ── EXPORTAR PDF ─────────────────────────────────────────────
 
-export async function exportarPDF(btn) {
+window.exportarPDF = async function(btn) {
     setBtnLoading(btn, true)
     try {
         const { jsPDF } = window.jspdf
@@ -229,7 +239,7 @@ export async function exportarPDF(btn) {
         doc.save(`LOANWARE_Reporte_${timestampArchivo()}.pdf`)
     } catch (err) {
         console.error(err)
-        alert('❌ Error al generar el PDF: ' + err.message)
+        alert('Error al generar el PDF: ' + err.message)
     } finally {
         setBtnLoading(btn, false)
     }
@@ -237,7 +247,7 @@ export async function exportarPDF(btn) {
 
 // ── EXPORTAR EXCEL ────────────────────────────────────────────
 
-export async function exportarExcel(btn) {
+window.exportarExcel = async function(btn) {
     setBtnLoading(btn, true)
     try {
         const { dashboard, movimientos, incidencias } = await fetchTodosLosDatos()
@@ -297,7 +307,7 @@ export async function exportarExcel(btn) {
         XLSX.writeFile(wb, `LOANWARE_Reporte_${timestampArchivo()}.xlsx`)
     } catch (err) {
         console.error(err)
-        alert('❌ Error al generar el Excel: ' + err.message)
+        alert('Error al generar el Excel: ' + err.message)
     } finally {
         setBtnLoading(btn, false)
     }
