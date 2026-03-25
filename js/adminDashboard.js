@@ -1,4 +1,4 @@
-const API   = 'https://prestamos-xi.vercel.app/api'
+const API = 'https://prestamos-xi.vercel.app/api'
 const token = localStorage.getItem('token')
 
 // ─── CARGAR STATS DEL DASHBOARD ───────────────────────────────────
@@ -17,11 +17,12 @@ async function cargarDashboard() {
         const sols = await resSols.json()
 
         // Tarjetas
-        document.getElementById('num-pendientes').textContent = dash.resumen.pendientes || 0
-        document.getElementById('num-prestamos').textContent  = dash.resumen.prestados  || 0
+        const resumen = dash?.resumen ?? {}
+        document.getElementById('num-pendientes').textContent = resumen.pendientes ?? 0
+        document.getElementById('num-prestamos').textContent = resumen.prestados ?? 0
 
         // Devoluciones vencidas (aprobadas con más de 7 días)
-        const hoy     = new Date()
+        const hoy = new Date()
         const vencidas = sols.filter(s => {
             if (s.estado !== 'aprobada') return false
             const dias = (hoy - new Date(s.fecha_solicitud)) / (1000 * 60 * 60 * 24)
