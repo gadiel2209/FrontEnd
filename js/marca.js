@@ -137,13 +137,23 @@ async function configurarModoEdicion(id) {
 
     // 2. Opcional: Cargar los datos actuales de la marca en el input
     try {
-        const respuesta = await fetch(`${API_URL}/marcas/${id}`);
-        if (respuesta.ok) {
-            const marca = await respuesta.json();
-            document.getElementById('nombreMarca').value = marca.nombre;
-            document.getElementById('idMarca').value = marca.id_marca;
-        }
-    } catch (error) {
-        console.error("Error al obtener datos de la marca:", error);
+    const respuesta = await fetch(`${API_URL}/marcas/${id}`);
+    console.log("Status de la respuesta:", respuesta.status); // Esto te dirá si es 404 u otro
+    
+    if (respuesta.ok) {
+        const marca = await respuesta.json();
+        console.log("Datos recibidos:", marca); // Verifica si llega un objeto o un array
+        
+        // Usamos comprobación opcional (?.) para evitar errores de null
+        const inputNombre = document.getElementById('nombreMarca');
+        const inputId = document.getElementById('idMarca');
+        
+        if (inputNombre) inputNombre.value = marca.nombre || '';
+        if (inputId) inputId.value = marca.id_marca || '';
+    } else {
+        console.error("Error en la API: El registro no existe en la base de datos.");
     }
+} catch (error) {
+    console.error("Error de conexión:", error);
+}
 }
