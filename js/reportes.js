@@ -1,4 +1,5 @@
-const API = 'https://prestamos-xi.vercel.app/api'
+const API_REPORTES = 'https://prestamos-xi.vercel.app/api'
+// ── Helpers ─────────────────────────────────────────────────
 
 function fechaHoy() {
     return new Date().toLocaleDateString('es-MX', {
@@ -8,7 +9,7 @@ function fechaHoy() {
 
 function timestampArchivo() {
     const now = new Date()
-    return `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`
+    return `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}_${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}`
 }
 
 /** Obtiene todos los datos necesarios del backend */
@@ -17,16 +18,16 @@ async function fetchTodosLosDatos() {
     const headers = { Authorization: `Bearer ${token}` }
 
     const [dashRes, movRes, incRes] = await Promise.all([
-        fetch(`${API}/reportes/dashboard`, { headers }),
-        fetch(`${API}/reportes/movimientos?inicio=2020-01-01&fin=${new Date().toISOString().split('T')[0]}`, { headers }),
-        fetch(`${API}/reportes`, { headers })
+        fetch(`${API_REPORTES}/reportes/dashboard`, { headers }),
+        fetch(`${API_REPORTES}/reportes/movimientos?inicio=2020-01-01&fin=${new Date().toISOString().split('T')[0]}`, { headers }),
+        fetch(`${API_REPORTES}/reportes`, { headers })
     ])
 
     if (!dashRes.ok || !movRes.ok || !incRes.ok) {
         throw new Error('Error al obtener datos del servidor')
     }
 
-    const dashboard   = await dashRes.json()
+    const dashboard = await dashRes.json()
     const movimientos = await movRes.json()
     const incidencias = await incRes.json()
 
@@ -48,7 +49,7 @@ function setBtnLoading(btn, loading) {
 
 // ── EXPORTAR PDF ─────────────────────────────────────────────
 
-export async function exportarPDF(btn) {
+window.exportarPDF = async function (btn) {
     setBtnLoading(btn, true)
     try {
         const { jsPDF } = window.jspdf
@@ -104,7 +105,7 @@ export async function exportarPDF(btn) {
             head: [['Indicador', 'Valor']],
             body: statsData,
             theme: 'grid',
-            headStyles: { fillColor: verde, textColor: [255,255,255], fontSize: 8, fontStyle: 'bold' },
+            headStyles: { fillColor: verde, textColor: [255, 255, 255], fontSize: 8, fontStyle: 'bold' },
             bodyStyles: { fontSize: 8, textColor: [30, 41, 59] },
             columnStyles: { 1: { halign: 'center', fontStyle: 'bold' } },
             margin: { left: 10, right: 10 },
@@ -130,7 +131,7 @@ export async function exportarPDF(btn) {
             head: [['#', 'Equipo', 'Solicitudes']],
             body: topEquipos.length ? topEquipos : [['—', 'Sin datos', '—']],
             theme: 'striped',
-            headStyles: { fillColor: verde, textColor: [255,255,255], fontSize: 8, fontStyle: 'bold' },
+            headStyles: { fillColor: verde, textColor: [255, 255, 255], fontSize: 8, fontStyle: 'bold' },
             bodyStyles: { fontSize: 8, textColor: [30, 41, 59] },
             columnStyles: { 0: { halign: 'center', cellWidth: 15 }, 2: { halign: 'center', cellWidth: 25 } },
             margin: { left: 10, right: 10 },
@@ -160,7 +161,7 @@ export async function exportarPDF(btn) {
             head: [['ID', 'Usuario', 'Equipo', 'Fecha', 'Estado']],
             body: movRows.length ? movRows : [['—', '—', 'Sin movimientos', '—', '—']],
             theme: 'grid',
-            headStyles: { fillColor: verde, textColor: [255,255,255], fontSize: 7.5, fontStyle: 'bold' },
+            headStyles: { fillColor: verde, textColor: [255, 255, 255], fontSize: 7.5, fontStyle: 'bold' },
             bodyStyles: { fontSize: 7.5, textColor: [30, 41, 59] },
             columnStyles: {
                 0: { halign: 'center', cellWidth: 12 },
@@ -172,8 +173,8 @@ export async function exportarPDF(btn) {
             didParseCell(data) {
                 if (data.column.index === 4 && data.section === 'body') {
                     const estado = String(data.cell.raw).toLowerCase()
-                    if (estado === 'aprobada')  data.cell.styles.textColor = [5, 150, 105]
-                    if (estado === 'devuelta')  data.cell.styles.textColor = [37, 99, 235]
+                    if (estado === 'aprobada') data.cell.styles.textColor = [5, 150, 105]
+                    if (estado === 'devuelta') data.cell.styles.textColor = [37, 99, 235]
                     if (estado === 'rechazada') data.cell.styles.textColor = [220, 38, 38]
                     if (estado === 'pendiente') data.cell.styles.textColor = [217, 119, 6]
                 }
@@ -206,7 +207,7 @@ export async function exportarPDF(btn) {
             head: [['ID', 'Reportó', 'Equipo', 'Fecha', 'Descripción']],
             body: incRows.length ? incRows : [['—', '—', '—', '—', 'Sin incidencias']],
             theme: 'grid',
-            headStyles: { fillColor: [180, 50, 50], textColor: [255,255,255], fontSize: 7.5, fontStyle: 'bold' },
+            headStyles: { fillColor: [180, 50, 50], textColor: [255, 255, 255], fontSize: 7.5, fontStyle: 'bold' },
             bodyStyles: { fontSize: 7, textColor: [30, 41, 59] },
             columnStyles: {
                 0: { halign: 'center', cellWidth: 12 },
@@ -229,7 +230,7 @@ export async function exportarPDF(btn) {
         doc.save(`LOANWARE_Reporte_${timestampArchivo()}.pdf`)
     } catch (err) {
         console.error(err)
-        alert('❌ Error al generar el PDF: ' + err.message)
+        alert('Error al generar el PDF: ' + err.message)
     } finally {
         setBtnLoading(btn, false)
     }
@@ -237,7 +238,7 @@ export async function exportarPDF(btn) {
 
 // ── EXPORTAR EXCEL ────────────────────────────────────────────
 
-export async function exportarExcel(btn) {
+window.exportarExcel = async function (btn) {
     setBtnLoading(btn, true)
     try {
         const { dashboard, movimientos, incidencias } = await fetchTodosLosDatos()
@@ -251,9 +252,9 @@ export async function exportarExcel(btn) {
             [],
             ['RESUMEN DASHBOARD'],
             ['Indicador', 'Valor'],
-            ['Total de equipos',        resumen.total_equipos ?? 0],
-            ['Solicitudes pendientes',   resumen.pendientes    ?? 0],
-            ['Equipos en préstamo',      resumen.prestados     ?? 0],
+            ['Total de equipos', resumen.total_equipos ?? 0],
+            ['Solicitudes pendientes', resumen.pendientes ?? 0],
+            ['Equipos en préstamo', resumen.prestados ?? 0],
             [],
             ['TOP EQUIPOS MÁS SOLICITADOS'],
             ['#', 'Equipo', 'Total solicitudes'],
@@ -297,7 +298,7 @@ export async function exportarExcel(btn) {
         XLSX.writeFile(wb, `LOANWARE_Reporte_${timestampArchivo()}.xlsx`)
     } catch (err) {
         console.error(err)
-        alert('❌ Error al generar el Excel: ' + err.message)
+        alert('Error al generar el Excel: ' + err.message)
     } finally {
         setBtnLoading(btn, false)
     }
