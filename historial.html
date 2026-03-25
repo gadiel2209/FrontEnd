@@ -134,6 +134,18 @@
                 </div>
             </div>
         </div>
+
+        <!-- Botones de reporte -->
+        <div style="display:flex; justify-content:flex-end; gap:10px; padding:16px 20px; border-top:1px solid #f1f5f9;">
+            <button id="btnExportPDF" onclick="import('./js/reportes.js').then(m => m.exportarPDF(this))"
+                style="display:flex;align-items:center;gap:8px;padding:10px 20px;background:#2d5a3d;color:white;border:none;border-radius:8px;font-weight:600;font-size:0.82rem;cursor:pointer;letter-spacing:0.5px;">
+                <i class="fas fa-file-pdf"></i> Exportar PDF
+            </button>
+            <button id="btnExportExcel" onclick="import('./js/reportes.js').then(m => m.exportarExcel(this))"
+                style="display:flex;align-items:center;gap:8px;padding:10px 20px;background:#059669;color:white;border:none;border-radius:8px;font-weight:600;font-size:0.82rem;cursor:pointer;letter-spacing:0.5px;">
+                <i class="fas fa-file-excel"></i> Exportar Excel
+            </button>
+        </div>
     </main>
     <!-- ── MODELO PREDICTIVO ─────────────────────────────── -->
     <div class="pred-section" style="background:linear-gradient(135deg,#f0f7f4,#e8f5e9);padding:48px 0 60px;">
@@ -234,6 +246,9 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
     <script src="js/main.js"></script>
     <script src="js/solicitudes.js"></script>
