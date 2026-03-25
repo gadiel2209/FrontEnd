@@ -2,28 +2,74 @@ const API_URL = 'https://prestamos-xi.vercel.app/api';
 let marcasLocales = [];
 
 /**
- * Carga las marcas desde la base de datos
+ * INICIALIZACIÓN: Se ejecuta al cargar cualquier página que use este JS
+ */
+document.addEventListener('DOMContentLoaded', async () => {
+    const formulario = document.getElementById('formMarca');
+    const tabla = document.getElementById('tablaMarcasBody');
+    const buscador = document.getElementById('inputBuscador');
+    const inputNombre = document.getElementById('nombreMarca');
+
+    // 1. Cargamos las marcas desde la BD siempre para tener marcasLocales actualizado
+    await cargarMarcas();
+
+    // 2. Si existe el buscador (estamos en marca.html)
+    if (buscador) {
+        buscador.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') filtrarMarcas();
+        });
+    }
+
+    // 3. Si existe el formulario (estamos en addMarca.html)
+    if (formulario) {
+        formulario.addEventListener('submit', async (e) => {
+            e.preventDefault(); 
+            await guardarMarca();
+        });
+    }
+
+    // 4. Lógica de edición: si hay un ID en la URL, configuramos la interfaz
+    const params = new URLSearchParams(window.location.search);
+    const idMarca = params.get('id');
+    if (idMarca && inputNombre) {
+        configurarModoEdicion(idMarca);
+    }
+});
+
+/**
+ * Carga las marcas desde la API y las guarda en el array global marcasLocales
  */
 async function cargarMarcas() {
     const tbody = document.getElementById('tablaMarcasBody');
-    tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:20px;"><i class="fas fa-spinner fa-spin"></i> Cargando...</td></tr>`;
+    
+    // Solo mostramos el spinner si el elemento existe (en marca.html)
+    if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:20px;"><i class="fas fa-spinner fa-spin"></i> Cargando...</td></tr>`;
+    }
 
     try {
         const respuesta = await fetch(`${API_URL}/marcas`);
         const marcas = await respuesta.json();
+        
+        // Guardamos en la variable global para comparar duplicados después
         marcasLocales = marcas; 
-        mostrarMarcas(marcas);
+        
+        if (tbody) mostrarMarcas(marcas);
     } catch (error) {
         console.error("Error al cargar marcas:", error);
-        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:red; padding:20px;">Error al conectar con el servidor</td></tr>`;
+        if (tbody) {
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:red; padding:20px;">Error al conectar con el servidor</td></tr>`;
+        }
     }
 }
 
 /**
- * Pinta las filas en la tabla con los iconos de la captura
+ * Pinta las marcas en la tabla de la página principal
  */
 function mostrarMarcas(marcas) {
     const tbody = document.getElementById('tablaMarcasBody');
+    if (!tbody) return;
+
     tbody.innerHTML = '';
 
     if (marcas.length === 0) {
@@ -34,9 +80,6 @@ function mostrarMarcas(marcas) {
     marcas.forEach(marca => {
         const fila = document.createElement('tr');
         fila.style.borderBottom = '1px solid #eee';
-        
-        // El diseño de los botones coincide con tu imagen: 
-        // Editar (Lápiz azul/oscuro) y Eliminar (Basura rojo)
         fila.innerHTML = `
             <td style="padding: 15px; font-weight: 700;">#${marca.id_marca}</td>
             <td style="padding: 15px; text-transform: uppercase;">${marca.nombre}</td>
@@ -54,42 +97,109 @@ function mostrarMarcas(marcas) {
 }
 
 /**
- * Redirige a la página de agregar pero pasando el ID para editar
+ * Guarda o actualiza la marca validando que no exista en la BD (marcasLocales)
+ */
+async function guardarMarca() {
+    const inputNombre = document.getElementById('nombreMarca');
+    const idMarcaHidden = document.getElementById('idMarca');
+    
+    const idMarca = idMarcaHidden ? idMarcaHidden.value : null;
+    const nombreNuevo = inputNombre.value.trim().toUpperCase();
+
+    if (!nombreNuevo) {
+        alert("Por favor, ingrese un nombre para la marca.");
+        return;
+    }
+
+    // --- VALIDACIÓN DE DUPLICADOS CONTRA LA BD ---
+    // Comparamos el nombre ingresado con lo que ya existe en marcasLocales
+    const existe = marcasLocales.find(m => 
+        m.nombre.toUpperCase() === nombreNuevo && m.id_marca != idMarca
+    );
+
+    if (existe) {
+        alert(`¡Atención! La marca "${nombreNuevo}" ya está registrada en la base de datos.`);
+        return; // Bloqueamos el registro
+    }
+
+    // --- LÓGICA DE ENVÍO ---
+    const metodo = idMarca ? 'PUT' : 'POST';
+    const url = idMarca ? `${API_URL}/marcas/${idMarca}` : `${API_URL}/marcas`;
+
+    try {
+        const respuesta = await fetch(url, {
+            method: metodo,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombre: nombreNuevo })
+        });
+
+        if (respuesta.ok) {
+            alert(idMarca ? "Marca actualizada correctamente." : "Marca registrada correctamente.");
+            window.location.href = 'marca.html'; 
+        } else {
+            const errorRes = await respuesta.json();
+            alert("Error: " + (errorRes.message || "No se pudo procesar la solicitud."));
+        }
+    } catch (error) {
+        console.error("Error en guardarMarca:", error);
+        alert("Error de conexión al guardar.");
+    }
+}
+
+/**
+ * Configura la vista de addMarca.html para modo edición
+ */
+async function configurarModoEdicion(id) {
+    const titulo = document.getElementById('tituloPrincipal');
+    const subtitulo = document.getElementById('subtituloPrincipal');
+    const textoBoton = document.getElementById('textoBoton');
+    const inputNombre = document.getElementById('nombreMarca');
+    const inputId = document.getElementById('idMarca');
+
+    if (titulo) titulo.innerHTML = `Editar <span style="color: var(--text-muted);">Marca</span>`;
+    if (subtitulo) subtitulo.textContent = 'Actualiza la información del fabricante seleccionado.';
+    if (textoBoton) textoBoton.textContent = 'ACTUALIZAR MARCA';
+
+    try {
+        const respuesta = await fetch(`${API_URL}/marcas/${id}`);
+        if (respuesta.ok) {
+            const marca = await respuesta.json();
+            if (inputNombre) inputNombre.value = marca.nombre || '';
+            if (inputId) inputId.value = marca.id_marca || '';
+        }
+    } catch (error) {
+        console.error("Error al cargar datos para edición:", error);
+    }
+}
+
+/**
+ * Redirige a la página de edición
  */
 function prepararEdicion(id) {
-    // Redirigimos a la página addMarca.html con el parámetro id
     window.location.href = `addMarca.html?id=${id}`;
 }
 
 /**
- * Eliminar marca con confirmación
+ * Elimina una marca de la BD
  */
 async function eliminarMarca(id, nombre) {
-    // Usamos una confirmación amigable
-    const confirmar = confirm(`¿Estás seguro de que deseas eliminar la marca "${nombre}"?`);
-    
-    if (confirmar) {
+    if (confirm(`¿Estás seguro de eliminar "${nombre}"?`)) {
         try {
-            const res = await fetch(`${API_URL}/marcas/${id}`, {
-                method: 'DELETE'
-            });
-
+            const res = await fetch(`${API_URL}/marcas/${id}`, { method: 'DELETE' });
             if (res.ok) {
-                alert("Marca eliminada correctamente.");
-                cargarMarcas(); // Recargamos la tabla
+                alert("Eliminado con éxito.");
+                cargarMarcas();
             } else {
-                const errorData = await res.json();
-                alert("No se pudo eliminar: " + (errorData.message || "La marca podría estar en uso por equipos."));
+                alert("No se pudo eliminar. Es posible que esté en uso.");
             }
         } catch (error) {
-            console.error("Error al eliminar:", error);
-            alert("Error de conexión al intentar eliminar.");
+            alert("Error de conexión.");
         }
     }
 }
 
 /**
- * Filtro de búsqueda (Buscador)
+ * Buscador en tiempo real
  */
 function filtrarMarcas() {
     const busqueda = document.getElementById('inputBuscador').value.toLowerCase();
@@ -97,63 +207,4 @@ function filtrarMarcas() {
         m.nombre.toLowerCase().includes(busqueda)
     );
     mostrarMarcas(filtradas);
-}
-
-// Inicialización
-document.addEventListener('DOMContentLoaded', () => {
-    cargarMarcas();
-
-    // Permitir buscar al presionar Enter en el input
-    document.getElementById('inputBuscador').addEventListener('keyup', (e) => {
-        if (e.key === 'Enter') filtrarMarcas();
-    });
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const params = new URLSearchParams(window.location.search);
-    const idMarca = params.get('id');
-
-    if (idMarca) {
-        // Estamos en modo EDICIÓN
-        configurarModoEdicion(idMarca);
-    }
-});
-
-async function configurarModoEdicion(id) {
-    // 1. Cambiar los textos de la interfaz
-    const titulo = document.getElementById('tituloPrincipal');
-    const subtitulo = document.getElementById('subtituloPrincipal');
-    const textoBoton = document.getElementById('textoBoton');
-
-    if (titulo) {
-        titulo.innerHTML = `Editar <span style="color: var(--text-muted);">Marca</span>`;
-    }
-    if (subtitulo) {
-        subtitulo.textContent = 'Actualiza la información del fabricante seleccionado.';
-    }
-    if (textoBoton) {
-        textoBoton.textContent = 'ACTUALIZAR MARCA';
-    }
-
-    // 2. Opcional: Cargar los datos actuales de la marca en el input
-    try {
-    const respuesta = await fetch(`${API_URL}/marcas/${id}`);
-    console.log("Status de la respuesta:", respuesta.status); // Esto te dirá si es 404 u otro
-    
-    if (respuesta.ok) {
-        const marca = await respuesta.json();
-        console.log("Datos recibidos:", marca); // Verifica si llega un objeto o un array
-        
-        // Usamos comprobación opcional (?.) para evitar errores de null
-        const inputNombre = document.getElementById('nombreMarca');
-        const inputId = document.getElementById('idMarca');
-        
-        if (inputNombre) inputNombre.value = marca.nombre || '';
-        if (inputId) inputId.value = marca.id_marca || '';
-    } else {
-        console.error("Error en la API: El registro no existe en la base de datos.");
-    }
-} catch (error) {
-    console.error("Error de conexión:", error);
-}
 }
