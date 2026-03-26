@@ -5,15 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LoanWare | Mi Perfil</title>
-        <script>
-    (function() {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            // Si intenta entrar a public sin loguearse, al login
-            window.location.href = "../index.html"; 
-        }
-    })();
-</script>
+    <script>
+        (function () {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                // Si intenta entrar a public sin loguearse, al login
+                window.location.href = "../index.html";
+            }
+        })();
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="publico.css">
@@ -21,7 +21,7 @@
 
 <body style="display: flex; flex-direction: column; min-height: 100vh;">
 
-     <header class="header">
+    <header class="header">
         <div class="header-container">
             <div class="logo">
                 <i class="fas fa-microchip"></i>
@@ -43,7 +43,7 @@
                 </div>
                 <a href="contacto.html">Contacto</a>
             </nav>
-                <div class="user-profile-header">
+            <div class="user-profile-header">
                 <div class="user-details">
                     <span class="user-name"></span>
                     <span class="user-status"><i class="fas fa-circle"></i> En línea</span>
@@ -218,31 +218,27 @@
         <div class="footer-contenido container">
             <div class="footer-col">
                 <h3>Loan<span>Ware</span></h3>
-                <p>Optimizando el acceso tecnológico en la educación.</p>
+                <p>Sistema de gestión de préstamo de equipos escolares.</p>
                 <div class="redes-sociales">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
-                    <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="#" id="footer-facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" id="footer-instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" id="footer-twitter" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+                    <a href="#" id="footer-tiktok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
                 </div>
             </div>
             <div class="footer-col">
                 <h4>Contacto</h4>
-                <p><i class="fas fa-envelope"></i> LoanWare@gmail.com</p>
-                <p><i class="fas fa-phone"></i> +52 771 234 8743</p>
-                <p><i class="fas fa-location-dot"></i> Huejutla, Hidalgo</p>
+                <p><i class="fas fa-envelope"></i> <span id="footer-email">LoanWare@gmail.com</span></p>
+                <p><i class="fas fa-phone"></i> <span id="footer-telefono">+52 771 234 8743</span></p>
+                <p><i class="fas fa-location-dot"></i> <span id="footer-direccion">Huejutla de Reyes, Hidalgo</span></p>
             </div>
             <div class="footer-col">
-                <h4>Legal</h4>
-                <nav class="footer-links">
-                    <a href="#">Privacidad</a>
-                    <a href="#">Términos</a>
-                    <a href="#">Ayuda</a>
-                </nav>
+                <h4>Navegación</h4>
+                <!-- tus links aquí -->
             </div>
         </div>
         <div class="footer-bottom">
-            &copy; 2026 LoanWare — Diseñado para el éxito educativo
+            <span id="footer-copyright">© 2026 LoanWare — Diseñado para el éxito educativo.</span>
         </div>
     </footer>
 
