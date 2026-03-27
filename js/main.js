@@ -140,7 +140,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         document.addEventListener('click', (e) => {
-            if (!accessMenu.contains(e.target)) accessMenu.classList.remove('active');
+            if (!accessMenu.contains(e.target) && !accessBtn.contains(e.target)) {
+                accessMenu.classList.remove('active');
+            }
         });
     }
 });
