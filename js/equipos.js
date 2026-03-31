@@ -7,27 +7,43 @@ let paginaActual = 1
 const POR_PAGINA = 9
 
 // ─── SESIÓN ───────────────────────────────────────────────────────
-const token = localStorage.getItem('token');
-const haySession = !!token;
+let token = localStorage.getItem('token');
+let haySession = false;
 
-function verificarSesion() {
-    const banner = document.getElementById('bannerGuest')
-    const btnSesion = document.getElementById('btnSesion')
+async function verificarSesion() {
+    let token = localStorage.getItem('token');
+    const banner = document.getElementById('bannerGuest');
+    const btnSesion = document.getElementById('btnSesion');
 
-    if (haySession) {
-        if (banner) banner.style.display = 'none'
+    if (!token) {
+        haySession = false;
+        if (btnSesion) btnSesion.href = '../login.html';
+        return;
+    }
 
-        if (btnSesion) {
-            const nombre = localStorage.getItem('nombre') || 'Mi Perfil'
-            btnSesion.innerHTML = `<i class="fas fa-user-circle"></i> ${nombre}`
-            // Perfil está en la misma carpeta 'public'
-            btnSesion.href = 'perfil.html'
+    try {
+        const res = await fetch(`${API}/auth/verificar`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (res.ok) {
+            haySession = true;
+            if (banner) banner.style.display = 'none';
+            if (btnSesion) {
+                const nombre = localStorage.getItem('nombre') || 'Mi Perfil';
+                btnSesion.innerHTML = `<i class="fas fa-user-circle"></i> ${nombre}`;
+                btnSesion.href = 'perfil.html';
+            }
+        } else {
+            // Token expirado o inválido → limpiar sesión
+            localStorage.removeItem('token');
+            localStorage.removeItem('nombre');
+            localStorage.removeItem('id_usuario');
+            haySession = false;
+            if (btnSesion) btnSesion.href = '../login.html';
         }
-    } else {
-        if (btnSesion) {
-            // CORRECCIÓN: Salir de public/ para encontrar login.html en la raíz
-            btnSesion.href = '../login.html'
-        }
+    } catch (e) {
+        console.error('Error verificando sesión:', e);
     }
 }
 
@@ -316,6 +332,8 @@ async function cargarEquipos() {
     }
 }
 
+// Al final del archivo:
+verificarSesion().then(() => cargarEquipos());
 // ─── INICIO ───────────────────────────────────────────────────────
 verificarSesion();
 cargarEquipos();
