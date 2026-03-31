@@ -1,13 +1,14 @@
 const API = 'https://prestamos-xi.vercel.app/api'
 const token = localStorage.getItem('token')
 
-<<<<<<< HEAD
 // ─── VERIFICAR PERMISOS ───────────────────────────────────────────
 function verificarAccesoAdmin() {
     const id_rol = localStorage.getItem('id_rol');
     if (!token || id_rol !== "1") {
         window.location.href = '../login.html';
-=======
+    }
+}
+
 // ─── ENVIAR MENSAJE — público, sin sesión requerida ───────────────
 async function enviarMensaje() {
     const btnEnviar = document.querySelector('button[onclick="enviarMensaje()"]')
@@ -22,10 +23,8 @@ async function enviarMensaje() {
     if (!nombre || !correo || !mensaje) {
         alert('Por favor completa todos los campos requeridos.')
         return
->>>>>>> ccc216b1b46cc34624932f359202dd62d1107f7f
     }
 
-<<<<<<< HEAD
 // ─── CARGAR FORMULARIO ────────────────────────────────────────────
 async function cargarAjustes() {
     try {
@@ -35,7 +34,6 @@ async function cargarAjustes() {
             if (document.getElementById('email'))     document.getElementById('email').value     = settings.email     || '';
             if (document.getElementById('telefono'))  document.getElementById('telefono').value  = settings.telefono  || '';
             if (document.getElementById('copyright')) document.getElementById('copyright').value = settings.copyright || '';
-=======
     btnEnviar.disabled = true
     const original = btnEnviar.innerHTML
     btnEnviar.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> ENVIANDO...'
@@ -58,11 +56,9 @@ async function cargarAjustes() {
             setTimeout(() => mensajeExito.style.display = 'none', 5000)
         } else {
             throw new Error(data.message || 'Error en el servidor')
->>>>>>> ccc216b1b46cc34624932f359202dd62d1107f7f
         }
 
     } catch (error) {
-<<<<<<< HEAD
         console.error("Error al cargar ajustes:", error);
     }
 }
@@ -177,7 +173,6 @@ cargarFooter();
 
 const form = document.querySelector('form');
 if (form) form.addEventListener('submit', guardarCambios);
-=======
         alert('No se pudo enviar el mensaje: ' + error.message)
     } finally {
         btnEnviar.disabled = false
@@ -331,4 +326,3 @@ document.addEventListener('DOMContentLoaded', () => {
     // Si hay formulario (pública o admin), no hace nada extra
     // enviarMensaje() se llama desde el onclick del botón
 })
->>>>>>> ccc216b1b46cc34624932f359202dd62d1107f7f
