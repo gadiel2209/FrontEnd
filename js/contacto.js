@@ -1,224 +1,204 @@
 // Usamos la misma constante que en el resto de tu proyecto
 const API = 'https://prestamos-xi.vercel.app/api';
+const token = localStorage.getItem('token')
 
 async function enviarMensaje() {
-    // 1. Capturar elementos
-    const btnEnviar = document.querySelector('button[onclick="enviarMensaje()"]');
-    const mensajeExito = document.getElementById('mensajeExito');
-    const formulario = document.getElementById('formContacto');
+    const btnEnviar = document.querySelector('button[onclick="enviarMensaje()"]')
+    const mensajeExito = document.getElementById('mensajeExito')
 
-    // 2. Obtener valores
-    const nombre = document.getElementById('nombre').value.trim();
-    const correo = document.getElementById('correo').value.trim();
-    const asuntoSelect = document.getElementById('asunto');
-    const asunto = asuntoSelect.options[asuntoSelect.selectedIndex].text; // Captura el texto del select
-    const mensaje = document.getElementById('mensaje').value.trim();
+    const nombre = document.getElementById('nombre').value.trim()
+    const correo = document.getElementById('correo').value.trim()
+    const asuntoEl = document.getElementById('asunto')
+    const asunto = asuntoEl?.options[asuntoEl.selectedIndex]?.text || 'General'
+    const mensaje = document.getElementById('mensaje').value.trim()
 
-    // 3. Validación básica
     if (!nombre || !correo || !mensaje) {
-        alert('Por favor completa todos los campos requeridos.');
-        return;
+        alert('Por favor completa todos los campos requeridos.')
+        return
     }
 
-    // 4. Estado de carga (Visual)
-    btnEnviar.disabled = true;
-    const originalContent = btnEnviar.innerHTML;
-    btnEnviar.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> ENVIANDO...`;
+    btnEnviar.disabled = true
+    const original = btnEnviar.innerHTML
+    btnEnviar.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> ENVIANDO...'
 
     try {
-        // 5. Petición a la API de Vercel
         const res = await fetch(`${API}/contacto`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nombre, correo, asunto, mensaje })
-        });
+        })
 
-        const data = await res.json();
+        const data = await res.json()
 
         if (res.ok) {
-            // Éxito
-            mensajeExito.style.display = 'block';
-            mensajeExito.style.background = 'rgba(34,197,94,0.1)';
-            mensajeExito.style.color = '#16a34a';
-            mensajeExito.innerHTML = `<i class="fas fa-circle-check"></i> ${data.message || '¡Mensaje enviado correctamente!'}`;
-            
-            formulario.reset();
-
-            // Ocultar mensaje de éxito tras 5 segundos
-            setTimeout(() => {
-                mensajeExito.style.display = 'none';
-            }, 5000);
+            mensajeExito.style.display = 'flex'
+            mensajeExito.style.background = 'rgba(34,197,94,0.1)'
+            mensajeExito.style.color = '#16a34a'
+            mensajeExito.innerHTML = `<i class="fas fa-circle-check"></i> ${data.message || '¡Mensaje enviado correctamente!'}`
+            document.getElementById('formContacto').reset()
+            setTimeout(() => mensajeExito.style.display = 'none', 5000)
         } else {
-            throw new Error(data.message || 'Error en el servidor');
+            throw new Error(data.message || 'Error en el servidor')
         }
 
     } catch (error) {
-        console.error("Error al enviar:", error);
-        alert('No se pudo enviar el mensaje: ' + error.message);
+        console.error('Error al enviar:', error)
+        alert('No se pudo enviar el mensaje: ' + error.message)
     } finally {
-        // 6. Restaurar botón
-        btnEnviar.disabled = false;
-        btnEnviar.innerHTML = originalContent;
+        btnEnviar.disabled = false
+        btnEnviar.innerHTML = original
     }
 }
 
-let mensajesBuzon = [];
+let mensajesBuzon = []
 
-/**
- * 1. Obtener mensajes desde el servidor
- */
+// ─── VERIFICAR ACCESO ─────────────────────────────────────────────
+function verificarAdmin() {
+    const idRol = localStorage.getItem('id_rol')
+    if (!token || idRol !== '1') {
+        window.location.href = '../login.html'
+    }
+}
+
+// ─── OBTENER MENSAJES ─────────────────────────────────────────────
 async function obtenerMensajesServidor() {
-    const lista = document.getElementById('listaMensajes');
-    if (!lista) return;
+    const lista = document.getElementById('listaMensajes')
+    if (!lista) return
 
-    // Estado de carga inicial
     lista.innerHTML = `
         <div style="text-align:center; padding:40px; color:var(--primary);">
-            <i class="fas fa-circle-notch fa-spin" style="font-size: 2rem;"></i>
+            <i class="fas fa-circle-notch fa-spin" style="font-size:2rem;"></i>
             <p style="margin-top:10px; font-weight:600;">Cargando mensajes...</p>
-        </div>`;
+        </div>`
 
     try {
-        const res = await fetch(`${API}/contacto`); 
-        const data = await res.json();
+        const res = await fetch(`${API}/contacto`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        })
+        const data = await res.json()
 
-        if (res.ok) {
-            // Asumimos que data es un array de mensajes
-            mensajesBuzon = data; 
-            renderizarLista();
-        } else {
-            throw new Error(data.message || 'Error al obtener mensajes');
-        }
+        if (!res.ok) throw new Error(data.message || 'Error al obtener mensajes')
+
+        mensajesBuzon = Array.isArray(data) ? data : []
+        renderizarLista()
+
     } catch (error) {
-        console.error("Error API:", error);
+        console.error('Error API:', error)
         lista.innerHTML = `
             <div style="text-align:center; padding:20px; color:#ef4444;">
                 <i class="fas fa-exclamation-triangle" style="font-size:2rem;"></i>
                 <p style="margin-top:10px;">No se pudo conectar con el servidor.</p>
-            </div>`;
+            </div>`
     }
 }
 
-/**
- * 2. Pintar la lista en el HTML
- */
+// ─── RENDERIZAR LISTA ─────────────────────────────────────────────
 function renderizarLista() {
-    const lista = document.getElementById('listaMensajes');
-    lista.innerHTML = '';
+    const lista = document.getElementById('listaMensajes')
+    lista.innerHTML = ''
 
     if (mensajesBuzon.length === 0) {
-        lista.innerHTML = '<p style="text-align:center; padding:20px; color:var(--text-muted);">No hay mensajes en el buzón.</p>';
-        return;
+        lista.innerHTML = `
+            <div style="text-align:center; padding:40px; color:var(--text-muted);">
+                <i class="fas fa-inbox" style="font-size:2.5rem; opacity:0.3; display:block; margin-bottom:12px;"></i>
+                No hay mensajes en el buzón.
+            </div>`
+        return
     }
 
-    // Ordenar: Los más nuevos primero (usando ID o fecha)
-    const ordenados = [...mensajesBuzon].reverse();
+    const ordenados = [...mensajesBuzon].reverse()
 
     ordenados.forEach(m => {
-        const item = document.createElement('div');
-        // Usamos m._id porque MongoDB/Vercel suelen usar ese formato de ID
-        item.className = `msg-item ${m.leido ? '' : 'unread'}`;
-        
-        // Formatear fecha de forma amigable
-        const fechaMsg = m.createdAt ? new Date(m.createdAt).toLocaleString() : 'Fecha desconocida';
+        const item = document.createElement('div')
+        item.className = `msg-item ${m.leido ? '' : 'unread'}`
+        const fecha = m.fecha || m.createdAt
+            ? new Date(m.fecha || m.createdAt).toLocaleString('es-MX')
+            : 'Sin fecha'
 
         item.innerHTML = `
-            <h4>${m.nombre}</h4>
-            <p><strong>Asunto:</strong> ${m.asunto}</p>
-            <span class="msg-date-tag"><i class="far fa-calendar-alt"></i> ${fechaMsg}</span>
-        `;
-        item.onclick = () => mostrarDetalle(m);
-        lista.appendChild(item);
-    });
+            <h4 style="margin:0 0 4px; color:var(--primary);">${m.nombre}</h4>
+            <p style="margin:0 0 4px; font-size:0.85rem; color:var(--text-muted);">
+                <strong>Asunto:</strong> ${m.asunto || 'Sin asunto'}
+            </p>
+            <span style="font-size:0.75rem; color:var(--text-muted);">
+                <i class="far fa-clock"></i> ${fecha}
+            </span>`
+
+        item.onclick = () => mostrarDetalle(m)
+        lista.appendChild(item)
+    })
 }
 
-/**
- * 3. Mostrar el detalle del mensaje seleccionado
- */
+// ─── MOSTRAR DETALLE ──────────────────────────────────────────────
 function mostrarDetalle(m) {
-    const visor = document.getElementById('visorMensaje');
-    
-    // Marcar como leído localmente (opcional: podrías hacer un PUT a la API aquí)
-    m.leido = true; 
+    const visor = document.getElementById('visorMensaje')
+    m.leido = true
+
+    const fecha = m.fecha || m.createdAt
+        ? new Date(m.fecha || m.createdAt).toLocaleString('es-MX')
+        : 'Sin fecha'
+
+    // Usar id compatible con MySQL (id_contacto) o MongoDB (_id)
+    const id = m.id_contacto || m._id
 
     visor.innerHTML = `
-        <div class="viewer-header">
-            <div style="display: flex; justify-content: space-between; align-items: start; gap:15px;">
-                <div>
-                    <h3 style="color: var(--primary); margin-bottom: 10px; font-size:1.4rem;">
-                        ${m.asunto.toUpperCase()}
-                    </h3>
-                    <p><strong>De:</strong> ${m.nombre} <span style="color: var(--accent); font-weight:700;">&lt;${m.correo}&gt;</span></p>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top:5px;">
-                        <i class="far fa-clock"></i> Recibido: ${new Date(m.createdAt || Date.now()).toLocaleString()}
-                    </p>
-                </div>
-                <button class="btn-login" 
-                        style="border-color: #ef4444; color: #ef4444; min-width:auto; padding: 8px 12px;" 
-                        onclick="eliminarMensajeAPI('${m._id}')" 
-                        title="Eliminar mensaje">
-                    <i class="fas fa-trash"></i>
-                </button>
+        <div style="display:flex; justify-content:space-between; align-items:start; gap:15px; margin-bottom:20px;">
+            <div>
+                <h3 style="color:var(--primary); margin-bottom:10px; font-size:1.3rem;">
+                    ${(m.asunto || 'Sin asunto').toUpperCase()}
+                </h3>
+                <p style="margin:0 0 4px;">
+                    <strong>De:</strong> ${m.nombre}
+                    <span style="color:var(--accent); font-weight:700;">&lt;${m.correo}&gt;</span>
+                </p>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:5px;">
+                    <i class="far fa-clock"></i> Recibido: ${fecha}
+                </p>
             </div>
+            <button onclick="eliminarMensaje('${id}')"
+                style="background:none; border:1.5px solid #ef4444; color:#ef4444;
+                       padding:8px 12px; border-radius:8px; cursor:pointer;
+                       font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.82rem;">
+                <i class="fas fa-trash"></i>
+            </button>
         </div>
-        <div class="viewer-body" style="padding: 20px 0; min-height:200px; color: var(--text-dark); line-height:1.8;">
+        <div style="padding:20px 0; min-height:200px; color:var(--text-dark);
+                    line-height:1.8; border-top:1px solid #f1f5f9;">
             ${m.mensaje}
-        </div>
-        <div style="margin-top: auto; padding-top: 30px; border-top: 1px solid #eee;">
-            
-        </div>
-    `;
-    
-    renderizarLista(); // Actualiza los estados visuales de la lista
+        </div>`
+
+    renderizarLista()
 }
 
-/**
- * 4. Eliminar mensaje de la base de datos (DELETE)
- */
-async function eliminarMensajeAPI(id) {
-    if (!confirm('¿Estás seguro de que deseas eliminar este mensaje del servidor permanentemente?')) return;
+// ─── ELIMINAR MENSAJE ─────────────────────────────────────────────
+async function eliminarMensaje(id) {
+    if (!confirm('¿Eliminar este mensaje permanentemente?')) return
 
     try {
         const res = await fetch(`${API}/contacto/${id}`, {
-            method: 'DELETE'
-        });
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        })
 
         if (res.ok) {
-            // Filtramos el mensaje borrado del array local y refrescamos
-            mensajesBuzon = mensajesBuzon.filter(msg => msg._id !== id);
+            mensajesBuzon = mensajesBuzon.filter(m => (m.id_contacto || m._id) != id)
             document.getElementById('visorMensaje').innerHTML = `
-                <div style="text-align: center; margin-top: 100px; color: var(--text-muted);">
-                    <i class="fas fa-check-circle" style="font-size: 4rem; color: var(--accent); opacity: 0.5;"></i>
-                    <p>Mensaje eliminado correctamente.</p>
-                </div>`;
-            renderizarLista();
+                <div style="text-align:center; margin-top:80px; color:var(--text-muted);">
+                    <i class="fas fa-check-circle" style="font-size:3rem; color:var(--accent); opacity:0.5; display:block; margin-bottom:12px;"></i>
+                    Mensaje eliminado correctamente.
+                </div>`
+            renderizarLista()
         } else {
-            alert('El servidor no permitió borrar el mensaje.');
+            alert('No se pudo eliminar el mensaje.')
         }
     } catch (error) {
-        console.error("Error al borrar:", error);
-        alert('Error de conexión al intentar borrar.');
+        console.error('Error al borrar:', error)
+        alert('Error de conexión al intentar borrar.')
     }
 }
 
-// Iniciar proceso
-// ✅ Reemplázalo con esto:
+// ─── ARRANQUE ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('token');
-    const idRol = localStorage.getItem('id_rol');
-
-    // Solo admins (rol 1) pueden ver el buzón
-    if (!token || idRol !== '1') {
-        // Oculta el buzón
-        const buzon = document.getElementById('listaMensajes');
-        const visor = document.getElementById('visorMensaje');
-        if (buzon) buzon.style.display = 'none';
-        if (visor) visor.style.display = 'none';
-
-        // Muestra alerta y redirige al login
-        alert('⚠️ Debes iniciar sesión como para contactar a los administradores.');
-        window.location.href = '../index.html'; // Cambia por la ruta correcta a tu login
-    } else {
-        obtenerMensajesServidor();
-    }
-});
+    verificarAdmin()
+    obtenerMensajesServidor()
+})

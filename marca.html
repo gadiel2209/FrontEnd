@@ -6,16 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marcas | LoanWare</title>
     <script>
-    (function() {
-        const token = localStorage.getItem('token');
-        const id_rol = localStorage.getItem('id_rol');
+        (function () {
+            const token = localStorage.getItem('token');
+            const id_rol = localStorage.getItem('id_rol');
 
-        // Si no hay token O el rol no es 1 (Admin), lo sacamos de aquí
-        if (!token || id_rol !== "1") {
-            window.location.href = "./public/home.html"; // O la ruta de tu login
-        }
-    })();
-</script>
+            // Si no hay token O el rol no es 1 (Admin), lo sacamos de aquí
+            if (!token || id_rol !== "1") {
+                window.location.href = "./public/home.html"; // O la ruta de tu login
+            }
+        })();
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -33,7 +33,7 @@
 
             <div class="main-nav">
                 <span style="color:white; margin-right: 15px; font-size: 0.8rem; font-weight: 600;">
-                    <i class="fas fa-user-shield" style="color: var(--accent);"></i> 
+                    <i class="fas fa-user-shield" style="color: var(--accent);"></i>
                     MODO ADMINISTRADOR
                 </span>
                 <a href="perfil.html" class="btn-login" id="btnSesion">MI PERFIL</a>
@@ -41,54 +41,44 @@
         </div>
     </header>
 
-    <nav class="header" style="background-color: var(--primary); border-top: 1px solid rgba(255,255,255,0.1); padding: 5px 0;">
+    <nav class="header"
+        style="background-color:var(--primary); border-top:1px solid rgba(255,255,255,0.1); padding:5px 0;">
         <div class="header-container main-nav">
             <a href="adminDashboard.html">Inicio</a>
             <a href="inventario.html">Inventario</a>
             <a href="historial.html">Solicitudes</a>
             <a href="usuario.html">Usuarios</a>
-            <div class="dropdown" style="display: inline-block; position: relative;">
-                <a href="#" class="dropbtn">
-                    Catalogos <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
-                </a>
-
-                <div class="dropdown-content" style="background-color: var(--primary); min-width: 180px; box-shadow: var(--shadow); border-radius: 0 0 10px 10px;">
-                    <a href="marca.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                        <i class="fas fa-arrow-up" style="color: var(--accent); margin-right: 10px;"></i> Marca
-                    </a>
-                    <a href="categoria.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem;">
-                        <i class="fas fa-arrow-down" style="color: var(--accent); margin-right: 10px;"></i> Categoría
+            <div class="dropdown" style="display:inline-block; position:relative;">
+                <a href="#" class="dropbtn">Catálogos <i class="fas fa-chevron-down" style="font-size:0.7rem;"></i></a>
+                <div class="dropdown-content">
+                    <a href="marca.html"><i class="fas fa-tag" style="color:var(--accent);"></i> Marca</a>
+                    <a href="categoria.html"><i class="fas fa-layer-group" style="color:var(--accent);"></i>
+                        Categoría</a>
+                    <a href="predicciones.html" style="color:#84cc16; font-weight:700;">
+                        <i class="fas fa-chart-line"></i> Predicciones
                     </a>
                 </div>
             </div>
-            <div class="dropdown" style="display: inline-block; position: relative;">
-                <a href="#" class="dropbtn">
-                    Movimientos <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
-                </a>
-
-                <div class="dropdown-content" style="background-color: var(--primary); min-width: 180px; box-shadow: var(--shadow); border-radius: 0 0 10px 10px;">
-                    <a href="prestamos.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                        <i class="fas fa-arrow-up" style="color: var(--accent); margin-right: 10px;"></i> Prestamos
-                    </a>
-                    <a href="devoluciones.html" style="display: block; padding: 12px 20px; color: white; text-decoration: none; font-size: 0.8rem;">
-                        <i class="fas fa-arrow-down" style="color: var(--accent); margin-right: 10px;"></i> Devoluciones
-                    </a>
+            <div class="dropdown" style="display:inline-block; position:relative;">
+                <a href="#" class="dropbtn">Movimientos <i class="fas fa-chevron-down"
+                        style="font-size:0.7rem;"></i></a>
+                <div class="dropdown-content">
+                    <a href="prestamos.html"><i class="fas fa-arrow-up" style="color:var(--accent);"></i> Préstamos</a>
+                    <a href="devoluciones.html"><i class="fas fa-arrow-down" style="color:var(--accent);"></i>
+                        Devoluciones</a>
                 </div>
             </div>
-
-            <div class="dropdown" style="display: inline-block; position: relative;">
-                <a href="" class="dropbtn">
-                    Acerca de... <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i>
-                </a>
+            <div class="dropdown" style="display:inline-block; position:relative;">
+                <a href="#" class="dropbtn">Acerca de... <i class="fas fa-chevron-down"
+                        style="font-size:0.7rem;"></i></a>
                 <div class="dropdown-content">
                     <a href="quienes.html"><i class="fas fa-users"></i> Quiénes Somos</a>
                     <a href="mision.html"><i class="fas fa-bullseye"></i> Misión</a>
                     <a href="vision.html"><i class="fas fa-eye"></i> Visión</a>
                 </div>
             </div>
-
             <a href="ajustes_footer.html"><i class="fas fa-cog"></i> Ajustes</a>
-            <a href="contacto.html"><i class="fas fa-envelope"></i> Buzon</a>
+            <a href="contacto.html"><i class="fas fa-envelope"></i> Buzón</a>
         </div>
     </nav>
 
@@ -96,10 +86,12 @@
         <div class="about-text">
             <span class="tag">Gestión de Catálogo</span>
             <h2>Marcas <span style="color: var(--text-muted);">Registradas</span></h2>
-            <p style="color: var(--text-muted); margin-bottom: 30px;">Consulta, filtra y revisa todas las marcas de equipos en el sistema.</p>
-           <a href="addMarca.html" class="btn-primary" style="display: inline-block; text-decoration: none; padding: 12px 25px; border: none; cursor: pointer; font-size: 0.8rem; text-align: center;">
-    <i class="fas fa-plus" style="margin-right: 8px;"></i> AGREGAR MARCA
-</a>
+            <p style="color: var(--text-muted); margin-bottom: 30px;">Consulta, filtra y revisa todas las marcas de
+                equipos en el sistema.</p>
+            <a href="addMarca.html" class="btn-primary"
+                style="display: inline-block; text-decoration: none; padding: 12px 25px; border: none; cursor: pointer; font-size: 0.8rem; text-align: center;">
+                <i class="fas fa-plus" style="margin-right: 8px;"></i> AGREGAR MARCA
+            </a>
         </div>
 
         <div class="card" style="padding: 25px; margin-bottom: 30px; text-align: left;">
@@ -107,8 +99,10 @@
                 <i class="fas fa-filter" style="color: var(--accent);"></i> Filtros de Búsqueda
             </h3>
             <form style="display: flex; gap: 15px;" onsubmit="event.preventDefault();">
-                <input type="text" id="inputBuscador" placeholder="Buscar por nombre de marca..." style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #ddd; font-family: inherit;">
-                <button type="button" class="btn-primary" onclick="filtrarMarcas()" style="padding: 12px 25px; border: none; cursor: pointer; font-size: 0.8rem;">BUSCAR</button>
+                <input type="text" id="inputBuscador" placeholder="Buscar por nombre de marca..."
+                    style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #ddd; font-family: inherit;">
+                <button type="button" class="btn-primary" onclick="filtrarMarcas()"
+                    style="padding: 12px 25px; border: none; cursor: pointer; font-size: 0.8rem;">BUSCAR</button>
             </form>
         </div>
 
@@ -129,20 +123,23 @@
 
     <div class="accessibility-wrapper" id="draggableWrapper">
         <button class="btn-access" id="accessBtn" title="Opciones de Accesibilidad">
-            <i class="fas fa-universal-access"></i> 
+            <i class="fas fa-universal-access"></i>
         </button>
 
         <div class="access-menu" id="accessMenu">
             <h4>Centro de Inclusión</h4>
             <div class="access-section">
                 <small>VISIÓN Y CEGUERA</small>
-                <button type="button" onclick="toggleNarrador()"><i class="fas fa-comment-dots"></i> Narrador de Voz</button>
+                <button type="button" onclick="toggleNarrador()"><i class="fas fa-comment-dots"></i> Narrador de
+                    Voz</button>
                 <button type="button" onclick="toggleDaltonismo()"><i class="fas fa-eye"></i> Modos Daltonismo</button>
             </div>
             <div class="access-section">
                 <small>TAMAÑO DE TEXTO</small>
-                <button type="button" onclick="cambiarFontSize('increase')"><i class="fas fa-plus"></i> Aumentar</button>
-                <button type="button" onclick="cambiarFontSize('decrease')"><i class="fas fa-minus"></i> Disminuir</button>
+                <button type="button" onclick="cambiarFontSize('increase')"><i class="fas fa-plus"></i>
+                    Aumentar</button>
+                <button type="button" onclick="cambiarFontSize('decrease')"><i class="fas fa-minus"></i>
+                    Disminuir</button>
             </div>
         </div>
     </div>
@@ -169,23 +166,23 @@
                 <p><i class="fas fa-location-dot"></i> Huejutla, Hidalgo</p>
             </div>
 
-                <div class="footer-col">
-                    <h4>Legal</h4>
-                    <nav class="footer-links">
-                        <a href="#">Privacidad</a>
-                        <a href="#">Términos</a>
-                        <a href="#">Ayuda</a>
-                    </nav>
-                </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <nav class="footer-links">
+                    <a href="#">Privacidad</a>
+                    <a href="#">Términos</a>
+                    <a href="#">Ayuda</a>
+                </nav>
             </div>
-            <div class="footer-bottom">
-                &copy; 2026 LoanWare — Diseñado para el éxito educativo
-            </div>
-        </footer>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-        
-        <script src="js/main.js"></script>
-        <script src="js/marca.js"></script>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 LoanWare — Diseñado para el éxito educativo
+        </div>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+    <script src="js/main.js"></script>
+    <script src="js/marca.js"></script>
 
 </body>
 

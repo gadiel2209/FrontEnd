@@ -5,15 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LoanWare | Equipos Disponibles</title>
-        <script>
-    (function() {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            // Si intenta entrar a public sin loguearse, al login
-            window.location.href = "../index.html"; 
-        }
-    })();
-</script>
+    <script>
+        (function () {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                // Si intenta entrar a public sin loguearse, al login
+                window.location.href = "../index.html";
+            }
+        })();
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="publico.css">
@@ -133,11 +133,9 @@
                 style="color: var(--primary); margin-bottom: 15px; font-size: 1.1rem; border-bottom: 2px solid var(--accent); padding-bottom: 10px;">
                 <i class="fas fa-filter"></i> Categorías
             </h3>
-            <input type="text" 
-                   id="buscadorEquipos" 
-                   placeholder="🔍 Buscar por nombre, marca o descripción..." 
-                   oninput="buscarEquipos()"
-                   style="width: 100%; padding: 12px 16px; border: 1.5px solid #e2e8f0; border-radius: 12px; font-family: 'Montserrat', sans-serif; font-size: 0.9rem; outline: none; transition: all 0.3s ease;">
+            <input type="text" id="buscadorEquipos" placeholder="🔍 Buscar por nombre, marca o descripción..."
+                oninput="buscarEquipos()"
+                style="width: 100%; padding: 12px 16px; border: 1.5px solid #e2e8f0; border-radius: 12px; font-family: 'Montserrat', sans-serif; font-size: 0.9rem; outline: none; transition: all 0.3s ease;">
             <ul id="listaCategorias" style="list-style: none; padding: 0; margin: 0;">
                 <li>
                     <a class="categoria-item activa" onclick="seleccionarCategoria(null, this)">
@@ -195,29 +193,19 @@
         <div class="footer-contenido container">
             <div class="footer-col">
                 <h3>Loan<span>Ware</span></h3>
-                <p>Sistema de gestión de préstamo de equipos y accesorios escolares. Potenciando la educación
-                    tecnológica.</p>
+                <p>Sistema de gestión de préstamo de equipos escolares.</p>
                 <div class="redes-sociales">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
-                    <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="#" id="footer-facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" id="footer-instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" id="footer-github" aria-label="Github"><i class="fab fa-github"></i></a>
+                    <a href="#" id="footer-tiktok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
                 </div>
             </div>
             <div class="footer-col">
                 <h4>Contacto</h4>
-                <p><i class="fas fa-envelope"></i> LoanWare@gmail.com</p>
-                <p><i class="fas fa-phone"></i> +52 771 234 8743</p>
-                <p><i class="fas fa-location-dot"></i> Huejutla de Reyes, Hidalgo</p>
-            </div>
-            <div class="footer-col">
-                <h4>Navegación</h4>
-                <div class="footer-links">
-                    <a href="index.html">Inicio</a>
-                    <a href="equipos.html">Catálogo de Equipos</a>
-                    <a href="quienes.html">Sobre Nosotros</a>
-                    <a href="contacto.html">Soporte Técnico</a>
-                </div>
+                <p><i class="fas fa-envelope"></i> <span id="footer-email">LoanWare@gmail.com</span></p>
+                <p><i class="fas fa-phone"></i> <span id="footer-telefono">+52 771 234 8743</span></p>
+                <p><i class="fas fa-location-dot"></i> <span id="footer-direccion">Huejutla de Reyes, Hidalgo</span></p>
             </div>
             <div class="footer-col">
                 <h4>Legal</h4>
@@ -229,11 +217,12 @@
             </div>
         </div>
         <div class="footer-bottom">
-            &copy; 2026 <strong>LoanWare</strong> — Diseñado para el éxito educativo.
+            <span id="footer-copyright">© 2026 LoanWare — Diseñado para el éxito educativo.</span>
         </div>
     </footer>
-
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="../js/footer.js"></script>
     <script src="../js/main.js"></script>
     <script src="../js/equipos.js"></script>
 </body>

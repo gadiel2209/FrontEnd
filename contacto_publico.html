@@ -19,9 +19,8 @@
                 <h1>Loan<span>Ware</span></h1>
             </div>
             <nav class="main-nav">
-                <a href="home.html">Inicio</a>
+                <a href="index.html">Inicio</a>
                 <a href="equipos.html">Equipos</a>
-                <a href="historial.html">Historial</a>
                 <div class="dropdown" style="display: inline-block; position: relative;">
                     <a href="" class="dropbtn">
                         Acerca de... <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i>
@@ -35,7 +34,7 @@
                 <a href="contacto.html" style="color: var(--accent);">Contacto</a>
             </nav>
             <div class="login-container">
-                <a href="perfil.html" class="btn-login" id="btnSesion">
+                <a href="login.html" class="btn-login">
                     <i class="fas fa-user-circle"></i> Iniciar Sesión
                 </a>
             </div>
@@ -106,6 +105,23 @@
                         <i class="fas fa-circle-check"></i> ¡Mensaje enviado correctamente! Te responderemos pronto.
                     </div>
                 </form>
+
+                <!-- INVITACIÓN A REGISTRARSE -->
+                <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #f1f5f9; text-align: center;">
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+                        ¿Quieres solicitar equipos? Crea tu cuenta gratis.
+                    </p>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <a href="login.html" style="padding: 9px 20px; background: var(--primary); color: white; border-radius: 8px;
+                                   text-decoration: none; font-weight: 700; font-size: 0.82rem;">
+                            <i class="fas fa-right-to-bracket"></i> Iniciar Sesión
+                        </a>
+                        <a href="registro.html" style="padding: 9px 20px; border: 2px solid var(--primary); color: var(--primary);
+                                   border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.82rem;">
+                            <i class="fas fa-user-plus"></i> Registrarse
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <!-- INFO DE CONTACTO -->
@@ -114,22 +130,20 @@
                     <i class="fas fa-envelope"
                         style="font-size: 1.8rem; color: var(--primary); margin-bottom: 12px;"></i>
                     <h4 style="color: var(--primary); margin-bottom: 6px;">Correo</h4>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">LoanWare@gmail.com</p>
+                    <p id="info-email" style="font-size: 0.9rem; color: var(--text-muted);">LoanWare@gmail.com</p>
                 </div>
-
                 <div class="stat-card">
                     <i class="fas fa-phone" style="font-size: 1.8rem; color: var(--primary); margin-bottom: 12px;"></i>
                     <h4 style="color: var(--primary); margin-bottom: 6px;">Teléfono</h4>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">+52 771 234 8743</p>
+                    <p id="info-telefono" style="font-size: 0.9rem; color: var(--text-muted);">+52 771 234 8743</p>
                 </div>
-
                 <div class="stat-card">
                     <i class="fas fa-location-dot"
                         style="font-size: 1.8rem; color: var(--primary); margin-bottom: 12px;"></i>
                     <h4 style="color: var(--primary); margin-bottom: 6px;">Ubicación</h4>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">Huejutla de Reyes, Hidalgo</p>
+                    <p id="info-direccion" style="font-size: 0.9rem; color: var(--text-muted);">Huejutla de Reyes,
+                        Hidalgo</p>
                 </div>
-
                 <div class="stat-card">
                     <i class="fas fa-clock" style="font-size: 1.8rem; color: var(--primary); margin-bottom: 12px;"></i>
                     <h4 style="color: var(--primary); margin-bottom: 6px;">Horario de atención</h4>
@@ -164,7 +178,6 @@
 
     <div id="reading-guide" class="reading-guide"></div>
 
-
     <footer class="footer">
         <div class="footer-contenido container">
             <div class="footer-col">
@@ -173,7 +186,7 @@
                 <div class="redes-sociales">
                     <a href="#" id="footer-facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
                     <a href="#" id="footer-instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" id="footer-github" aria-label="Github"><i class="fab fa-github"></i></a>
+                    <a href="#" id="footer-twitter" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
                     <a href="#" id="footer-tiktok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
                 </div>
             </div>
@@ -184,12 +197,8 @@
                 <p><i class="fas fa-location-dot"></i> <span id="footer-direccion">Huejutla de Reyes, Hidalgo</span></p>
             </div>
             <div class="footer-col">
-                <h4>Legal</h4>
-                <div class="footer-links">
-                    <a href="#">Aviso de Privacidad</a>
-                    <a href="#">Términos y Condiciones</a>
-                    <a href="#">Reglamento de Préstamos</a>
-                </div>
+                <h4>Navegación</h4>
+                <!-- tus links aquí -->
             </div>
         </div>
         <div class="footer-bottom">
@@ -197,12 +206,10 @@
         </div>
     </footer>
 
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    <script src="../js/footer.js"></script>
-    <script src="../js/main.js"></script>
-    <script src="../js/contacto.js"></script>
-
+    <script src="js/footer.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/contacto.js"></script>
 </body>
 
 </html>
