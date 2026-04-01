@@ -1,4 +1,5 @@
-const API = 'https://prestamos-xi.vercel.app/api';
+const API = 'https://prestamos-xi.vercel.app/api'
+
 const token = localStorage.getItem('token');
 
 // 1. Protección de ruta: Si no hay token, redirigir al login
@@ -132,18 +133,9 @@ async function cambiarPassword() {
 }
 
 function cerrarSesion() {
-    const perfilRolTag = document.getElementById('perfilRolTag');
-    const rol = perfilRolTag ? perfilRolTag.textContent.toLowerCase() : '';
-
-    localStorage.removeItem('token');
     localStorage.clear();
-
-    // Cambia '/nombre-de-tu-repo' por el nombre real de tu repositorio
-    const basePath = window.location.hostname === 'localhost' 
-        ? '' 
-        : '/FrontEnd'; // Ajusta según tu estructura de carpetas
-
-    window.location.href = basePath + '/login.html';
+    // Sube un nivel desde /public/ o donde esté la página actual
+    window.location.href = '../login.html';
 }
 
 // Ejecutar automáticamente cuando el HTML esté listo

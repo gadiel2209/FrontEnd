@@ -1,3 +1,4 @@
+const API = 'https://prestamos-xi.vercel.app/api'
 
 let todasLasCategorias = []; 
 

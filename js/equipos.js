@@ -1,5 +1,6 @@
 const API = 'https://prestamos-xi.vercel.app/api'
 
+
 let todosLosEquipos = []
 let equiposFiltrados = []
 let categoriaActiva = null
@@ -11,7 +12,7 @@ let token = localStorage.getItem('token');
 let haySession = false;
 
 async function verificarSesion() {
-    let token = localStorage.getItem('token');
+    token = localStorage.getItem('token');
     const banner = document.getElementById('bannerGuest');
     const btnSesion = document.getElementById('btnSesion');
 
@@ -334,6 +335,3 @@ async function cargarEquipos() {
 
 // Al final del archivo:
 verificarSesion().then(() => cargarEquipos());
-// ─── INICIO ───────────────────────────────────────────────────────
-verificarSesion();
-cargarEquipos();
