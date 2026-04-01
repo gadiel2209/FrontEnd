@@ -1,6 +1,5 @@
 const API = 'https://prestamos-xi.vercel.app/api'
 
-
 let todosLosEquipos = []
 let equiposFiltrados = []
 let categoriaActiva = null
@@ -8,43 +7,27 @@ let paginaActual = 1
 const POR_PAGINA = 9
 
 // ─── SESIÓN ───────────────────────────────────────────────────────
-let token = localStorage.getItem('token');
-let haySession = false;
+const token = localStorage.getItem('token');
+const haySession = !!token;
 
-async function verificarSesion() {
-    token = localStorage.getItem('token');
-    const banner = document.getElementById('bannerGuest');
-    const btnSesion = document.getElementById('btnSesion');
+function verificarSesion() {
+    const banner = document.getElementById('bannerGuest')
+    const btnSesion = document.getElementById('btnSesion')
 
-    if (!token) {
-        haySession = false;
-        if (btnSesion) btnSesion.href = '../login.html';
-        return;
-    }
+    if (haySession) {
+        if (banner) banner.style.display = 'none'
 
-    try {
-        const res = await fetch(`${API}/auth/verificar`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        if (res.ok) {
-            haySession = true;
-            if (banner) banner.style.display = 'none';
-            if (btnSesion) {
-                const nombre = localStorage.getItem('nombre') || 'Mi Perfil';
-                btnSesion.innerHTML = `<i class="fas fa-user-circle"></i> ${nombre}`;
-                btnSesion.href = 'perfil.html';
-            }
-        } else {
-            // Token expirado o inválido → limpiar sesión
-            localStorage.removeItem('token');
-            localStorage.removeItem('nombre');
-            localStorage.removeItem('id_usuario');
-            haySession = false;
-            if (btnSesion) btnSesion.href = '../login.html';
+        if (btnSesion) {
+            const nombre = localStorage.getItem('nombre') || 'Mi Perfil'
+            btnSesion.innerHTML = `<i class="fas fa-user-circle"></i> ${nombre}`
+            // Perfil está en la misma carpeta 'public'
+            btnSesion.href = 'perfil.html'
         }
-    } catch (e) {
-        console.error('Error verificando sesión:', e);
+    } else {
+        if (btnSesion) {
+            // CORRECCIÓN: Salir de public/ para encontrar login.html en la raíz
+            btnSesion.href = '../login.html'
+        }
     }
 }
 
@@ -333,5 +316,6 @@ async function cargarEquipos() {
     }
 }
 
-// Al final del archivo:
-verificarSesion().then(() => cargarEquipos());
+// ─── INICIO ───────────────────────────────────────────────────────
+verificarSesion();
+cargarEquipos();
