@@ -1,5 +1,4 @@
-const API = 'https://prestamos-xi.vercel.app/api'
-const token = localStorage.getItem('token')
+
 
 // ─── CARGAR STATS DEL DASHBOARD ───────────────────────────────────
 async function cargarDashboard() {

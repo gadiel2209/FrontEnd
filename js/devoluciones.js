@@ -4,8 +4,6 @@
  * PUT /api/solicitudes/devolver/:id → SP MarcarDevuelta
  */
 
-const API = 'https://prestamos-xi.vercel.app/api';
-const token = localStorage.getItem('token');
 
 function getAdminId() {
     if (!token) return null;
