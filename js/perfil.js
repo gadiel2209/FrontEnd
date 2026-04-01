@@ -136,6 +136,7 @@ function cerrarSesion() {
     localStorage.clear();
     // Sube un nivel desde /public/ o donde esté la página actual
     window.location.href = '/login.html';
+    window.location.href = '/FrontEnd/login.html';
 }
 
 // Ejecutar automáticamente cuando el HTML esté listo
