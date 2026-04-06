@@ -1,4 +1,4 @@
-const API = 'https://prestamos-xi.vercel.app/api'
+const API_INV = 'https://prestamos-xi.vercel.app/api'
 let todosLosEquipos = [];
 
 const token = localStorage.getItem('token');

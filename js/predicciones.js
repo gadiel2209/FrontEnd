@@ -1,4 +1,4 @@
-const API = 'https://prestamos-xi.vercel.app/api'
+const API_PREDICCION = 'https://prestamos-xi.vercel.app/api'
 const token = localStorage.getItem('token')
 
 const COLORES_CAT = {
