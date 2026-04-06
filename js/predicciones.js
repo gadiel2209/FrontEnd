@@ -164,8 +164,8 @@ function renderGeneralChart(equipos, solicitudes) {
 async function cargarPredicciones() {
     try {
         const [resEquipos, resSolicitudes] = await Promise.all([
-            fetch(`${API}/equipos`,     { headers: { Authorization: `Bearer ${token}` } }),
-            fetch(`${API}/solicitudes`, { headers: { Authorization: `Bearer ${token}` } })
+            fetch(`${API_PREDICCION}/equipos`,     { headers: { Authorization: `Bearer ${token}` } }),
+            fetch(`${API_PREDICCION}/solicitudes`, { headers: { Authorization: `Bearer ${token}` } })
         ])
 
         const equipos     = await resEquipos.json()
