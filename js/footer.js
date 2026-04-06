@@ -3,7 +3,7 @@ const API_FOOTER = 'https://prestamos-xi.vercel.app/api';
 
 async function cargarFooter() {
     try {
-        const res = await fetch(`${API_URL}/ajustes`);
+        const res = await fetch(`${API_FOOTER}/ajustes`);
         if (res.ok) {
             const settings = await res.json();
             const elEmail = document.getElementById('footer-email');
