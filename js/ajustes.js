@@ -5,11 +5,11 @@ const token = localStorage.getItem('token')
 function verificarAccesoAdmin() {
     const id_rol = localStorage.getItem('id_rol');
     if (!token || id_rol !== "1") {
-        window.location.href = '../login.html';
+        window.location.href = '../login.html'; // Asegúrate que apunte a tu login correcto
     }
-} // Cierra correctamente
+} 
 
-// ─── CARGAR FORMULARIO (Usa la ruta pública, está perfecto) ───────
+// ─── CARGAR FORMULARIO (Ruta pública: /api/ajustes) ───────────────
 async function cargarAjustes() {
     try {
         const res = await fetch(`${API}/ajustes`);
@@ -22,28 +22,9 @@ async function cargarAjustes() {
     } catch (error) {
         console.error("Error al cargar ajustes:", error);
     }
-} // Cierra correctamente
+} 
 
-// ─── CARGAR FOOTER DINÁMICO (Usa la ruta pública, está perfecto) ──
-async function cargarFooter() {
-    try {
-        const res = await fetch(`${API}/ajustes`);
-        if (res.ok) {
-            const settings = await res.json();
-            const elEmail = document.getElementById('footer-email');
-            const elTel   = document.getElementById('footer-telefono');
-            const elCopy  = document.getElementById('footer-copyright');
-
-            if (elEmail && settings.email)     elEmail.textContent = settings.email;
-            if (elTel   && settings.telefono)  elTel.textContent   = settings.telefono;
-            if (elCopy  && settings.copyright) elCopy.textContent  = settings.copyright;
-        }
-    } catch (error) {
-        console.error("Error al cargar footer:", error);
-    }
-} // Cierra correctamente
-
-// ─── GUARDAR CAMBIOS (Actualizado a las rutas /admin/ajustes) ─────
+// ─── GUARDAR CAMBIOS (Rutas admin: /api/ajustes/admin) ────────────
 async function guardarCambios(e) {
     e.preventDefault();
 
@@ -60,8 +41,8 @@ async function guardarCambios(e) {
 
     try {
         const promesas = registros.map(async (reg) => {
-            // CAMBIO: Ahora apunta a /admin/ajustes/:clave
-            const urlPut = `${API}/admin/ajustes/${reg.clave}`;
+            // URL corregida a /ajustes/admin/:clave
+            const urlPut = `${API}/ajustes/admin/${reg.clave}`;
             console.log(`PUT ${urlPut}`, reg.valor);
 
             let res = await fetch(urlPut, {
@@ -75,11 +56,10 @@ async function guardarCambios(e) {
 
             console.log(`PUT ${reg.clave} → status: ${res.status}`);
 
-            // Si devuelve 404 significa que el ajuste aún no existe en la BD
             if (res.status === 404) {
                 console.log(`${reg.clave} no existe, creando con POST...`);
-                // CAMBIO: Ahora apunta a /admin/ajustes
-                res = await fetch(`${API}/admin/ajustes`, {
+                // URL corregida a /ajustes/admin
+                res = await fetch(`${API}/ajustes/admin`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -111,7 +91,7 @@ async function guardarCambios(e) {
         btn.disabled = false;
         btn.innerHTML = originalHTML;
     }
-} // Cierra correctamente
+} 
 
 // ─── TOAST ────────────────────────────────────────────────────────
 function mostrarToast(mensaje, tipo = 'success') {
@@ -125,12 +105,11 @@ function mostrarToast(mensaje, tipo = 'success') {
     toast.textContent = mensaje;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3500);
-} // Cierra correctamente
+}
 
 // ─── ARRANQUE ─────────────────────────────────────────────────────
 verificarAccesoAdmin();
 cargarAjustes();
-cargarFooter();
 
 const form = document.querySelector('form');
 if (form) form.addEventListener('submit', guardarCambios);

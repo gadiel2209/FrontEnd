@@ -1,6 +1,3 @@
-// --- CONFIGURACIÓN DE ACCESIBILIDAD LOANWARE ---
-
-// 1. NARRADOR DE VOZ (TALKBACK/SCREEN READER)
 let sintetizador = window.speechSynthesis;
 let lecturaActiva = false;
 
