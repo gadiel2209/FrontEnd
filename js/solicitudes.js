@@ -10,7 +10,7 @@ const POR_PAGINA = 20
 async function cargarHistorial() {
     const tbody = document.getElementById('listaHistorial')
     try {
-        const res = await fetch(`${API}/solicitudes`, {
+        const res = await fetch(`${API_SOL}/solicitudes`, {
             headers: { 'Authorization': `Bearer ${token}` }
         })
         if (!res.ok) throw new Error(`Error ${res.status}`)

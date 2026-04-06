@@ -18,7 +18,7 @@ async function cargarInventario() {
     tablaBody.innerHTML = `<tr><td colspan="5" class="p-10 text-center"><i class="fas fa-sync fa-spin"></i> Cargando equipos...</td></tr>`;
 
     try {
-        const res = await fetch(`${API}/equipos`, {
+        const res = await fetch(`${API_INV}/equipos`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
 
