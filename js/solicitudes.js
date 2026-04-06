@@ -1,8 +1,3 @@
-/**
- * LOANWARE - Historial de Movimientos (Admin)
- * GET /api/solicitudes → lista completa con filtros y paginación (20 por página)
- */
-
 const API = 'https://prestamos-xi.vercel.app/api'
 const token = localStorage.getItem('token')
 
