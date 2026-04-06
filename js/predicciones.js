@@ -1,8 +1,3 @@
-/**
- * LOANWARE - Predicciones de Inventario
- * Modelo: P(t) = P0 * e^(k*t)  |  dP/dt = k*P(t)
- */
-
 const API = 'https://prestamos-xi.vercel.app/api'
 const token = localStorage.getItem('token')
 
