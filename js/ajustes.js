@@ -7,9 +7,9 @@ function verificarAccesoAdmin() {
     if (!token || id_rol !== "1") {
         window.location.href = '../login.html';
     }
-} // ✅ Cierra correctamente
+} // Cierra correctamente
 
-// ─── CARGAR FORMULARIO ────────────────────────────────────────────
+// ─── CARGAR FORMULARIO (Usa la ruta pública, está perfecto) ───────
 async function cargarAjustes() {
     try {
         const res = await fetch(`${API}/ajustes`);
@@ -22,9 +22,9 @@ async function cargarAjustes() {
     } catch (error) {
         console.error("Error al cargar ajustes:", error);
     }
-} // ✅ Cierra correctamente
+} // Cierra correctamente
 
-// ─── CARGAR FOOTER DINÁMICO ───────────────────────────────────────
+// ─── CARGAR FOOTER DINÁMICO (Usa la ruta pública, está perfecto) ──
 async function cargarFooter() {
     try {
         const res = await fetch(`${API}/ajustes`);
@@ -41,9 +41,9 @@ async function cargarFooter() {
     } catch (error) {
         console.error("Error al cargar footer:", error);
     }
-} // ✅ Cierra correctamente
+} // Cierra correctamente
 
-// ─── GUARDAR CAMBIOS (PUT o POST) ─────────────────────────────────
+// ─── GUARDAR CAMBIOS (Actualizado a las rutas /admin/ajustes) ─────
 async function guardarCambios(e) {
     e.preventDefault();
 
@@ -60,8 +60,9 @@ async function guardarCambios(e) {
 
     try {
         const promesas = registros.map(async (reg) => {
-            const urlPut = `${API}/ajustes/${reg.clave}`;
-            console.log(`➡️ PUT ${urlPut}`, reg.valor);
+            // CAMBIO: Ahora apunta a /admin/ajustes/:clave
+            const urlPut = `${API}/admin/ajustes/${reg.clave}`;
+            console.log(`PUT ${urlPut}`, reg.valor);
 
             let res = await fetch(urlPut, {
                 method: 'PUT',
@@ -74,9 +75,11 @@ async function guardarCambios(e) {
 
             console.log(`PUT ${reg.clave} → status: ${res.status}`);
 
+            // Si devuelve 404 significa que el ajuste aún no existe en la BD
             if (res.status === 404) {
-                console.log(`⚠️ ${reg.clave} no existe, creando con POST...`);
-                res = await fetch(`${API}/ajustes`, {
+                console.log(`${reg.clave} no existe, creando con POST...`);
+                // CAMBIO: Ahora apunta a /admin/ajustes
+                res = await fetch(`${API}/admin/ajustes`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -94,21 +97,21 @@ async function guardarCambios(e) {
         const todoOk = respuestas.every(res => res.ok);
 
         if (todoOk) {
-            mostrarToast("✅ Ajustes guardados correctamente", "success");
+            mostrarToast("Ajustes guardados correctamente", "success");
             setTimeout(() => location.reload(), 2000);
         } else {
-            mostrarToast("⚠️ Algunos ajustes no se pudieron guardar", "error");
+            mostrarToast("Algunos ajustes no se pudieron guardar", "error");
             btn.disabled = false;
             btn.innerHTML = originalHTML;
         }
 
     } catch (error) {
-        console.error("❌ Error:", error);
+        console.error("Error:", error);
         mostrarToast("Error de conexión", "error");
         btn.disabled = false;
         btn.innerHTML = originalHTML;
     }
-} // ✅ Cierra correctamente
+} // Cierra correctamente
 
 // ─── TOAST ────────────────────────────────────────────────────────
 function mostrarToast(mensaje, tipo = 'success') {
@@ -122,7 +125,7 @@ function mostrarToast(mensaje, tipo = 'success') {
     toast.textContent = mensaje;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3500);
-} // ✅ Cierra correctamente
+} // Cierra correctamente
 
 // ─── ARRANQUE ─────────────────────────────────────────────────────
 verificarAccesoAdmin();
