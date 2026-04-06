@@ -1,6 +1,6 @@
+// 1. Declarar la constante API (Asegúrate de que sea tu URL real)
+const API = 'https://prestamos-xi.vercel.app/api';
 
-
-// ─── CARGAR FOOTER DINÁMICO ───────────────────────────────────────
 async function cargarFooter() {
     try {
         const res = await fetch(`${API}/ajustes`);
@@ -19,5 +19,8 @@ async function cargarFooter() {
     }
 }
 
-// ─── ARRANQUE ─────────────────────────────────────────────────────
-cargarFooter();
+// 2. ARRANQUE SEGURO
+// Esto garantiza que el HTML ya existe antes de intentar modificarlo
+document.addEventListener('DOMContentLoaded', () => {
+    cargarFooter();
+});
