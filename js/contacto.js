@@ -1,15 +1,14 @@
-// Usamos la misma constante que en el resto de tu proyecto
-const API = 'https://prestamos-xi.vercel.app/api';
-const token = localStorage.getItem('token')
+const API = 'https://prestamos-xi.vercel.app/api'
 
+// ─── FORMULARIO PÚBLICO ───────────────────────────────────────────
 async function enviarMensaje() {
     const btnEnviar = document.querySelector('button[onclick="enviarMensaje()"]')
     const mensajeExito = document.getElementById('mensajeExito')
 
-    const nombre = document.getElementById('nombre').value.trim()
-    const correo = document.getElementById('correo').value.trim()
+    const nombre  = document.getElementById('nombre').value.trim()
+    const correo  = document.getElementById('correo').value.trim()
     const asuntoEl = document.getElementById('asunto')
-    const asunto = asuntoEl?.options[asuntoEl.selectedIndex]?.text || 'General'
+    const asunto  = asuntoEl?.options[asuntoEl.selectedIndex]?.text || 'General'
     const mensaje = document.getElementById('mensaje').value.trim()
 
     if (!nombre || !correo || !mensaje) {
@@ -50,18 +49,21 @@ async function enviarMensaje() {
     }
 }
 
+// ─── BUZÓN ADMIN ──────────────────────────────────────────────────
+// FIX: verificarAdmin() solo se llama si estamos en el buzón (buzon.html),
+//      NO en la página pública de contacto.
 let mensajesBuzon = []
 
-// ─── VERIFICAR ACCESO ─────────────────────────────────────────────
 function verificarAdmin() {
-    const idRol = localStorage.getItem('id_rol')
+    const token  = localStorage.getItem('token')   // FIX: leer aquí, no global
+    const idRol  = localStorage.getItem('id_rol')
     if (!token || idRol !== '1') {
         window.location.href = '../login.html'
     }
 }
 
-// ─── OBTENER MENSAJES ─────────────────────────────────────────────
 async function obtenerMensajesServidor() {
+    const token = localStorage.getItem('token')    // FIX: leer aquí, no global
     const lista = document.getElementById('listaMensajes')
     if (!lista) return
 
@@ -92,7 +94,6 @@ async function obtenerMensajesServidor() {
     }
 }
 
-// ─── RENDERIZAR LISTA ─────────────────────────────────────────────
 function renderizarLista() {
     const lista = document.getElementById('listaMensajes')
     lista.innerHTML = ''
@@ -129,7 +130,6 @@ function renderizarLista() {
     })
 }
 
-// ─── MOSTRAR DETALLE ──────────────────────────────────────────────
 function mostrarDetalle(m) {
     const visor = document.getElementById('visorMensaje')
     m.leido = true
@@ -138,7 +138,6 @@ function mostrarDetalle(m) {
         ? new Date(m.fecha || m.createdAt).toLocaleString('es-MX')
         : 'Sin fecha'
 
-    // Usar id compatible con MySQL (id_contacto) o MongoDB (_id)
     const id = m.id_contacto || m._id
 
     visor.innerHTML = `
@@ -170,8 +169,9 @@ function mostrarDetalle(m) {
     renderizarLista()
 }
 
-// ─── ELIMINAR MENSAJE ─────────────────────────────────────────────
 async function eliminarMensaje(id) {
+    const token = localStorage.getItem('token')    // FIX: leer aquí, no global
+
     if (!confirm('¿Eliminar este mensaje permanentemente?')) return
 
     try {
@@ -199,6 +199,10 @@ async function eliminarMensaje(id) {
 
 // ─── ARRANQUE ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-    verificarAdmin()
-    obtenerMensajesServidor()
+    // FIX: solo verificar admin si estamos en el buzón, no en contacto público
+    const esBuzon = document.getElementById('listaMensajes') !== null
+    if (esBuzon) {
+        verificarAdmin()
+        obtenerMensajesServidor()
+    }
 })
