@@ -1,4 +1,4 @@
-const API_AGREGARUSUARIO = 'https://prestamos-xi.vercel.app/api/usuarios'
+const API_AGREGARUSUARIO = 'https://prestamos-xi.vercel.app/api/usuario'
 
 // ── MOSTRAR/OCULTAR CONTRASEÑA ─────────────────────────────────────
 function togglePass(inputId, iconoId) {
