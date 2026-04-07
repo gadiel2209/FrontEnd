@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Usuario | LoanWare Admin</title>
+    <script>
+        (function () {
+            const token  = localStorage.getItem('token')
+            const id_rol = localStorage.getItem('id_rol')
+            if (!token || id_rol !== "1") window.location.href = "./public/home.html"
+        })()
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="publico.css">
+
+    <style>
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        .form-group label { font-size: 0.8rem; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group input, .form-group select {
+            padding: 12px 14px; border-radius: 8px; border: 1px solid #ddd;
+            font-family: 'Montserrat', sans-serif; font-size: 0.88rem; color: #2d3748;
+            transition: border-color 0.2s, box-shadow 0.2s; background: #fff;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(26,57,42,0.1);
+        }
+        .form-group input.error, .form-group select.error { border-color: #e53e3e; }
+        .error-msg { font-size: 0.75rem; color: #e53e3e; display: none; }
+        .error-msg.visible { display: block; }
+        .password-wrapper { position: relative; }
+        .password-wrapper input { width: 100%; box-sizing: border-box; padding-right: 44px; }
+        .toggle-pass {
+            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; cursor: pointer; color: #888; font-size: 0.95rem; padding: 0;
+        }
+        .toggle-pass:hover { color: var(--primary); }
+        .form-actions {
+            display: flex; gap: 12px; justify-content: flex-end;
+            margin-top: 10px; padding-top: 20px; border-top: 1px solid #edf2f7;
+        }
+        .btn-cancelar {
+            padding: 11px 28px; border-radius: 8px; border: 1px solid #ddd; background: #fff;
+            font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.82rem;
+            cursor: pointer; color: #666; transition: background 0.2s;
+        }
+        .btn-cancelar:hover { background: #f7fafc; color: #333; }
+        .btn-guardar {
+            padding: 11px 28px; border-radius: 8px; border: none; background: var(--primary);
+            font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.82rem;
+            cursor: pointer; color: #fff; transition: background 0.2s, transform 0.1s;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .btn-guardar:hover { background: var(--primary-dark, #163827); }
+        .btn-guardar:active { transform: scale(0.98); }
+        .btn-guardar:disabled { opacity: 0.6; cursor: not-allowed; }
+        .alerta {
+            display: none; align-items: center; gap: 10px; padding: 14px 18px;
+            border-radius: 8px; font-size: 0.85rem; font-weight: 600; margin-bottom: 20px;
+        }
+        #alertaError  { background: rgba(229,62,62,0.08); color: #c53030; border: 1px solid #feb2b2; }
+        #alertaExito  { background: rgba(9,255,0,0.1);    color: #047857; border: 1px solid #6ee7b7; }
+        .password-strength { display: flex; gap: 4px; margin-top: 6px; }
+        .strength-bar { height: 4px; flex: 1; border-radius: 4px; background: #e2e8f0; transition: background 0.3s; }
+        .strength-label { font-size: 0.72rem; color: #888; margin-top: 4px; }
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group.full-width { grid-column: 1; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-microchip"></i>
+                <h1>Loan<span>Ware</span></h1>
+            </div>
+            <div class="main-nav">
+                <span style="color:white; margin-right:15px; font-size:0.8rem; font-weight:600;">
+                    <i class="fas fa-user-shield" style="color:var(--accent);"></i> MODO ADMINISTRADOR
+                </span>
+                <a href="perfil.html" class="btn-login">MI PERFIL</a>
+            </div>
+        </div>
+    </header>
+
+    <nav class="header" style="background-color:var(--primary); border-top:1px solid rgba(255,255,255,0.1); padding:5px 0;">
+        <div class="header-container main-nav">
+            <a href="adminDashboard.html">Inicio</a>
+            <a href="inventario.html">Inventario</a>
+            <a href="historial.html">Solicitudes</a>
+            <a href="usuario.html">Usuarios</a>
+            <div class="dropdown" style="display:inline-block; position:relative;">
+                <a href="#" class="dropbtn">Catálogos <i class="fas fa-chevron-down" style="font-size:0.7rem;"></i></a>
+                <div class="dropdown-content">
+                    <a href="marca.html"><i class="fas fa-tag" style="color:var(--accent);"></i> Marca</a>
+                    <a href="categoria.html"><i class="fas fa-layer-group" style="color:var(--accent);"></i> Categoría</a>
+                    <a href="predicciones.html" style="color:#84cc16; font-weight:700;"><i class="fas fa-chart-line"></i> Predicciones</a>
+                </div>
+            </div>
+            <div class="dropdown" style="display:inline-block; position:relative;">
+                <a href="#" class="dropbtn">Movimientos <i class="fas fa-chevron-down" style="font-size:0.7rem;"></i></a>
+                <div class="dropdown-content">
+                    <a href="prestamos.html"><i class="fas fa-arrow-up" style="color:var(--accent);"></i> Préstamos</a>
+                    <a href="devoluciones.html"><i class="fas fa-arrow-down" style="color:var(--accent);"></i> Devoluciones</a>
+                </div>
+            </div>
+            <div class="dropdown" style="display:inline-block; position:relative;">
+                <a href="#" class="dropbtn">Acerca de... <i class="fas fa-chevron-down" style="font-size:0.7rem;"></i></a>
+                <div class="dropdown-content">
+                    <a href="quienes.html"><i class="fas fa-users"></i> Quiénes Somos</a>
+                    <a href="mision.html"><i class="fas fa-bullseye"></i> Misión</a>
+                    <a href="vision.html"><i class="fas fa-eye"></i> Visión</a>
+                </div>
+            </div>
+            <a href="ajustes_footer.html"><i class="fas fa-cog"></i> Ajustes</a>
+            <a href="contacto.html"><i class="fas fa-envelope"></i> Buzón</a>
+        </div>
+    </nav>
+
+    <main class="container seccion-about" style="padding-top:40px;">
+
+        <div class="section-header">
+            <span class="tag">Administración de Cuentas</span>
+            <h2>Agregar <span style="color:var(--primary);">Nuevo Usuario</span></h2>
+            <div class="line"></div>
+            <p style="color:var(--text-muted);">Completa el formulario para registrar manualmente una cuenta en el sistema.</p>
+        </div>
+
+        <div style="margin-bottom:20px;">
+            <a href="usuario.html"
+                style="display:inline-flex; align-items:center; gap:7px; font-size:0.82rem; font-weight:600;
+                       color:var(--primary); text-decoration:none; opacity:0.85;">
+                <i class="fas fa-arrow-left"></i> Volver a Gestión de Usuarios
+            </a>
+        </div>
+
+        <div class="alerta" id="alertaError">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="mensajeError"></span>
+        </div>
+        <div class="alerta" id="alertaExito">
+            <i class="fas fa-check-circle"></i>
+            <span id="mensajeExito">Usuario registrado con éxito.</span>
+        </div>
+
+        <div class="card" style="padding:30px; max-width:860px; margin:0 auto;">
+            <h4 style="margin-bottom:22px; color:var(--primary); display:flex; align-items:center; gap:8px;">
+                <i class="fas fa-user-plus"></i> Datos del Nuevo Usuario
+            </h4>
+
+            <form id="formAgregarUsuario" onsubmit="guardarUsuario(event)" novalidate>
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="matricula"><i class="fas fa-id-badge"></i> Matrícula</label>
+                        <input type="text" id="matricula" placeholder="Ej. 20240001" maxlength="20">
+                        <span class="error-msg" id="err-matricula">La matrícula es obligatoria.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="username"><i class="fas fa-at"></i> Nombre de Usuario</label>
+                        <input type="text" id="username" placeholder="Ej. est_2024" maxlength="40">
+                        <span class="error-msg" id="err-username">El nombre de usuario es obligatorio.</span>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="nombre"><i class="fas fa-user"></i> Nombre Completo</label>
+                        <input type="text" id="nombre" placeholder="Ej. Ana Torres García" maxlength="100">
+                        <span class="error-msg" id="err-nombre">El nombre completo es obligatorio.</span>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="correo"><i class="fas fa-envelope"></i> Correo Electrónico</label>
+                        <input type="email" id="correo" placeholder="Ej. ana@uthh.edu.mx" maxlength="100">
+                        <span class="error-msg" id="err-correo">Ingresa un correo electrónico válido.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password"><i class="fas fa-lock"></i> Contraseña</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="password" placeholder="Mínimo 8 caracteres"
+                                maxlength="60" oninput="evaluarPassword(this.value)">
+                            <button type="button" class="toggle-pass" onclick="togglePass('password','iconoPass')">
+                                <i class="fas fa-eye" id="iconoPass"></i>
+                            </button>
+                        </div>
+                        <div class="password-strength">
+                            <div class="strength-bar" id="bar1"></div>
+                            <div class="strength-bar" id="bar2"></div>
+                            <div class="strength-bar" id="bar3"></div>
+                            <div class="strength-bar" id="bar4"></div>
+                        </div>
+                        <span class="strength-label" id="strengthLabel">Ingresa una contraseña</span>
+                        <span class="error-msg" id="err-password">La contraseña debe tener al menos 8 caracteres.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm_password"><i class="fas fa-lock"></i> Confirmar Contraseña</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="confirm_password" placeholder="Repite la contraseña" maxlength="60">
+                            <button type="button" class="toggle-pass" onclick="togglePass('confirm_password','iconoConfirm')">
+                                <i class="fas fa-eye" id="iconoConfirm"></i>
+                            </button>
+                        </div>
+                        <span class="error-msg" id="err-confirm_password">Las contraseñas no coinciden.</span>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="rol"><i class="fas fa-user-tag"></i> Rol</label>
+                        <select id="rol">
+                            <option value="">-- Selecciona un rol --</option>
+                            <option value="2">Estudiante / Alumno</option>
+                            <option value="1">Administrador</option>
+                        </select>
+                        <span class="error-msg" id="err-rol">Selecciona un rol para el usuario.</span>
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-cancelar" onclick="window.location.href='usuario.html'">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn-guardar" id="btnGuardar">
+                        <i class="fas fa-save"></i> Guardar Usuario
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </main>
+
+    <div class="accessibility-wrapper" id="draggableWrapper">
+        <button class="btn-access" id="accessBtn" title="Opciones de Accesibilidad">
+            <i class="fas fa-universal-access"></i>
+        </button>
+        <div class="access-menu" id="accessMenu">
+            <h4>Centro de Inclusión</h4>
+            <div class="access-section">
+                <small>VISIÓN Y CEGUERA</small>
+                <button type="button" onclick="toggleNarrador()"><i class="fas fa-comment-dots"></i> Narrador de Voz</button>
+                <button type="button" onclick="toggleDaltonismo()"><i class="fas fa-eye"></i> Modos Daltonismo</button>
+            </div>
+            <div class="access-section">
+                <small>TAMAÑO DE TEXTO</small>
+                <button type="button" onclick="cambiarFontSize('increase')"><i class="fas fa-plus"></i> Aumentar</button>
+                <button type="button" onclick="cambiarFontSize('decrease')"><i class="fas fa-minus"></i> Disminuir</button>
+            </div>
+        </div>
+    </div>
+    <div id="reading-guide" class="reading-guide"></div>
+
+    <footer class="footer">
+        <div class="footer-contenido container">
+            <div class="footer-col about">
+                <h3>Loan<span>Ware</span></h3>
+                <p>Optimizando el acceso tecnológico en la educación.</p>
+                <div class="redes-sociales">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-x-twitter"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Contacto</h4>
+                <p><i class="fas fa-envelope"></i> <span id="footer-email">Cargando...</span></p>
+                <p><i class="fas fa-phone"></i> <span id="footer-telefono">Cargando...</span></p>
+                <p><i class="fas fa-location-dot"></i> Huejutla, Hidalgo</p>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <nav class="footer-links">
+                    <a href="#">Privacidad</a>
+                    <a href="#">Términos</a>
+                    <a href="#">Ayuda</a>
+                </nav>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span id="footer-copyright"></span>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/footer.js"></script>
+    <script src="js/agregar_usuario.js"></script>
+
+</body>
+</html>
