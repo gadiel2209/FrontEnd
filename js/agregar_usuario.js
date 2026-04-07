@@ -111,7 +111,7 @@ async function guardarUsuario(e) {
     const confirmar = document.getElementById('confirm_password').value
     const id_rol    = document.getElementById('rol').value
 
-    // Validación visual campo a campo
+    // 1. VALIDACIÓN VISUAL (Corregido el ID de error para confirm_password)
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     let ok = true
     ok &= validarCampo('matricula',        'err-matricula', matricula !== '',          'La matrícula es obligatoria.')
@@ -119,11 +119,13 @@ async function guardarUsuario(e) {
     ok &= validarCampo('nombre',           'err-nombre',    nombre    !== '',          'El nombre completo es obligatorio.')
     ok &= validarCampo('correo',           'err-correo',    emailRegex.test(correo),   'Ingresa un correo electrónico válido.')
     ok &= validarCampo('password',         'err-password',  password.length >= 8,      'La contraseña debe tener al menos 8 caracteres.')
-    ok &= validarCampo('confirm_password', 'err-confirm',   password === confirmar,    'Las contraseñas no coinciden.')
+    // AQUÍ SE CORRIGIÓ: de 'err-confirm' a 'err-confirm_password' para coincidir con el HTML
+    ok &= validarCampo('confirm_password', 'err-confirm_password', password === confirmar, 'Las contraseñas no coinciden.')
     ok &= validarCampo('rol',              'err-rol',       id_rol    !== '',           'Selecciona un rol para el usuario.')
+    
     if (!ok) return
 
-    // Validación global
+    // 2. VALIDACIÓN GLOBAL
     const errorMsg = validar({ matricula, username, nombre, correo, password, confirmar, id_rol })
     if (errorMsg) { mostrarError(errorMsg); return }
 
@@ -131,7 +133,8 @@ async function guardarUsuario(e) {
 
     try {
         const token = localStorage.getItem('token')
-        const res   = await fetch(`${API_AGREGARUSUARIO}/usuarios`, {
+        // 3. FETCH CORREGIDO: Se quitó el "/usuarios" extra al final
+        const res = await fetch(API_AGREGARUSUARIO, {
             method:  'POST',
             headers: {
                 'Content-Type':  'application/json',
@@ -157,7 +160,8 @@ async function guardarUsuario(e) {
         } else {
             mostrarError(data.message || data.error || 'Ocurrió un error al registrar el usuario.')
         }
-    } catch {
+    } catch (err) {
+        console.error(err)
         mostrarError('No se pudo conectar con el servidor. Intenta de nuevo.')
     } finally {
         setLoading(false)
