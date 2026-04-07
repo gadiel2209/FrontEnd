@@ -99,41 +99,40 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 })
 
-// ── GUARDAR USUARIO ────────────────────────────────────────────────
 async function guardarUsuario(e) {
     e.preventDefault()
 
-    const matricula = document.getElementById('matricula').value.trim()
-    const username  = document.getElementById('username').value.trim()
-    const nombre    = document.getElementById('nombre').value.trim()
-    const correo    = document.getElementById('correo').value.trim()
-    const password  = document.getElementById('password').value
-    const confirmar = document.getElementById('confirm_password').value
-    const id_rol    = document.getElementById('rol').value
+    const matricula  = document.getElementById('matricula').value.trim()
+    const username   = document.getElementById('username').value.trim()
+    const nombre     = document.getElementById('nombre').value.trim()
+    const ap_paterno = document.getElementById('ap_paterno').value.trim()
+    const ap_materno = document.getElementById('ap_materno').value.trim()
+    const correo     = document.getElementById('correo').value.trim()
+    const password   = document.getElementById('password').value
+    const confirmar  = document.getElementById('confirm_password').value
+    const id_rol     = document.getElementById('rol').value
 
-    // 1. VALIDACIÓN VISUAL (Corregido el ID de error para confirm_password)
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     let ok = true
-    ok &= validarCampo('matricula',        'err-matricula', matricula !== '',          'La matrícula es obligatoria.')
-    ok &= validarCampo('username',         'err-username',  username  !== '',          'El nombre de usuario es obligatorio.')
-    ok &= validarCampo('nombre',           'err-nombre',    nombre    !== '',          'El nombre completo es obligatorio.')
-    ok &= validarCampo('correo',           'err-correo',    emailRegex.test(correo),   'Ingresa un correo electrónico válido.')
-    ok &= validarCampo('password',         'err-password',  password.length >= 8,      'La contraseña debe tener al menos 8 caracteres.')
-    // AQUÍ SE CORRIGIÓ: de 'err-confirm' a 'err-confirm_password' para coincidir con el HTML
-    ok &= validarCampo('confirm_password', 'err-confirm_password', password === confirmar, 'Las contraseñas no coinciden.')
-    ok &= validarCampo('rol',              'err-rol',       id_rol    !== '',           'Selecciona un rol para el usuario.')
+
+    // Validaciones
+    ok &= validarCampo('matricula',        'err-matricula',        matricula !== '',          'La matrícula es obligatoria.')
+    ok &= validarCampo('username',         'err-username',         username  !== '',          'El usuario es obligatorio.')
+    ok &= validarCampo('nombre',           'err-nombre',           nombre    !== '',          'El nombre es obligatorio.')
+    ok &= validarCampo('ap_paterno',       'err-ap_paterno',       ap_paterno !== '',         'El apellido paterno es obligatorio.')
+    // El materno a veces es opcional, pero si tu backend lo exige, lo validamos:
+    ok &= validarCampo('ap_materno',       'err-ap_materno',       ap_materno !== '',         'El apellido materno es obligatorio.')
+    ok &= validarCampo('correo',           'err-correo',           emailRegex.test(correo),   'Ingresa un correo electrónico válido.')
+    ok &= validarCampo('password',         'err-password',         password.length >= 8,      'La contraseña debe tener al menos 8 caracteres.')
+    ok &= validarCampo('confirm_password', 'err-confirm_password', password === confirmar,    'Las contraseñas no coinciden.')
+    ok &= validarCampo('rol',              'err-rol',              id_rol    !== '',          'Selecciona un rol.')
     
     if (!ok) return
-
-    // 2. VALIDACIÓN GLOBAL
-    const errorMsg = validar({ matricula, username, nombre, correo, password, confirmar, id_rol })
-    if (errorMsg) { mostrarError(errorMsg); return }
 
     setLoading(true)
 
     try {
         const token = localStorage.getItem('token')
-        // 3. FETCH CORREGIDO: Se quitó el "/usuarios" extra al final
         const res = await fetch(API_AGREGARUSUARIO, {
             method:  'POST',
             headers: {
@@ -141,12 +140,15 @@ async function guardarUsuario(e) {
                 'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify({
-                matricula,
-                usuario:  username,
+                // El backend ignora la matrícula, pero la enviamos si queremos
+                matricula, 
+                usuario: username,
                 nombre,
+                ap_paterno,
+                ap_materno,
                 correo,
                 password,
-                id_rol:   parseInt(id_rol)
+                id_rol: parseInt(id_rol)
             })
         })
 
@@ -158,11 +160,11 @@ async function guardarUsuario(e) {
             evaluarPassword('')
             setTimeout(() => window.location.href = 'usuario.html', 2000)
         } else {
-            mostrarError(data.message || data.error || 'Ocurrió un error al registrar el usuario.')
+            mostrarError(data.message || 'Ocurrió un error al registrar el usuario.')
         }
     } catch (err) {
         console.error(err)
-        mostrarError('No se pudo conectar con el servidor. Intenta de nuevo.')
+        mostrarError('No se pudo conectar con el servidor.')
     } finally {
         setLoading(false)
     }
