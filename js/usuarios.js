@@ -1,4 +1,4 @@
-const API = 'https://prestamos-xi.vercel.app/api';
+const API_USUARIOS = 'https://prestamos-xi.vercel.app/api';
 let todosLosUsuarios = [];
 
 const token = localStorage.getItem('token');
@@ -125,7 +125,7 @@ async function eliminarUsuario(id) {
     btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:6px;"></i> Eliminando...';
 
     try {
-        const res = await fetch(`${API}/usuario/${id}`, {
+        const res = await fetch(`${API_USUARIOS}/${id}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });
