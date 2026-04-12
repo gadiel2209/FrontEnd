@@ -15,10 +15,75 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="publico.css">
+
+    <style>
+        /* ── Modal backdrop ── */
+        .modal-usuario {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,.45);
+            backdrop-filter: blur(3px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .modal-usuario-box {
+            background: #fff;
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 25px 60px rgba(0,0,0,.25);
+            animation: modalIn .2s ease;
+            overflow: hidden;
+        }
+        @keyframes modalIn {
+            from { transform: translateY(14px) scale(.97); opacity: 0; }
+            to   { transform: translateY(0) scale(1);     opacity: 1; }
+        }
+        .modal-u-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 1.1rem 1.4rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .modal-u-header h3 {
+            font-weight: 700; font-size: .95rem;
+            color: #334155; margin: 0;
+        }
+        .modal-u-body  { padding: 1.5rem 1.4rem; text-align: center; }
+        .modal-u-footer {
+            padding: .9rem 1.4rem;
+            border-top: 1px solid #f1f5f9;
+            display: flex; justify-content: center; gap: .75rem;
+        }
+        .btn-u-cancel {
+            background: #f1f5f9; color: #475569;
+            padding: .5rem 1.2rem; border-radius: .5rem;
+            font-weight: 600; font-size: .82rem;
+            border: none; cursor: pointer; transition: background .2s;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .btn-u-cancel:hover { background: #e2e8f0; }
+        .btn-u-delete {
+            background: #ef4444; color: white;
+            padding: .5rem 1.3rem; border-radius: .5rem;
+            font-weight: 700; font-size: .82rem;
+            border: none; cursor: pointer; transition: background .2s;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .btn-u-delete:hover:not(:disabled) { background: #dc2626; }
+        .btn-u-delete:disabled { opacity: .65; cursor: not-allowed; }
+        .btn-close-u {
+            background: none; border: none; cursor: pointer;
+            color: #94a3b8; font-size: 1rem; transition: color .2s;
+        }
+        .btn-close-u:hover { color: #334155; }
+    </style>
 </head>
 
 <body>
 
+    <!-- ══ HEADER ══════════════════════════════════════════════════ -->
     <header class="header">
         <div class="header-container">
             <div class="logo">
@@ -34,6 +99,7 @@
         </div>
     </header>
 
+    <!-- ══ NAV ══════════════════════════════════════════════════════ -->
     <nav class="header" style="background-color:var(--primary); border-top:1px solid rgba(255,255,255,0.1); padding:5px 0;">
         <div class="header-container main-nav">
             <a href="adminDashboard.html">Inicio</a>
@@ -68,6 +134,7 @@
         </div>
     </nav>
 
+    <!-- ══ MAIN ══════════════════════════════════════════════════════ -->
     <main class="container seccion-about" style="padding-top:40px;">
 
         <div class="section-header">
@@ -77,7 +144,7 @@
             <p style="color:var(--text-muted);">Consulta, filtra y administra los roles y accesos de los usuarios registrados en el sistema.</p>
         </div>
 
-        <!-- ── Botón Nuevo Usuario ── -->
+        <!-- Botón Nuevo Usuario -->
         <div style="display:flex; justify-content:flex-end; margin-bottom:14px;">
             <a href="agregar_usuario.html"
                 style="display:inline-flex; align-items:center; gap:8px; padding:11px 22px;
@@ -90,7 +157,7 @@
             </a>
         </div>
 
-        <!-- ── Buscador ── -->
+        <!-- Buscador -->
         <div class="card" style="margin-bottom:30px; padding:25px;">
             <h4 style="margin-bottom:15px; color:var(--primary);"><i class="fas fa-search"></i> Filtro de búsqueda</h4>
             <div style="display:flex; gap:10px;">
@@ -101,7 +168,7 @@
             </div>
         </div>
 
-        <!-- ── Tabla ── -->
+        <!-- Tabla -->
         <div class="card" style="padding:0; overflow-x:auto;">
             <table id="tablaUsuarios" style="width:100%; border-collapse:collapse; text-align:left; font-size:0.85rem;">
                 <thead>
@@ -115,7 +182,7 @@
                         <th style="padding:15px; text-align:center;">ACCIÓN</th>
                     </tr>
                 </thead>
-                <tbody id="tbodyUsuarios" style="color:var(--text-dark);">
+                <tbody id="tbodyUsuarios">
                     <tr>
                         <td colspan="7" style="padding:30px; text-align:center; color:#888;">
                             <i class="fas fa-circle-notch fa-spin"></i> Cargando usuarios...
@@ -127,6 +194,43 @@
 
     </main>
 
+    <!-- ══════════════════════════════════════════════════════════════
+         MODAL CONFIRMAR ELIMINACIÓN
+    ══════════════════════════════════════════════════════════════════ -->
+    <div id="modalEliminarUsuario" class="modal-usuario">
+        <div class="modal-usuario-box">
+            <div class="modal-u-header">
+                <h3><i class="fas fa-exclamation-triangle" style="color:#ef4444; margin-right:8px;"></i> Eliminar Usuario</h3>
+                <button class="btn-close-u" onclick="cerrarModal('modalEliminarUsuario')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-u-body">
+                <div style="width:60px; height:60px; background:#fee2e2; border-radius:50%;
+                            display:flex; align-items:center; justify-content:center;
+                            margin:0 auto 16px; font-size:1.5rem; color:#ef4444;">
+                    <i class="fas fa-user-times"></i>
+                </div>
+                <p style="font-weight:600; color:#334155; margin-bottom:6px;">¿Eliminar este usuario?</p>
+                <p style="font-size:.82rem; color:#64748b; margin-bottom:10px;">Se eliminarán <strong>todos</strong> sus registros asociados:</p>
+                <p style="font-size:.95rem; font-weight:700; color:var(--primary); margin-bottom:12px;" id="eliminarNombreUsuario"></p>
+                <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:.5rem;
+                            padding:10px 14px; font-size:.75rem; color:#b91c1c; text-align:left; line-height:1.6;">
+                    <i class="fas fa-triangle-exclamation" style="margin-right:5px;"></i>
+                    Se borrarán sus <strong>préstamos, devoluciones, solicitudes y auditoría</strong>.
+                    Esta acción <strong>no se puede deshacer</strong>.
+                </div>
+            </div>
+            <div class="modal-u-footer">
+                <button class="btn-u-cancel" onclick="cerrarModal('modalEliminarUsuario')">Cancelar</button>
+                <button class="btn-u-delete" id="btnConfirmarEliminarUsuario">
+                    <i class="fas fa-trash-alt" style="margin-right:6px;"></i> Sí, eliminar todo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ ACCESIBILIDAD ══════════════════════════════════════════════ -->
     <div class="accessibility-wrapper" id="draggableWrapper">
         <button class="btn-access" id="accessBtn" title="Opciones de Accesibilidad">
             <i class="fas fa-universal-access"></i>
@@ -147,6 +251,7 @@
     </div>
     <div id="reading-guide" class="reading-guide"></div>
 
+    <!-- ══ FOOTER ══════════════════════════════════════════════════════ -->
     <footer class="footer">
         <div class="footer-contenido container">
             <div class="footer-col about">

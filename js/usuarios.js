@@ -1,19 +1,15 @@
-// Configuración de la API
 const API = 'https://prestamos-xi.vercel.app/api';
 let todosLosUsuarios = [];
 
-// ─── SEGURIDAD: SOLO ADMINISTRADORES ─────────────────────────────
 const token = localStorage.getItem('token');
 const id_rol = localStorage.getItem('id_rol');
 
+// ─── SEGURIDAD ────────────────────────────────────────────────────
 function verificarAcceso() {
-    // Si no hay token o no es rol 1, fuera de aquí
     if (!token || id_rol !== "1") {
         window.location.href = "../login.html";
         return;
     }
-
-    // Actualizar nombre en el botón de perfil (según tu imagen: "fernando hernandez")
     const btnSesion = document.getElementById('btnSesion');
     if (btnSesion) {
         const nombre = localStorage.getItem('nombre') || 'Usuario Admin';
@@ -21,120 +17,177 @@ function verificarAcceso() {
     }
 }
 
-// ─── OBTENER DATOS DE LA API ──────────────────────────────────────
+// ─── CARGAR USUARIOS ──────────────────────────────────────────────
 async function cargarUsuarios() {
-    const tablaBody = document.querySelector('tbody');
-    // Spinner de carga opcional
-    tablaBody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px;">Cargando usuarios...</td></tr>`;
+    const tbody = document.getElementById('tbodyUsuarios');
+    tbody.innerHTML = `<tr><td colspan="7" style="padding:30px; text-align:center; color:#888;">
+        <i class="fas fa-circle-notch fa-spin"></i> Cargando usuarios...
+    </td></tr>`;
 
     try {
         const res = await fetch(`${API}/usuario`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-
-        if (!res.ok) throw new Error('Error en la respuesta');
-        
+        if (!res.ok) throw new Error();
         todosLosUsuarios = await res.json();
         renderizarTabla(todosLosUsuarios);
-
-    } catch (error) {
-        console.error("Error cargando usuarios:", error);
-        tablaBody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:red; padding:20px;">No se pudo conectar con el servidor.</td></tr>`;
+    } catch {
+        tbody.innerHTML = `<tr><td colspan="7" style="padding:30px; text-align:center; color:#ef4444;">
+            <i class="fas fa-exclamation-triangle"></i> No se pudo conectar con el servidor.
+        </td></tr>`;
     }
 }
 
-// ─── RENDERIZAR TABLA (MATCH CON TU DISEÑO) ──────────────────────
+// ─── RENDERIZAR TABLA ─────────────────────────────────────────────
 function renderizarTabla(usuarios) {
-    const tbody = document.querySelector('tbody');
+    const tbody = document.getElementById('tbodyUsuarios');
     tbody.innerHTML = '';
 
     if (usuarios.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px;">Sin resultados encontrados.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="padding:30px; text-align:center; color:#888;">Sin resultados encontrados.</td></tr>`;
         return;
     }
+
+    const miId = Number(localStorage.getItem('id_usuario'));
 
     usuarios.forEach(u => {
         const tr = document.createElement('tr');
         tr.style.borderBottom = "1px solid #edf2f7";
 
-        // Formatear Fecha
-        const fecha = u.fecha_registro ? new Date(u.fecha_registro).toLocaleDateString('es-MX') : '15/01/2026';
-        
-        // Determinar Estilo del Rol (Verde oscuro para Admin, Verde claro para Estudiante)
+        const fecha = u.fecha_registro
+            ? new Date(u.fecha_registro).toLocaleDateString('es-MX')
+            : '---';
+
         const esAdmin = u.id_rol === 1;
-        const bgBadge = esAdmin ? '#e2e8f0' : '#dcfce7';
-        const colorText = esAdmin ? '#475569' : '#166534';
-        const textoRol = esAdmin ? 'ADMINISTRADOR' : 'ESTUDIANTE';
+        const bgBadge  = esAdmin ? '#e2e8f0' : '#dcfce7';
+        const colorText = esAdmin ? '#475569' : '#166834';
+        const textoRol  = esAdmin ? 'ADMINISTRADOR' : 'ESTUDIANTE';
+        const nombreCompleto = `${u.nombre} ${u.ap_paterno || ''}`.trim();
+
+        // No permitir que el admin se elimine a sí mismo
+        const esYo = u.id_usuario === miId;
+        const btnEliminar = esYo
+            ? `<span title="No puedes eliminarte a ti mismo"
+                   style="color:#cbd5e1; font-size:1.1rem; cursor:not-allowed;">
+                   <i class="fas fa-trash-alt"></i>
+               </span>`
+            : `<button
+                   onclick="confirmarEliminar(${u.id_usuario}, '${nombreCompleto.replace(/'/g, "\\'")}')"
+                   title="Eliminar usuario"
+                   style="background:none; border:none; color:#94a3b8; cursor:pointer;
+                          font-size:1.1rem; transition:color .2s;"
+                   onmouseover="this.style.color='#ef4444'"
+                   onmouseout="this.style.color='#94a3b8'">
+                   <i class="fas fa-trash-alt"></i>
+               </button>`;
 
         tr.innerHTML = `
-            <td style="padding: 15px;">${u.id_usuario.toString().padStart(3, '0')}</td>
-            <td style="padding: 15px; font-weight: 700;">${u.usuario}</td>
-            <td style="padding: 15px;">${u.nombre} ${u.apellido || ''}</td>
-            <td style="padding: 15px;">${u.correo}</td>
-            <td style="padding: 15px;">
-                <span class="badge" style="background: ${bgBadge}; color: ${colorText}; 
-                      padding: 5px 15px; border-radius: 20px; font-size: 0.7rem; font-weight: 800;">
+            <td style="padding:15px; font-size:.8rem; color:#94a3b8;">${u.id_usuario.toString().padStart(3,'0')}</td>
+            <td style="padding:15px; font-weight:700;">${u.usuario}</td>
+            <td style="padding:15px;">${nombreCompleto}</td>
+            <td style="padding:15px; color:#64748b;">${u.correo}</td>
+            <td style="padding:15px;">
+                <span style="background:${bgBadge}; color:${colorText};
+                      padding:4px 12px; border-radius:20px; font-size:.68rem; font-weight:800; letter-spacing:.04em;">
                     ${textoRol}
                 </span>
             </td>
-            <td style="padding: 15px;">${fecha}</td>
-            <td style="padding: 15px; text-align: center;">
-                <button onclick="editarUsuario(${u.id_usuario})" 
-                    style="background: none; border: none; color: #334155; cursor: pointer; font-size: 1.2rem;">
-                    <i class="fas fa-user-edit"></i>
-                </button>
-            </td>
+            <td style="padding:15px; color:#64748b;">${fecha}</td>
+            <td style="padding:15px; text-align:center;">${btnEliminar}</td>
         `;
         tbody.appendChild(tr);
     });
 }
 
-// ─── LÓGICA DE BÚSQUEDA ──────────────────────────────────────────
+// ─── BÚSQUEDA ─────────────────────────────────────────────────────
+function buscarUsuario() { filtrarUsuarios(); }
+
 function filtrarUsuarios() {
-    const query = document.querySelector('input[type="text"]').value.toLowerCase().trim();
-    
-    const filtrados = todosLosUsuarios.filter(u => 
-        u.nombre.toLowerCase().includes(query) || 
-        u.usuario.toLowerCase().includes(query) || 
-        u.correo.toLowerCase().includes(query)
+    const query = document.getElementById('inputBuscar').value.toLowerCase().trim();
+    const filtrados = todosLosUsuarios.filter(u =>
+        (u.nombre    || '').toLowerCase().includes(query) ||
+        (u.usuario   || '').toLowerCase().includes(query) ||
+        (u.correo    || '').toLowerCase().includes(query)
     );
-    
     renderizarTabla(filtrados);
 }
 
-// ─── ACCIONES ─────────────────────────────────────────────────────
-function editarUsuario(id) {
-    // Aquí puedes abrir un modal de edición o redirigir
-    console.log("Editando usuario con ID:", id);
-    mostrarToast(`Editando usuario ${id}...`, 'success');
+// ─── MODAL ELIMINAR ───────────────────────────────────────────────
+function confirmarEliminar(id, nombre) {
+    document.getElementById('eliminarNombreUsuario').textContent = nombre;
+    document.getElementById('btnConfirmarEliminarUsuario').onclick = () => eliminarUsuario(id);
+    abrirModal('modalEliminarUsuario');
 }
 
-function mostrarToast(msg, tipo) {
-    const t = document.createElement('div');
-    t.style.cssText = `position:fixed; bottom:20px; right:20px; background:#84cc16; color:white; 
-                       padding:12px 25px; border-radius:8px; z-index:10000; font-weight:600;`;
-    t.textContent = msg;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 3000);
+async function eliminarUsuario(id) {
+    const btn = document.getElementById('btnConfirmarEliminarUsuario');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:6px;"></i> Eliminando...';
+
+    try {
+        const res = await fetch(`${API}/usuario/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.message || 'Error al eliminar');
+        }
+
+        mostrarToast('Usuario y todos sus registros fueron eliminados.', 'success');
+        cerrarModal('modalEliminarUsuario');
+        await cargarUsuarios();
+
+    } catch (err) {
+        mostrarToast(err.message || 'Ocurrió un error al eliminar.', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-trash-alt" style="margin-right:6px;"></i> Sí, eliminar todo';
+    }
 }
 
-// ─── INICIO AL CARGAR PÁGINA ─────────────────────────────────────
+// ─── HELPERS MODAL ────────────────────────────────────────────────
+function abrirModal(id) {
+    document.getElementById(id).style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+function cerrarModal(id) {
+    document.getElementById(id).style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+document.addEventListener('click', (e) => {
+    const modal = document.getElementById('modalEliminarUsuario');
+    if (e.target === modal) cerrarModal('modalEliminarUsuario');
+});
+
+// ─── TOAST ────────────────────────────────────────────────────────
+function mostrarToast(mensaje, tipo = 'success') {
+    let toast = document.getElementById('toastUsuarios');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toastUsuarios';
+        document.body.appendChild(toast);
+    }
+    const bg = tipo === 'success' ? '#22c55e' : '#ef4444';
+    const icon = tipo === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+    toast.style.cssText = `
+        position:fixed; bottom:24px; right:24px; z-index:9999;
+        background:${bg}; color:white; padding:12px 20px;
+        border-radius:10px; font-family:'Montserrat',sans-serif;
+        font-weight:600; font-size:.85rem; display:flex;
+        align-items:center; gap:10px; box-shadow:0 8px 24px rgba(0,0,0,.15);
+        transition:opacity .3s; opacity:1;
+    `;
+    toast.innerHTML = `<i class="fas ${icon}"></i> ${mensaje}`;
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     verificarAcceso();
     cargarUsuarios();
-
-    // Evento del botón Buscar (el botón verde de tu imagen)
-    const btnBuscar = document.querySelector('.btn-primary') || document.querySelector('button[style*="cursor: pointer"]');
-    if (btnBuscar) {
-        btnBuscar.addEventListener('click', (e) => {
-            e.preventDefault();
-            filtrarUsuarios();
-        });
-    }
-
-    // Buscar al escribir
-    const inputBusqueda = document.querySelector('input[type="text"]');
-    if (inputBusqueda) {
-        inputBusqueda.addEventListener('input', filtrarUsuarios);
-    }
+    document.getElementById('inputBuscar').addEventListener('input', filtrarUsuarios);
 });
