@@ -25,7 +25,7 @@ async function cargarUsuarios() {
     </td></tr>`;
 
     try {
-        const res = await fetch(`${API_USUARIOS}`, {
+        const res = await fetch(`${API_USUARIOS}/usuario`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (!res.ok) throw new Error();
