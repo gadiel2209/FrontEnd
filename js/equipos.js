@@ -200,6 +200,38 @@ function renderizarEquipos(equipos) {
     renderizarPaginacion(totalPags, paginaActual)
 }
 
+// ─── ESTILOS DE PAGINACIÓN ───────────────────────────────────────
+const CSS_PAG_NUM = `
+    min-width:38px; height:38px; border:1.5px solid #e2e8f0;
+    background:white; color:var(--primary); border-radius:8px;
+    font-weight:700; font-size:.82rem; font-family:'Montserrat',sans-serif;
+    cursor:pointer; transition:all .18s ease;
+    display:inline-flex; align-items:center; justify-content:center;
+    padding:0 12px; box-sizing:border-box;`
+
+const CSS_PAG_NUM_ACTIVA = `
+    min-width:38px; height:38px; border:1.5px solid var(--primary);
+    background:var(--primary); color:white; border-radius:8px;
+    font-weight:700; font-size:.82rem; font-family:'Montserrat',sans-serif;
+    cursor:default; display:inline-flex; align-items:center; justify-content:center;
+    padding:0 12px; box-sizing:border-box;
+    box-shadow:0 4px 10px rgba(26,57,42,.25);`
+
+const CSS_PAG_NAV = `
+    height:38px; border:1.5px solid #e2e8f0;
+    background:white; color:var(--primary); border-radius:8px;
+    font-weight:700; font-size:.82rem; font-family:'Montserrat',sans-serif;
+    cursor:pointer; transition:all .18s ease;
+    display:inline-flex; align-items:center; justify-content:center;
+    gap:6px; padding:0 14px; box-sizing:border-box;`
+
+const CSS_PAG_NAV_DISABLED = `
+    height:38px; border:1.5px solid #e2e8f0;
+    background:#f8fafc; color:#cbd5e1; border-radius:8px;
+    font-weight:700; font-size:.82rem; font-family:'Montserrat',sans-serif;
+    cursor:not-allowed; display:inline-flex; align-items:center; justify-content:center;
+    gap:6px; padding:0 14px; box-sizing:border-box; opacity:.5;`
+
 // ─── PAGINACIÓN ───────────────────────────────────────────────────
 function renderizarPaginacion(totalPags, actual) {
     let paginador = document.getElementById('paginador')
@@ -214,40 +246,56 @@ function renderizarPaginacion(totalPags, actual) {
 
     if (totalPags <= 1) { paginador.innerHTML = ''; return }
 
-    // Botón Anterior
+    const esPrimera = actual === 1
+    const esUltima  = actual === totalPags
+
+    // ← Anterior
     let html = `
         <button onclick="cambiarPagina(${actual - 1})"
-            ${actual === 1 ? 'disabled' : ''}
-            class="btn-pag-nav">
-            <i class="fas fa-chevron-left" style="font-size:.72rem;"></i> Anterior
+            ${esPrimera ? 'disabled' : ''}
+            style="${esPrimera ? CSS_PAG_NAV_DISABLED : CSS_PAG_NAV}"
+            onmouseover="if(!this.disabled){ this.style.background='#f0fdf4'; this.style.borderColor='var(--primary)'; }"
+            onmouseout="if(!this.disabled){ this.style.background='white'; this.style.borderColor='#e2e8f0'; }">
+            <i class="fas fa-chevron-left" style="font-size:.7rem;"></i> Anterior
         </button>`
 
-    // Números — muestra máximo 5 páginas centradas en la actual
+    // Números con rango inteligente
     const rango = 2
     const inicio = Math.max(1, actual - rango)
     const fin    = Math.min(totalPags, actual + rango)
 
     if (inicio > 1) {
-        html += `<button onclick="cambiarPagina(1)" class="btn-pag">1</button>`
-        if (inicio > 2) html += `<span style="padding:0 4px; color:#94a3b8; font-weight:700; line-height:38px;">…</span>`
+        html += `<button onclick="cambiarPagina(1)" style="${CSS_PAG_NUM}"
+            onmouseover="this.style.background='var(--primary)'; this.style.color='white'; this.style.borderColor='var(--primary)';"
+            onmouseout="this.style.background='white'; this.style.color='var(--primary)'; this.style.borderColor='#e2e8f0';">1</button>`
+        if (inicio > 2) html += `<span style="padding:0 2px; color:#94a3b8; font-weight:700; line-height:38px; font-size:1rem;">…</span>`
     }
 
     for (let i = inicio; i <= fin; i++) {
-        html += `<button onclick="cambiarPagina(${i})"
-            class="btn-pag ${i === actual ? 'activa' : ''}">${i}</button>`
+        if (i === actual) {
+            html += `<button style="${CSS_PAG_NUM_ACTIVA}" disabled>${i}</button>`
+        } else {
+            html += `<button onclick="cambiarPagina(${i})" style="${CSS_PAG_NUM}"
+                onmouseover="this.style.background='var(--primary)'; this.style.color='white'; this.style.borderColor='var(--primary)';"
+                onmouseout="this.style.background='white'; this.style.color='var(--primary)'; this.style.borderColor='#e2e8f0';">${i}</button>`
+        }
     }
 
     if (fin < totalPags) {
-        if (fin < totalPags - 1) html += `<span style="padding:0 4px; color:#94a3b8; font-weight:700; line-height:38px;">…</span>`
-        html += `<button onclick="cambiarPagina(${totalPags})" class="btn-pag">${totalPags}</button>`
+        if (fin < totalPags - 1) html += `<span style="padding:0 2px; color:#94a3b8; font-weight:700; line-height:38px; font-size:1rem;">…</span>`
+        html += `<button onclick="cambiarPagina(${totalPags})" style="${CSS_PAG_NUM}"
+            onmouseover="this.style.background='var(--primary)'; this.style.color='white'; this.style.borderColor='var(--primary)';"
+            onmouseout="this.style.background='white'; this.style.color='var(--primary)'; this.style.borderColor='#e2e8f0';">${totalPags}</button>`
     }
 
-    // Botón Siguiente
+    // Siguiente →
     html += `
         <button onclick="cambiarPagina(${actual + 1})"
-            ${actual === totalPags ? 'disabled' : ''}
-            class="btn-pag-nav">
-            Siguiente <i class="fas fa-chevron-right" style="font-size:.72rem;"></i>
+            ${esUltima ? 'disabled' : ''}
+            style="${esUltima ? CSS_PAG_NAV_DISABLED : CSS_PAG_NAV}"
+            onmouseover="if(!this.disabled){ this.style.background='#f0fdf4'; this.style.borderColor='var(--primary)'; }"
+            onmouseout="if(!this.disabled){ this.style.background='white'; this.style.borderColor='#e2e8f0'; }">
+            Siguiente <i class="fas fa-chevron-right" style="font-size:.7rem;"></i>
         </button>`
 
     paginador.innerHTML = html
