@@ -1,4 +1,4 @@
-const API = 'https://prestamos-xi.vercel.app/api'
+const API_EQUIPOSINV = 'https://prestamos-xi.vercel.app/api'
 
 let todosLosEquipos = []
 let equiposFiltrados = []
@@ -7,76 +7,73 @@ let paginaActual = 1
 const POR_PAGINA = 9
 
 // ─── SESIÓN ───────────────────────────────────────────────────────
-const token = localStorage.getItem('token');
-const haySession = !!token;
+const token = localStorage.getItem('token')
+const haySession = !!token
 
 function verificarSesion() {
-    const banner = document.getElementById('bannerGuest')
+    const banner   = document.getElementById('bannerGuest')
     const btnSesion = document.getElementById('btnSesion')
 
     if (haySession) {
         if (banner) banner.style.display = 'none'
-
         if (btnSesion) {
             const nombre = localStorage.getItem('nombre') || 'Mi Perfil'
             btnSesion.innerHTML = `<i class="fas fa-user-circle"></i> ${nombre}`
-            // Perfil está en la misma carpeta 'public'
-            btnSesion.href = 'perfil.html'
+            btnSesion.href = 'public/perfil.html'
         }
     } else {
         if (btnSesion) {
-            // CORRECCIÓN: Salir de public/ para encontrar login.html en la raíz
-            btnSesion.href = '../login.html'
+            // Equipos está en la raíz → login también está en la raíz
+            btnSesion.href = 'login.html'
         }
     }
 }
 
-function buscarEquipos() {
-    const texto = document.getElementById('buscadorEquipos')?.value.trim().toLowerCase() || ''
-
-    const base = categoriaActiva
-        ? todosLosEquipos.filter(e =>
-            e.categoria.trim().toLowerCase() === categoriaActiva.trim().toLowerCase())
-        : todosLosEquipos
-
-    const filtrados = texto
-        ? base.filter(e => e.nombre.toLowerCase().includes(texto) ||
-            (e.descripcion || '').toLowerCase().includes(texto))
-        : base
-
-    paginaActual = 1
-    renderizarEquipos(filtrados)
+// ─── MODAL INVITADO ───────────────────────────────────────────────
+function mostrarModalInvitado() {
+    document.getElementById('modalInvitado').style.display = 'flex'
 }
+
+function cerrarModalInvitado() {
+    document.getElementById('modalInvitado').style.display = 'none'
+}
+
+function irAlLogin() {
+    window.location.href = 'login.html'
+}
+
+// Cerrar modal al hacer clic en el backdrop
+document.addEventListener('click', (e) => {
+    if (e.target.id === 'modalInvitado') cerrarModalInvitado()
+})
 
 // ─── COLORES POR ESTADO ───────────────────────────────────────────
 function getBadgeColor(estado) {
     const colores = {
-        disponible: '#22c55e',
-        prestado: '#f59e0b',
-        dañado: '#ef4444',
-        mantenimiento: '#6366f1'
+        disponible:   '#22c55e',
+        prestado:     '#f59e0b',
+        dañado:       '#ef4444',
+        mantenimiento:'#6366f1'
     }
     return colores[estado] || '#94a3b8'
 }
 
 // ─── BOTÓN SOLICITAR ──────────────────────────────────────────────
 async function solicitarEquipo(id_equipo, nombre, btn) {
+    // Si no hay sesión → modal de confirmación
     if (!haySession) {
-        sessionStorage.setItem('redirectAfterLogin', 'public/equipos.html')
-        window.location.href = '../login.html'
+        mostrarModalInvitado()
         return
     }
 
-    const id_usuario = parseInt(localStorage.getItem('id_usuario')) 
-    
-    // Guardamos el contenido original del botón por si hay que restaurarlo
-    const contenidoOriginal = '<i class="fas fa-hand-holding"></i> Solicitar';
-    
+    const id_usuario = parseInt(localStorage.getItem('id_usuario'))
+    const contenidoOriginal = '<i class="fas fa-hand-holding"></i> Solicitar'
+
     btn.disabled = true
     btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Solicitando...'
 
     try {
-        const res = await fetch(`${API}/solicitudes`, {
+        const res = await fetch(`${API_EQUIPOSINV}/solicitudes`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -88,31 +85,25 @@ async function solicitarEquipo(id_equipo, nombre, btn) {
         const data = await res.json()
 
         if (res.ok) {
-            // CASO ÉXITO: El equipo se marca como prestado localmente
-            mostrarToast(`✅ Solicitud enviada para "${nombre}"`, 'success')
-            
-            const indexTodos = todosLosEquipos.findIndex(e => e.id_equipo === id_equipo);
-            if (indexTodos !== -1) todosLosEquipos[indexTodos].estado = 'prestado';
+            mostrarToast(`Solicitud enviada para "${nombre}"`, 'success')
 
-            const indexFiltrados = equiposFiltrados.findIndex(e => e.id_equipo === id_equipo);
-            if (indexFiltrados !== -1) equiposFiltrados[indexFiltrados].estado = 'prestado';
+            const indexTodos = todosLosEquipos.findIndex(e => e.id_equipo === id_equipo)
+            if (indexTodos !== -1) todosLosEquipos[indexTodos].estado = 'prestado'
 
-            renderizarEquipos(equiposFiltrados);
-            cargarCategorias();
-            
+            const indexFiltrados = equiposFiltrados.findIndex(e => e.id_equipo === id_equipo)
+            if (indexFiltrados !== -1) equiposFiltrados[indexFiltrados].estado = 'prestado'
+
+            renderizarEquipos(equiposFiltrados)
+            cargarCategorias()
         } else {
-            // CASO ERROR (Incluye "usuario ya tiene solicitud activa"):
-            // Solo mostramos el aviso y RESTAURAMOS el botón
             mostrarToast(data.message || 'Error al enviar solicitud', 'error')
-            
             btn.disabled = false
-            btn.innerHTML = contenidoOriginal;
-            // Al NO cambiar el estado en el array, al renderizar (si se hiciera) seguiría "disponible"
+            btn.innerHTML = contenidoOriginal
         }
-    } catch (error) {
+    } catch {
         mostrarToast('Error de conexión', 'error')
         btn.disabled = false
-        btn.innerHTML = contenidoOriginal;
+        btn.innerHTML = contenidoOriginal
     }
 }
 
@@ -130,14 +121,13 @@ function mostrarToast(mensaje, tipo = 'success') {
     setTimeout(() => toast.remove(), 3500)
 }
 
-// ─── RENDERIZAR PÁGINA ────────────────────────────────────────────
+// ─── RENDERIZAR EQUIPOS ───────────────────────────────────────────
 function renderizarEquipos(equipos) {
     const contenedor = document.getElementById('contenedorEquipos')
-    const subtitulo = document.getElementById('subtituloSeccion')
-    
-    equiposFiltrados = equipos; // Actualizar globales para paginación
-    const totalPags = Math.ceil(equipos.length / POR_PAGINA)
+    const subtitulo  = document.getElementById('subtituloSeccion')
 
+    equiposFiltrados = equipos
+    const totalPags = Math.ceil(equipos.length / POR_PAGINA)
     if (paginaActual > totalPags) paginaActual = 1
 
     const inicio = (paginaActual - 1) * POR_PAGINA
@@ -160,27 +150,23 @@ function renderizarEquipos(equipos) {
         let boton = ''
 
         if (disponible) {
-            // Busca esta línea en tu función renderizarEquipos y cámbiala por esta:
-            boton = haySession ?
-                `<button onclick="solicitarEquipo(${equipo.id_equipo}, '${equipo.nombre.replace(/"/g, '')}', this)"
+            // Tanto usuario con sesión como invitado usan el mismo botón
+            // — el invitado verá el modal de confirmación al hacer clic
+            boton = `
+                <button onclick="solicitarEquipo(${equipo.id_equipo}, '${equipo.nombre.replace(/'/g, "\\'")}', this)"
                     style="margin-top:12px; width:100%; padding:10px; border:none;
                     background:var(--primary); color:white; border-radius:10px; font-weight:700;
                     font-size:0.85rem; cursor:pointer; font-family:'Montserrat',sans-serif; transition:0.2s;">
                     <i class="fas fa-hand-holding"></i> Solicitar
-                </button>` :
-                `<a href="../login.html"
-                    style="display:block; margin-top:12px; width:100%; padding:10px; text-align:center;
-                    background:var(--primary); color:white; border-radius:10px; font-weight:700;
-                    font-size:0.85rem; text-decoration:none; box-sizing:border-box;">
-                    <i class="fas fa-right-to-bracket"></i> Inicia sesión para solicitar
-                </a>`
+                </button>`
         } else {
-            boton = `<button disabled
-                style="margin-top:12px; width:100%; padding:10px; border:none;
-                background:#e2e8f0; color:#94a3b8; border-radius:10px; font-weight:700;
-                font-size:0.85rem; cursor:not-allowed; font-family:'Montserrat',sans-serif;">
-                <i class="fas fa-ban"></i> No disponible
-            </button>`
+            boton = `
+                <button disabled
+                    style="margin-top:12px; width:100%; padding:10px; border:none;
+                    background:#e2e8f0; color:#94a3b8; border-radius:10px; font-weight:700;
+                    font-size:0.85rem; cursor:not-allowed; font-family:'Montserrat',sans-serif;">
+                    <i class="fas fa-ban"></i> No disponible
+                </button>`
         }
 
         return `
@@ -188,12 +174,11 @@ function renderizarEquipos(equipos) {
             <div style="position:relative; background:#fff; border-radius:12px; overflow:hidden;">
                 <img src="${equipo.ruta_imagen || 'https://placehold.co/300x180?text=Sin+imagen'}"
                     alt="${equipo.nombre}"
-                    style="width:100%; height:180px; object-fit:contain; padding:10px;" 
+                    style="width:100%; height:180px; object-fit:contain; padding:10px;"
                     onerror="this.src='https://placehold.co/300x180?text=Sin+imagen'">
-                
                 <span style="position:absolute; top:10px; right:10px;
-                            background:${getBadgeColor(equipo.estado)}; color:white;
-                            padding:3px 10px; border-radius:20px; font-size:0.72rem; font-weight:700;">
+                    background:${getBadgeColor(equipo.estado)}; color:white;
+                    padding:3px 10px; border-radius:20px; font-size:0.72rem; font-weight:700;">
                     ${equipo.estado}
                 </span>
             </div>
@@ -213,33 +198,27 @@ function renderizarEquipos(equipos) {
     renderizarPaginacion(totalPags, paginaActual)
 }
 
-// ─── RENDERIZAR PAGINACIÓN ────────────────────────────────────────
+// ─── PAGINACIÓN ───────────────────────────────────────────────────
 function renderizarPaginacion(totalPags, actual) {
     let paginador = document.getElementById('paginador')
-
     if (!paginador) {
         paginador = document.createElement('div')
         paginador.id = 'paginador'
         paginador.style.cssText = `
             display:flex; justify-content:center; align-items:center;
             gap:8px; margin-top:40px; flex-wrap:wrap; width:100%;`
-        const contenedorPadre = document.getElementById('contenedorEquipos').parentElement;
-        contenedorPadre.appendChild(paginador);
+        document.getElementById('contenedorEquipos').parentElement.appendChild(paginador)
     }
 
     if (totalPags <= 1) { paginador.innerHTML = ''; return }
 
-    let html = ''
-    html += `<button onclick="cambiarPagina(${actual - 1})" ${actual === 1 ? 'disabled' : ''} class="btn-pag"> < </button>`
-
+    let html = `<button onclick="cambiarPagina(${actual - 1})" ${actual === 1 ? 'disabled' : ''} class="btn-pag"> &lt; </button>`
     for (let i = 1; i <= totalPags; i++) {
-        const esActual = i === actual
-        html += `<button onclick="cambiarPagina(${i})" 
-                style="background:${esActual ? 'var(--primary)' : 'white'}; color:${esActual ? 'white' : 'var(--primary)'}"
-                class="btn-pag">${i}</button>`
+        html += `<button onclick="cambiarPagina(${i})"
+            style="background:${i === actual ? 'var(--primary)' : 'white'}; color:${i === actual ? 'white' : 'var(--primary)'}"
+            class="btn-pag">${i}</button>`
     }
-
-    html += `<button onclick="cambiarPagina(${actual + 1})" ${actual === totalPags ? 'disabled' : ''} class="btn-pag"> > </button>`
+    html += `<button onclick="cambiarPagina(${actual + 1})" ${actual === totalPags ? 'disabled' : ''} class="btn-pag"> &gt; </button>`
     paginador.innerHTML = html
 }
 
@@ -251,71 +230,85 @@ function cambiarPagina(pagina) {
     window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-// ─── SELECCIONAR CATEGORÍA ────────────────────────────────────────
+// ─── FILTROS ──────────────────────────────────────────────────────
 function seleccionarCategoria(nombreCategoria, elemento) {
-    document.querySelectorAll('.categoria-item').forEach(el => el.classList.remove('activa'));
-    if(elemento) elemento.classList.add('activa');
+    document.querySelectorAll('.categoria-item').forEach(el => el.classList.remove('activa'))
+    if (elemento) elemento.classList.add('activa')
 
-    categoriaActiva = nombreCategoria;
-    const titulo = document.getElementById('tituloSeccion');
-    titulo.textContent = nombreCategoria ? nombreCategoria : 'Catálogo de Equipos';
+    categoriaActiva = nombreCategoria
+    document.getElementById('tituloSeccion').textContent = nombreCategoria || 'Catálogo de Equipos'
 
     const filtrados = nombreCategoria
         ? todosLosEquipos.filter(e => e.categoria.trim().toLowerCase() === nombreCategoria.trim().toLowerCase())
-        : todosLosEquipos;
+        : todosLosEquipos
 
-    paginaActual = 1;
-    renderizarEquipos(filtrados);
+    paginaActual = 1
+    renderizarEquipos(filtrados)
 }
 
-// ─── CARGAR CATEGORÍAS Y EQUIPOS ─────────────────────────────────
+function filtrarCategorias() {
+    const query = document.getElementById('buscador')?.value.toLowerCase() || ''
+    document.querySelectorAll('#listaCategorias .categoria-item[data-nombre]').forEach(item => {
+        const nombre = item.dataset.nombre?.toLowerCase() || ''
+        item.parentElement.style.display = nombre.includes(query) ? '' : 'none'
+    })
+}
+
+// ─── CARGAR DATOS ─────────────────────────────────────────────────
 async function cargarCategorias() {
     try {
-        const res = await fetch(`${API}/categorias`);
-        const categorias = await res.json();
-        const lista = document.getElementById('listaCategorias');
-        if (!lista) return;
+        const res = await fetch(`${API_EQUIPOSINV}/categorias`)
+        const categorias = await res.json()
+        const lista = document.getElementById('listaCategorias')
+        if (!lista) return
 
-        const itemTodos = lista.firstElementChild;
-        lista.innerHTML = '';
-        lista.appendChild(itemTodos);
+        const itemTodos = lista.firstElementChild
+        lista.innerHTML = ''
+        lista.appendChild(itemTodos)
 
         categorias.forEach(cat => {
-            const count = todosLosEquipos.filter(e => 
+            const count = todosLosEquipos.filter(e =>
                 e.categoria.trim().toLowerCase() === cat.nombre.trim().toLowerCase()
-            ).length;
+            ).length
+            if (count === 0) return
 
-            if (count === 0) return;
-
-            const li = document.createElement('li');
+            const li = document.createElement('li')
             li.innerHTML = `
                 <a class="categoria-item" data-nombre="${cat.nombre}"
-                onclick="seleccionarCategoria('${cat.nombre}', this)">
+                    onclick="seleccionarCategoria('${cat.nombre}', this)">
                     <i class="fas fa-tag"></i>
                     <span>${cat.nombre}</span>
                     <span class="badge-count">${count}</span>
-                </a>`;
-            lista.appendChild(li);
-        });
+                </a>`
+            lista.appendChild(li)
+        })
 
-        const badgeTodos = document.getElementById('badge-todos');
-        if (badgeTodos) badgeTodos.textContent = todosLosEquipos.length;
+        const badgeTodos = document.getElementById('badge-todos')
+        if (badgeTodos) badgeTodos.textContent = todosLosEquipos.length
 
-    } catch (error) { console.error('Error:', error); }
+        document.getElementById('cargandoCategorias')?.remove()
+    } catch (err) {
+        console.error('Error cargando categorías:', err)
+    }
 }
 
 async function cargarEquipos() {
     try {
-        const res = await fetch(`${API}/equipos`);
-        const data = await res.json();
-        todosLosEquipos = data;
-        renderizarEquipos(todosLosEquipos);
-        await cargarCategorias();
-    } catch (error) {
-        console.error("Error:", error);
+        const res = await fetch(`${API_EQUIPOSINV}/equipos`)
+        const data = await res.json()
+        todosLosEquipos = data
+        renderizarEquipos(todosLosEquipos)
+        await cargarCategorias()
+    } catch (err) {
+        console.error('Error cargando equipos:', err)
+        document.getElementById('contenedorEquipos').innerHTML = `
+            <div class="sin-resultados">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>No se pudo conectar con el servidor.</p>
+            </div>`
     }
 }
 
 // ─── INICIO ───────────────────────────────────────────────────────
-verificarSesion();
-cargarEquipos();
+verificarSesion()
+cargarEquipos()
