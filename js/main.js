@@ -1,20 +1,27 @@
+// --- VARIABLES GLOBALES ---
 let sintetizador = window.speechSynthesis;
 let lecturaActiva = false;
+let fontSizeActual = 100;
 
+// --- 1. NARRADOR (MEJORADO) ---
 function toggleNarrador() {
     lecturaActiva = !lecturaActiva;
-    const btn = document.querySelector('[onclick="toggleNarrador()"]');
+    
+    // Buscamos el botón por su ID o clase específica (ajusta el ID según tu HTML)
+    const btn = document.getElementById('btnNarrador') || document.querySelector('.btn-narrador');
     
     if (lecturaActiva) {
-        btn.style.backgroundColor = "var(--accent)";
-        btn.style.color = "var(--primary)";
+        if (btn) {
+            btn.style.backgroundColor = "var(--accent)";
+            btn.style.color = "var(--primary)";
+        }
         alert("Narrador activado. Pase el mouse sobre los textos para escuchar.");
-        
-        // Escuchar eventos de mouse en toda la página
         document.addEventListener('mouseover', hablarTexto);
     } else {
-        btn.style.backgroundColor = "";
-        btn.style.color = "";
+        if (btn) {
+            btn.style.backgroundColor = "";
+            btn.style.color = "";
+        }
         sintetizador.cancel();
         document.removeEventListener('mouseover', hablarTexto);
     }
@@ -23,24 +30,29 @@ function toggleNarrador() {
 function hablarTexto(e) {
     if (!lecturaActiva) return;
     
-    // Solo leer si es un texto relevante
-    const texto = e.target.innerText;
-    if (texto && (e.target.tagName === 'P' || e.target.tagName === 'H1' || e.target.tagName === 'H2' || e.target.tagName === 'SPAN' || e.target.tagName === 'A')) {
-        sintetizador.cancel(); // Detener lectura anterior
-        const mensaje = new SpeechSynthesisUtterance(texto);
-        mensaje.lang = 'es-ES';
-        sintetizador.speak(mensaje);
+    // .closest busca el tag relevante aunque el mouse esté sobre un elemento hijo (como un <i> o <b>)
+    const elemento = e.target.closest('p, h1, h2, h3, span, a, li');
+    
+    if (elemento) {
+        const texto = elemento.innerText.trim();
+        if (texto.length > 0) {
+            sintetizador.cancel(); 
+            const mensaje = new SpeechSynthesisUtterance(texto);
+            mensaje.lang = 'es-ES';
+            mensaje.rate = 1; // Velocidad normal
+            sintetizador.speak(mensaje);
+        }
     }
 }
 
-// 2. MODOS PARA DALTONISMO Y CEGUERA (CONTRASTE)
+// --- 2. MODOS DE VISIBILIDAD ---
 function toggleDaltonismo(event) {
     if (event) event.preventDefault();
     
-    // Cambiamos document.body por document.documentElement (que es la etiqueta <html>)
     const root = document.documentElement; 
     const scrollActual = window.pageYOffset; 
 
+    // Rotación de clases
     if (!root.classList.contains('protanopia') && !root.classList.contains('deuteranopia') && !root.classList.contains('ceguera-total')) {
         root.classList.add('protanopia');
     } else if (root.classList.contains('protanopia')) {
@@ -51,12 +63,10 @@ function toggleDaltonismo(event) {
         root.classList.remove('ceguera-total');
     }
 
-    // Restaurar scroll por si el navegador intenta saltar
     window.scrollTo(0, scrollActual);
 }
 
-// 3. TAMAÑO DE LETRA (ZOOM DE TEXTO)
-let fontSizeActual = 100;
+// --- 3. TAMAÑO DE FUENTE ---
 function cambiarFontSize(accion) {
     const body = document.body;
     if (accion === 'increase' && fontSizeActual < 150) {
@@ -69,53 +79,29 @@ function cambiarFontSize(accion) {
     body.style.fontSize = fontSizeActual + "%";
 }
 
-// --- LÓGICA DE LA BURBUJA (DRAGGABLE Y TOGGLE) ---
-const accessBtn = document.getElementById('accessBtn');
-const accessMenu = document.getElementById('accessMenu');
-
-if (accessBtn) {
-    accessBtn.addEventListener('click', () => {
-        accessMenu.classList.toggle('active');
-    });
-}
-
-// Cerrar si se hace clic fuera
-document.addEventListener('click', (e) => {
-    if (accessMenu && !accessMenu.contains(e.target) && !accessBtn.contains(e.target)) {
-        accessMenu.classList.remove('active');
-    }
-});
-
-// --- GESTIÓN DE SESIÓN MEJORADA ---
+// --- 4. GESTIÓN DE SESIÓN ---
 function cerrarSesion() {
-    console.log("Cerrando sesión...");
     localStorage.clear(); 
-    
     const path = window.location.pathname;
-    // Si estamos en /public/, subimos un nivel para ir al login de la raíz
-    if (path.includes('/public/')) {
-        window.location.href = '../login.html';
-    } else {
-        window.location.href = 'login.html';
-    }
+    window.location.href = path.includes('/public/') ? '../login.html' : 'login.html';
 }
 
 function actualizarBotonSesion() {
     const btnSesion = document.getElementById('btnSesion');
+    if (!btnSesion) return;
+
     const token = localStorage.getItem('token');
-    const nombreUsuario = localStorage.getItem('nombre'); // Asegúrate de guardar 'nombre' en el login
+    const nombreUsuario = localStorage.getItem('nombre'); 
     const rol = localStorage.getItem('id_rol'); 
 
-    if (token && btnSesion) {
-        // 1. Cambiar el texto del botón
-        // Si tienes el nombre guardado lo ponemos, si no, ponemos "Mi Perfil"
+    if (token) {
         const textoMostrar = nombreUsuario ? nombreUsuario : "Mi Perfil";
         btnSesion.innerHTML = `<i class="fas fa-user-circle"></i> ${textoMostrar}`;
 
-        // 2. Lógica de redirección que ya tenías
         const path = window.location.pathname;
         const enPublic = path.includes('/public/');
 
+        // Lógica de redirección según rol
         if (rol == "1") { 
             btnSesion.href = enPublic ? '../perfil.html' : 'perfil.html';
         } else {
@@ -123,7 +109,8 @@ function actualizarBotonSesion() {
         }
     }
 }
-// --- LÓGICA DE BURBUJA ---
+
+// --- 5. INICIALIZACIÓN (UNIFICADA) ---
 document.addEventListener('DOMContentLoaded', () => {
     actualizarBotonSesion();
 
@@ -131,11 +118,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const accessMenu = document.getElementById('accessMenu');
 
     if (accessBtn && accessMenu) {
+        // Abrir/Cerrar menú
         accessBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             accessMenu.classList.toggle('active');
         });
 
+        // Cerrar al hacer clic fuera
         document.addEventListener('click', (e) => {
             if (!accessMenu.contains(e.target) && !accessBtn.contains(e.target)) {
                 accessMenu.classList.remove('active');
