@@ -6,10 +6,10 @@ let fontSizeActual = 100;
 // --- 1. NARRADOR (MEJORADO) ---
 function toggleNarrador() {
     lecturaActiva = !lecturaActiva;
-    
+
     // Buscamos el botón por su ID o clase específica (ajusta el ID según tu HTML)
     const btn = document.getElementById('btnNarrador') || document.querySelector('.btn-narrador');
-    
+
     if (lecturaActiva) {
         if (btn) {
             btn.style.backgroundColor = "var(--accent)";
@@ -29,14 +29,14 @@ function toggleNarrador() {
 
 function hablarTexto(e) {
     if (!lecturaActiva) return;
-    
+
     // .closest busca el tag relevante aunque el mouse esté sobre un elemento hijo (como un <i> o <b>)
     const elemento = e.target.closest('p, h1, h2, h3, span, a, li');
-    
+
     if (elemento) {
         const texto = elemento.innerText.trim();
         if (texto.length > 0) {
-            sintetizador.cancel(); 
+            sintetizador.cancel();
             const mensaje = new SpeechSynthesisUtterance(texto);
             mensaje.lang = 'es-ES';
             mensaje.rate = 1; // Velocidad normal
@@ -48,9 +48,9 @@ function hablarTexto(e) {
 // --- 2. MODOS DE VISIBILIDAD ---
 function toggleDaltonismo(event) {
     if (event) event.preventDefault();
-    
-    const root = document.documentElement; 
-    const scrollActual = window.pageYOffset; 
+
+    const root = document.documentElement;
+    const scrollActual = window.pageYOffset;
 
     // Rotación de clases
     if (!root.classList.contains('protanopia') && !root.classList.contains('deuteranopia') && !root.classList.contains('ceguera-total')) {
@@ -81,31 +81,29 @@ function cambiarFontSize(accion) {
 
 // --- 4. GESTIÓN DE SESIÓN ---
 function cerrarSesion() {
-    localStorage.clear(); 
+    localStorage.clear();
     const path = window.location.pathname;
     window.location.href = path.includes('/public/') ? '../login.html' : 'login.html';
 }
 
 function actualizarBotonSesion() {
-    const btnSesion = document.getElementById('btnSesion');
+    const btnSesion = document.getElementById('btnSesion'); // Ahora es el <a>
     if (!btnSesion) return;
 
     const token = localStorage.getItem('token');
-    const nombreUsuario = localStorage.getItem('nombre'); 
-    const rol = localStorage.getItem('id_rol'); 
+    const nombreUsuario = localStorage.getItem('nombre');
 
     if (token) {
-        const textoMostrar = nombreUsuario ? nombreUsuario : "Mi Perfil";
-        btnSesion.innerHTML = `<i class="fas fa-user-circle"></i> ${textoMostrar}`;
+        // Cambiamos el contenido del <a> completo
+        btnSesion.innerHTML = `<i class="fas fa-user-circle"></i> ${nombreUsuario || "Mi Perfil"}`;
 
+        // Ajustamos la ruta del link según dónde estemos
         const path = window.location.pathname;
-        const enPublic = path.includes('/public/');
-
-        // Lógica de redirección según rol
-        if (rol == "1") { 
-            btnSesion.href = enPublic ? '../perfil.html' : 'perfil.html';
+        if (path.includes('/public/')) {
+            btnSesion.href = '../perfil.html';
         } else {
-            btnSesion.href = enPublic ? 'perfil.html' : 'public/perfil.html';
+            // Si estamos en el index de la raíz, el perfil está en public/
+            btnSesion.href = 'public/perfil.html';
         }
     }
 }
