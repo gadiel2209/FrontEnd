@@ -149,13 +149,13 @@ async function verDetalle(id) {
     document.getElementById('modalVerContenido').innerHTML = `
         ${imgHTML}
         <div class="grid grid-cols-2 gap-4 text-sm">
-            <div><span class="text-gray-400 block text-xs uppercase font-bold mb-1">ID</span><span class="font-semibold">${equipo.id_equipo.toString().padStart(3,'0')}</span></div>
+            <div><span class="text-gray-400 block text-xs uppercase font-bold mb-1">ID</span><span class="font-semibold">${equipo.id_equipo.toString().padStart(3, '0')}</span></div>
             <div><span class="text-gray-400 block text-xs uppercase font-bold mb-1">Código QR</span><span class="font-mono text-xs bg-slate-100 px-2 py-1 rounded">${equipo.codigo_qr || 'N/A'}</span></div>
             <div class="col-span-2"><span class="text-gray-400 block text-xs uppercase font-bold mb-1">Nombre</span><span class="font-semibold text-[var(--primary)]">${equipo.nombre}</span></div>
             <div class="col-span-2"><span class="text-gray-400 block text-xs uppercase font-bold mb-1">Descripción</span><span>${equipo.descripcion || '---'}</span></div>
             <div><span class="text-gray-400 block text-xs uppercase font-bold mb-1">Categoría</span><span>${equipo.categoria || 'General'}</span></div>
             <div><span class="text-gray-400 block text-xs uppercase font-bold mb-1">Estado</span><span class="inline-block px-2 py-1 rounded-full text-[10px] font-bold uppercase ${badgeClass}">${estado}</span></div>
-            <div class="col-span-2"><span class="text-gray-400 block text-xs uppercase font-bold mb-1">Fecha de Registro</span><span>${equipo.fecha_registro ? new Date(equipo.fecha_registro).toLocaleDateString('es-MX', {year:'numeric',month:'long',day:'numeric'}) : '---'}</span></div>
+            <div class="col-span-2"><span class="text-gray-400 block text-xs uppercase font-bold mb-1">Fecha de Registro</span><span>${equipo.fecha_registro ? new Date(equipo.fecha_registro).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' }) : '---'}</span></div>
         </div>
     `;
     abrirModal('modalVer');
@@ -163,11 +163,17 @@ async function verDetalle(id) {
 
 // ─── MODAL AGREGAR ────────────────────────────────────────────────
 function abrirModalAgregar() {
-    document.getElementById('modalFormTitulo').textContent = 'Nuevo Equipo';
+    document.getElementById('modalFormTitulo').innerHTML = '<i class="fas fa-box mr-2" style="color:var(--accent)"></i> Nuevo Equipo';
     document.getElementById('equipoIdHidden').value = '';
-    document.getElementById('formEquipo').reset();
+    document.getElementById('inputNombre').value = '';
+    document.getElementById('inputDescripcion').value = '';
+    document.getElementById('inputCodigoQR').value = '';
+    document.getElementById('inputEstado').value = 'disponible';
+    document.getElementById('inputRutaImagen').value = '';
+    document.getElementById('inputImagen').value = '';
     document.getElementById('previewImg').classList.add('hidden');
-    document.getElementById('categoriaSelect').innerHTML = `<option value="">Selecciona una categoría</option>${getCategoriaOptions()}`;
+    document.getElementById('categoriaSelect').innerHTML =
+        `<option value="">Selecciona una categoría</option>${getCategoriaOptions()}`;
     abrirModal('modalForm');
 }
 
