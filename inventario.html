@@ -9,10 +9,8 @@
         (function () {
             const token = localStorage.getItem('token');
             const id_rol = localStorage.getItem('id_rol');
-
-            // Si no hay token O el rol no es 1 (Admin), lo sacamos de aquí
             if (!token || id_rol !== "1") {
-                window.location.href = "./public/home.html"; // O la ruta de tu login
+                window.location.href = "./public/home.html";
             }
         })();
     </script>
@@ -20,17 +18,102 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="publico.css">
+    <style>
+        /* ── Tabla proporciones ── */
+        #tablaInventario td,
+        #tablaInventario th { white-space: nowrap; }
+        #tablaInventario td.desc-col { white-space: normal; min-width: 160px; max-width: 260px; }
+
+        /* ── Modales ── */
+        .modal-backdrop {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(3px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .modal-box {
+            background: #fff;
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 520px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+            animation: modalIn 0.2s ease;
+        }
+        .modal-box-sm { max-width: 400px; }
+        @keyframes modalIn {
+            from { transform: translateY(16px) scale(0.97); opacity: 0; }
+            to   { transform: translateY(0) scale(1);    opacity: 1; }
+        }
+        .modal-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .modal-header h3 { font-weight: 700; font-size: 1.05rem; color: var(--primary); }
+        .modal-body { padding: 1.5rem; }
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #f1f5f9;
+            display: flex; justify-content: flex-end; gap: .75rem;
+        }
+        .btn-close-modal {
+            background: none; border: none; cursor: pointer;
+            color: #94a3b8; font-size: 1.1rem;
+            transition: color .2s;
+        }
+        .btn-close-modal:hover { color: #334155; }
+
+        /* ── Inputs del formulario ── */
+        .form-label { display: block; font-size: .75rem; font-weight: 600; color: #64748b; margin-bottom: .35rem; text-transform: uppercase; letter-spacing: .04em; }
+        .form-input {
+            width: 100%; padding: .55rem .85rem;
+            border: 1.5px solid #e2e8f0; border-radius: .5rem;
+            font-family: 'Montserrat', sans-serif; font-size: .875rem;
+            outline: none; transition: border-color .2s;
+        }
+        .form-input:focus { border-color: var(--accent); }
+        select.form-input { cursor: pointer; }
+
+        /* ── Preview imagen ── */
+        #previewImg { width: 100%; height: 160px; object-fit: cover; border-radius: .6rem; margin-bottom: .75rem; }
+
+        /* ── Botones ── */
+        .btn-danger { background: #ef4444; color: white; padding: .5rem 1.2rem; border-radius: .5rem; font-weight: 600; font-size: .875rem; transition: background .2s; cursor: pointer; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-secondary { background: #f1f5f9; color: #475569; padding: .5rem 1.2rem; border-radius: .5rem; font-weight: 600; font-size: .875rem; transition: background .2s; cursor: pointer; }
+        .btn-secondary:hover { background: #e2e8f0; }
+        .btn-save { background: var(--primary); color: white; padding: .5rem 1.4rem; border-radius: .5rem; font-weight: 600; font-size: .875rem; cursor: pointer; transition: opacity .2s; }
+        .btn-save:hover:not(:disabled) { opacity: .88; }
+        .btn-save:disabled { opacity: .6; cursor: not-allowed; }
+
+        /* ── Upload zone ── */
+        .upload-zone {
+            border: 2px dashed #cbd5e1; border-radius: .6rem;
+            padding: 1rem; text-align: center; cursor: pointer;
+            transition: border-color .2s, background .2s;
+        }
+        .upload-zone:hover { border-color: var(--accent); background: #f0fdf4; }
+
+        /* ── Toast ── */
+        #toastNotif { transform: translateY(80px); opacity: 0; pointer-events: none; }
+    </style>
 </head>
 
 <body class="bg-slate-50 font-['Montserrat']">
 
+    <!-- ══ HEADER ══════════════════════════════════════════════════ -->
     <header class="header">
         <div class="header-container">
             <div class="logo">
                 <i class="fas fa-microchip"></i>
                 <h1>Loan<span>Ware</span></h1>
             </div>
-
             <div class="main-nav">
                 <span style="color:white; margin-right: 15px; font-size: 0.8rem; font-weight: 600;">
                     <i class="fas fa-user-shield" style="color: var(--accent);"></i>
@@ -40,9 +123,9 @@
             </div>
         </div>
     </header>
-    
-    <nav class="header"
-        style="background-color:var(--primary); border-top:1px solid rgba(255,255,255,0.1); padding:5px 0;">
+
+    <!-- ══ NAV ══════════════════════════════════════════════════════ -->
+    <nav class="header" style="background-color:var(--primary); border-top:1px solid rgba(255,255,255,0.1); padding:5px 0;">
         <div class="header-container main-nav">
             <a href="adminDashboard.html">Inicio</a>
             <a href="inventario.html">Inventario</a>
@@ -52,25 +135,19 @@
                 <a href="#" class="dropbtn">Catálogos <i class="fas fa-chevron-down" style="font-size:0.7rem;"></i></a>
                 <div class="dropdown-content">
                     <a href="marca.html"><i class="fas fa-tag" style="color:var(--accent);"></i> Marca</a>
-                    <a href="categoria.html"><i class="fas fa-layer-group" style="color:var(--accent);"></i>
-                        Categoría</a>
-                    <a href="predicciones.html" style="color:#84cc16; font-weight:700;">
-                        <i class="fas fa-chart-line"></i> Predicciones
-                    </a>
+                    <a href="categoria.html"><i class="fas fa-layer-group" style="color:var(--accent);"></i> Categoría</a>
+                    <a href="predicciones.html" style="color:#84cc16; font-weight:700;"><i class="fas fa-chart-line"></i> Predicciones</a>
                 </div>
             </div>
             <div class="dropdown" style="display:inline-block; position:relative;">
-                <a href="#" class="dropbtn">Movimientos <i class="fas fa-chevron-down"
-                        style="font-size:0.7rem;"></i></a>
+                <a href="#" class="dropbtn">Movimientos <i class="fas fa-chevron-down" style="font-size:0.7rem;"></i></a>
                 <div class="dropdown-content">
                     <a href="prestamos.html"><i class="fas fa-arrow-up" style="color:var(--accent);"></i> Préstamos</a>
-                    <a href="devoluciones.html"><i class="fas fa-arrow-down" style="color:var(--accent);"></i>
-                        Devoluciones</a>
+                    <a href="devoluciones.html"><i class="fas fa-arrow-down" style="color:var(--accent);"></i> Devoluciones</a>
                 </div>
             </div>
             <div class="dropdown" style="display:inline-block; position:relative;">
-                <a href="#" class="dropbtn">Acerca de... <i class="fas fa-chevron-down"
-                        style="font-size:0.7rem;"></i></a>
+                <a href="#" class="dropbtn">Acerca de... <i class="fas fa-chevron-down" style="font-size:0.7rem;"></i></a>
                 <div class="dropdown-content">
                     <a href="quienes.html"><i class="fas fa-users"></i> Quiénes Somos</a>
                     <a href="mision.html"><i class="fas fa-bullseye"></i> Misión</a>
@@ -82,122 +159,233 @@
         </div>
     </nav>
 
-
+    <!-- ══ MAIN ══════════════════════════════════════════════════════ -->
     <main class="container py-10">
-        <div class="section-header !text-left flex justify-between items-center flex-wrap gap-4">
+
+        <!-- Encabezado + Buscador + Botón Nuevo -->
+        <div class="section-header !text-left flex justify-between items-start flex-wrap gap-4 mb-8">
             <div>
                 <span class="tag">Administración</span>
                 <h2 class="text-3xl font-bold text-[var(--primary)]">Inventario de Equipos</h2>
                 <div class="line !mx-0"></div>
-                <p>Consulta y gestiona los equipos registrados en el sistema.</p>
+                <p class="text-slate-500 text-sm mt-1">Consulta y gestiona los equipos registrados en el sistema.</p>
             </div>
 
-            <form class="flex gap-2" onsubmit="return false;">
-                <input type="text" id="filtroNombre" placeholder="Buscar equipo..."
-                    class="px-4 py-2 border rounded-lg focus:outline-none focus:border-[var(--accent)]">
-                <button class="btn-primary !py-2">Buscar</button>
-            </form>
+            <div class="flex items-center gap-3 flex-wrap">
+                <div class="flex gap-2">
+                    <input type="text" id="filtroNombre" placeholder="Buscar equipo..."
+                        class="px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-[var(--accent)] w-52">
+                </div>
+                <button onclick="abrirModalAgregar()"
+                    class="btn-primary !py-2 !px-4 flex items-center gap-2 text-sm whitespace-nowrap">
+                    <i class="fas fa-plus"></i> Nuevo Equipo
+                </button>
+            </div>
         </div>
 
-        <div class="card !p-0 overflow-hidden mt-8">
-            <table class="w-full text-left border-collapse">
+        <!-- Tabla -->
+        <div class="card !p-0 overflow-x-auto">
+            <table class="w-full text-left border-collapse text-sm">
                 <thead>
                     <tr class="bg-slate-50 border-b">
-                        <th class="p-4 font-bold text-[var(--primary)]">ID</th>
-                        <th class="p-4 font-bold text-[var(--primary)]">Nombre</th>
-                        <th class="p-4 font-bold text-[var(--primary)]">Descripción</th>
-                        <th class="p-4 font-bold text-[var(--primary)]">Categoría</th>
-                        <th class="p-4 font-bold text-[var(--primary)]">Estado</th>
-                        <th class="p-4 font-bold text-[var(--primary)]">Acción</th>
+                        <th class="p-3 font-bold text-[var(--primary)] text-xs uppercase tracking-wide w-12">ID</th>
+                        <th class="p-3 font-bold text-[var(--primary)] text-xs uppercase tracking-wide">Nombre</th>
+                        <th class="p-3 font-bold text-[var(--primary)] text-xs uppercase tracking-wide desc-col">Descripción</th>
+                        <th class="p-3 font-bold text-[var(--primary)] text-xs uppercase tracking-wide w-32">Categoría</th>
+                        <th class="p-3 font-bold text-[var(--primary)] text-xs uppercase tracking-wide w-32">Estado</th>
+                        <th class="p-3 font-bold text-[var(--primary)] text-xs uppercase tracking-wide w-24 text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="tablaInventario">
-                    <tr class="border-b hover:bg-slate-50 transition-colors">
-                        <td class="p-4">001</td>
-                        <td class="p-4 font-bold">Laptop Dell Latitude</td>
-                        <td class="p-4">Intel i5, 16GB RAM</td>
-                        <td class="p-4"><span class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">QR-DELL-01</span>
+                    <tr>
+                        <td colspan="6" class="p-10 text-center text-slate-400">
+                            <i class="fas fa-sync fa-spin mr-2"></i> Cargando equipos...
                         </td>
-                        <td class="p-4">Cómputo</td>
-                        <td class="p-4"><span class="badge !bg-green-100 !text-green-700 !lowercase">Disponible</span>
-                        </td>
-                        <td class="p-4"><button class="btn-login !text-xs !py-1"
-                                onclick="alert('Ver detalles...')">Ver</button></td>
-                    </tr>
-                    <tr class="border-b hover:bg-slate-50 transition-colors">
-                        <td class="p-4">002</td>
-                        <td class="p-4 font-bold">Proyector Epson</td>
-                        <td class="p-4">Full HD 3000 Lúmenes</td>
-                        <td class="p-4"><span class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">QR-PROY-05</span>
-                        </td>
-                        <td class="p-4">Audiovisual</td>
-                        <td class="p-4"><span class="badge !bg-red-100 !text-red-700 !lowercase">Prestado</span></td>
-                        <td class="p-4"><button class="btn-login !text-xs !py-1">Ver</button></td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </main>
 
+    <!-- ══════════════════════════════════════════════════════════════
+         MODAL VER DETALLE
+    ══════════════════════════════════════════════════════════════════ -->
+    <div id="modalVer" class="modal-backdrop">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-info-circle mr-2" style="color:var(--accent)"></i> Detalle del Equipo</h3>
+                <button class="btn-close-modal" onclick="cerrarModal('modalVer')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="modalVerContenido">
+                <!-- Contenido dinámico -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="cerrarModal('modalVer')">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         MODAL AGREGAR / EDITAR
+    ══════════════════════════════════════════════════════════════════ -->
+    <div id="modalForm" class="modal-backdrop">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modalFormTitulo"><i class="fas fa-box mr-2" style="color:var(--accent)"></i> Nuevo Equipo</h3>
+                <button class="btn-close-modal" onclick="cerrarModal('modalForm')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="equipoIdHidden">
+                <input type="hidden" id="inputRutaImagen">
+
+                <div class="grid grid-cols-1 gap-4">
+
+                    <!-- Preview imagen -->
+                    <img id="previewImg" src="" alt="Preview" class="hidden">
+
+                    <!-- Upload imagen -->
+                    <div>
+                        <label class="form-label">Imagen del Equipo</label>
+                        <label for="inputImagen" class="upload-zone block">
+                            <i class="fas fa-cloud-upload-alt text-2xl text-slate-400 mb-1"></i>
+                            <p class="text-xs text-slate-500">Haz clic para seleccionar una imagen</p>
+                            <p class="text-[10px] text-slate-400 mt-1">Se subirá a Cloudinary automáticamente</p>
+                        </label>
+                        <input type="file" id="inputImagen" accept="image/*" class="hidden">
+                    </div>
+
+                    <!-- Nombre -->
+                    <div>
+                        <label class="form-label" for="inputNombre">Nombre <span class="text-red-400">*</span></label>
+                        <input type="text" id="inputNombre" class="form-input" placeholder="Ej: Laptop Dell Latitude 5520">
+                    </div>
+
+                    <!-- Descripción -->
+                    <div>
+                        <label class="form-label" for="inputDescripcion">Descripción</label>
+                        <textarea id="inputDescripcion" class="form-input" rows="2" placeholder="Ej: Intel i5, 16GB RAM, 512GB SSD"></textarea>
+                    </div>
+
+                    <!-- Categoría + Estado (en dos columnas) -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label" for="categoriaSelect">Categoría <span class="text-red-400">*</span></label>
+                            <select id="categoriaSelect" class="form-input">
+                                <option value="">Cargando...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label" for="inputEstado">Estado</label>
+                            <select id="inputEstado" class="form-input">
+                                <option value="disponible">Disponible</option>
+                                <option value="prestado">Prestado</option>
+                                <option value="dañado">Dañado</option>
+                                <option value="mantenimiento">Mantenimiento</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Código QR -->
+                    <div>
+                        <label class="form-label" for="inputCodigoQR">Código QR</label>
+                        <input type="text" id="inputCodigoQR" class="form-input font-mono" placeholder="Ej: QR-DELL-001">
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="cerrarModal('modalForm')">Cancelar</button>
+                <button class="btn-save" id="btnGuardar" onclick="guardarEquipo()">
+                    <i class="fas fa-save mr-2"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         MODAL CONFIRMAR ELIMINACIÓN
+    ══════════════════════════════════════════════════════════════════ -->
+    <div id="modalEliminar" class="modal-backdrop">
+        <div class="modal-box modal-box-sm">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle mr-2 text-red-500"></i> Eliminar Equipo</h3>
+                <button class="btn-close-modal" onclick="cerrarModal('modalEliminar')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-trash text-red-500 text-2xl"></i>
+                </div>
+                <p class="text-slate-700 font-semibold mb-1">¿Estás seguro de eliminar este equipo?</p>
+                <p class="text-slate-500 text-sm mb-1">Se eliminará permanentemente:</p>
+                <p class="font-bold text-[var(--primary)] text-base" id="eliminarNombre"></p>
+                <p class="text-xs text-slate-400 mt-3">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer justify-center gap-4">
+                <button class="btn-secondary" onclick="cerrarModal('modalEliminar')">Cancelar</button>
+                <button class="btn-danger" id="btnConfirmarEliminar">
+                    <i class="fas fa-trash mr-2"></i> Sí, eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ TOAST ══════════════════════════════════════════════════════ -->
+    <div id="toastNotif" class="fixed bottom-6 right-6 z-[9999] flex items-center gap-3 px-5 py-3 rounded-xl shadow-xl text-white text-sm font-medium transition-all duration-300 bg-green-600"></div>
+
+    <!-- ══ ACCESIBILIDAD ══════════════════════════════════════════════ -->
     <div class="accessibility-wrapper" id="draggableWrapper">
         <button class="btn-access" id="accessBtn" title="Opciones de Accesibilidad">
             <i class="fas fa-universal-access"></i>
         </button>
-
         <div class="access-menu" id="accessMenu">
             <h4>Centro de Inclusión</h4>
             <div class="access-section">
                 <small>VISIÓN Y CEGUERA</small>
-                <button type="button" onclick="toggleNarrador()"><i class="fas fa-comment-dots"></i> Narrador de
-                    Voz</button>
+                <button type="button" onclick="toggleNarrador()"><i class="fas fa-comment-dots"></i> Narrador de Voz</button>
                 <button type="button" onclick="toggleDaltonismo()"><i class="fas fa-eye"></i> Modos Daltonismo</button>
             </div>
             <div class="access-section">
                 <small>TAMAÑO DE TEXTO</small>
-                <button type="button" onclick="cambiarFontSize('increase')"><i class="fas fa-plus"></i>
-                    Aumentar</button>
-                <button type="button" onclick="cambiarFontSize('decrease')"><i class="fas fa-minus"></i>
-                    Disminuir</button>
+                <button type="button" onclick="cambiarFontSize('increase')"><i class="fas fa-plus"></i> Aumentar</button>
+                <button type="button" onclick="cambiarFontSize('decrease')"><i class="fas fa-minus"></i> Disminuir</button>
             </div>
         </div>
     </div>
 
     <div id="reading-guide" class="reading-guide"></div>
 
+    <!-- ══ FOOTER ══════════════════════════════════════════════════════ -->
     <footer class="footer">
-    <div class="footer-contenido container">
-        <div class="footer-col about">
-            <h3>Loan<span>Ware</span></h3>
-            <p>Optimizando el acceso tecnológico en la educación.</p>
-            <div class="redes-sociales">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-x-twitter"></i></a>
-                <a href="#"><i class="fab fa-tiktok"></i></a>
+        <div class="footer-contenido container">
+            <div class="footer-col about">
+                <h3>Loan<span>Ware</span></h3>
+                <p>Optimizando el acceso tecnológico en la educación.</p>
+                <div class="redes-sociales">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-x-twitter"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Contacto</h4>
+                <p><i class="fas fa-envelope"></i> <span id="footer-email">Cargando...</span></p>
+                <p><i class="fas fa-phone"></i> <span id="footer-telefono">Cargando...</span></p>
+                <p><i class="fas fa-location-dot"></i> Huejutla, Hidalgo</p>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <nav class="footer-links">
+                    <a href="#">Privacidad</a>
+                    <a href="#">Términos</a>
+                    <a href="#">Ayuda</a>
+                </nav>
             </div>
         </div>
-
-        <div class="footer-col">
-            <h4>Contacto</h4>
-            <p><i class="fas fa-envelope"></i> <span id="footer-email">Cargando...</span></p>
-            <p><i class="fas fa-phone"></i> <span id="footer-telefono">Cargando...</span></p>
-
-            <p><i class="fas fa-location-dot"></i> Huejutla, Hidalgo</p>
+        <div class="footer-bottom">
+            <span id="footer-copyright"></span>
         </div>
-
-        <div class="footer-col">
-            <h4>Legal</h4>
-            <nav class="footer-links">
-                <a href="#">Privacidad</a>
-                <a href="#">Términos</a>
-                <a href="#">Ayuda</a>
-            </nav>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <span id="footer-copyright"></span>
-    </div>
-</footer>
+    </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script src="js/main.js"></script>
@@ -205,5 +393,4 @@
     <script src="js/inventario.js"></script>
 
 </body>
-
 </html>
