@@ -125,7 +125,7 @@ async function eliminarUsuario(id) {
     btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:6px;"></i> Eliminando...';
 
     try {
-        const res = await fetch(`${API_USUARIOS}/${id}`, {
+        const res = await fetch(`${API}/usuario/${id}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });
