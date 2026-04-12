@@ -29,6 +29,47 @@
             outline: none; font-family: 'Montserrat', sans-serif; box-sizing: border-box;
         }
         #buscador:focus { border-color: var(--primary); }
+
+        /* ── Paginación ── */
+        .btn-pag {
+            min-width: 38px; height: 38px;
+            border: 1.5px solid #e2e8f0;
+            background: white; color: var(--primary);
+            border-radius: 8px; font-weight: 700; font-size: .82rem;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer; transition: all .18s ease;
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 0 10px;
+        }
+        .btn-pag:hover:not(:disabled) {
+            background: var(--primary); color: white;
+            border-color: var(--primary);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(26,57,42,.2);
+        }
+        .btn-pag:disabled {
+            opacity: .35; cursor: not-allowed; transform: none;
+        }
+        .btn-pag.activa {
+            background: var(--primary); color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 10px rgba(26,57,42,.25);
+        }
+        .btn-pag-nav {
+            min-width: 38px; height: 38px;
+            border: 1.5px solid #e2e8f0;
+            background: white; color: var(--primary);
+            border-radius: 8px; font-weight: 700; font-size: .85rem;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer; transition: all .18s ease;
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 5px; padding: 0 12px;
+        }
+        .btn-pag-nav:hover:not(:disabled) {
+            background: #f0fdf4; border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+        .btn-pag-nav:disabled { opacity: .35; cursor: not-allowed; }
         .sin-resultados { grid-column: 1/-1; text-align: center; padding: 50px 20px; color: var(--text-muted); }
         .sin-resultados i { font-size: 2.5rem; margin-bottom: 12px; display: block; opacity: 0.4; }
 

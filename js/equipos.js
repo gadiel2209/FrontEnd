@@ -208,19 +208,48 @@ function renderizarPaginacion(totalPags, actual) {
         paginador.id = 'paginador'
         paginador.style.cssText = `
             display:flex; justify-content:center; align-items:center;
-            gap:8px; margin-top:40px; flex-wrap:wrap; width:100%;`
+            gap:6px; margin-top:40px; flex-wrap:wrap; width:100%;`
         document.getElementById('contenedorEquipos').parentElement.appendChild(paginador)
     }
 
     if (totalPags <= 1) { paginador.innerHTML = ''; return }
 
-    let html = `<button onclick="cambiarPagina(${actual - 1})" ${actual === 1 ? 'disabled' : ''} class="btn-pag"> &lt; </button>`
-    for (let i = 1; i <= totalPags; i++) {
-        html += `<button onclick="cambiarPagina(${i})"
-            style="background:${i === actual ? 'var(--primary)' : 'white'}; color:${i === actual ? 'white' : 'var(--primary)'}"
-            class="btn-pag">${i}</button>`
+    // Botón Anterior
+    let html = `
+        <button onclick="cambiarPagina(${actual - 1})"
+            ${actual === 1 ? 'disabled' : ''}
+            class="btn-pag-nav">
+            <i class="fas fa-chevron-left" style="font-size:.72rem;"></i> Anterior
+        </button>`
+
+    // Números — muestra máximo 5 páginas centradas en la actual
+    const rango = 2
+    const inicio = Math.max(1, actual - rango)
+    const fin    = Math.min(totalPags, actual + rango)
+
+    if (inicio > 1) {
+        html += `<button onclick="cambiarPagina(1)" class="btn-pag">1</button>`
+        if (inicio > 2) html += `<span style="padding:0 4px; color:#94a3b8; font-weight:700; line-height:38px;">…</span>`
     }
-    html += `<button onclick="cambiarPagina(${actual + 1})" ${actual === totalPags ? 'disabled' : ''} class="btn-pag"> &gt; </button>`
+
+    for (let i = inicio; i <= fin; i++) {
+        html += `<button onclick="cambiarPagina(${i})"
+            class="btn-pag ${i === actual ? 'activa' : ''}">${i}</button>`
+    }
+
+    if (fin < totalPags) {
+        if (fin < totalPags - 1) html += `<span style="padding:0 4px; color:#94a3b8; font-weight:700; line-height:38px;">…</span>`
+        html += `<button onclick="cambiarPagina(${totalPags})" class="btn-pag">${totalPags}</button>`
+    }
+
+    // Botón Siguiente
+    html += `
+        <button onclick="cambiarPagina(${actual + 1})"
+            ${actual === totalPags ? 'disabled' : ''}
+            class="btn-pag-nav">
+            Siguiente <i class="fas fa-chevron-right" style="font-size:.72rem;"></i>
+        </button>`
+
     paginador.innerHTML = html
 }
 
