@@ -1,4 +1,4 @@
-const API_EQUIPOSINV = 'https://prestamos-xi.vercel.app/api/equiposinv'
+const API = 'https://prestamos-xi.vercel.app/api'
 
 let todosLosEquipos = []
 let equiposFiltrados = []
@@ -73,7 +73,7 @@ async function solicitarEquipo(id_equipo, nombre, btn) {
     btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Solicitando...'
 
     try {
-        const res = await fetch(`${API_EQUIPOSINV}/solicitudes`, {
+        const res = await fetch(`${API}/solicitudes`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ async function solicitarEquipo(id_equipo, nombre, btn) {
         const data = await res.json()
 
         if (res.ok) {
-            mostrarToast(`Solicitud enviada para "${nombre}"`, 'success')
+            mostrarToast(`✅ Solicitud enviada para "${nombre}"`, 'success')
 
             const indexTodos = todosLosEquipos.findIndex(e => e.id_equipo === id_equipo)
             if (indexTodos !== -1) todosLosEquipos[indexTodos].estado = 'prestado'
@@ -259,7 +259,7 @@ function filtrarCategorias() {
 // ─── CARGAR DATOS ─────────────────────────────────────────────────
 async function cargarCategorias() {
     try {
-        const res = await fetch(`${API_EQUIPOSINV}/categorias`)
+        const res = await fetch(`${API}/categorias`)
         const categorias = await res.json()
         const lista = document.getElementById('listaCategorias')
         if (!lista) return
@@ -296,7 +296,7 @@ async function cargarCategorias() {
 
 async function cargarEquipos() {
     try {
-        const res = await fetch(`${API_EQUIPOSINV}/equipos`)
+        const res = await fetch(`${API}/equipos`)
         const data = await res.json()
         todosLosEquipos = data
         renderizarEquipos(todosLosEquipos)
