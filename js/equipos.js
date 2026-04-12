@@ -1,4 +1,4 @@
-const API_EQUIPOSINV = 'https://prestamos-xi.vercel.app/api'
+const API_EQUIPOSINV = 'https://prestamos-xi.vercel.app/api/equiposinv'
 
 let todosLosEquipos = []
 let equiposFiltrados = []
@@ -150,10 +150,12 @@ function renderizarEquipos(equipos) {
         let boton = ''
 
         if (disponible) {
-            // Tanto usuario con sesión como invitado usan el mismo botón
-            // — el invitado verá el modal de confirmación al hacer clic
+            // data-attributes evitan problemas con comillas y caracteres especiales en el nombre
             boton = `
-                <button onclick="solicitarEquipo(${equipo.id_equipo}, '${equipo.nombre.replace(/'/g, "\\'")}', this)"
+                <button
+                    data-id="${equipo.id_equipo}"
+                    data-nombre="${equipo.nombre.replace(/"/g, '&quot;')}"
+                    onclick="solicitarEquipo(parseInt(this.dataset.id), this.dataset.nombre, this)"
                     style="margin-top:12px; width:100%; padding:10px; border:none;
                     background:var(--primary); color:white; border-radius:10px; font-weight:700;
                     font-size:0.85rem; cursor:pointer; font-family:'Montserrat',sans-serif; transition:0.2s;">
