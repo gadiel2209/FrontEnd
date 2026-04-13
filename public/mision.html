@@ -153,29 +153,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script src="../js/main.js"></script>
     <script src="../js/footer.js"></script>
-    <script>
-        async function cargarMision() {
-            try {
-                const res = await fetch('http://localhost:3000/api/ajustes/mision')
-                const data = await res.json()
-                if (data?.valor) {
-                    document.getElementById('textoMision').textContent = data.valor
-                } else {
-                    document.getElementById('textoMision').textContent =
-                        'Formar profesionistas competitivos mediante educación de calidad, con sentido humanista, ' +
-                        'responsabilidad, inclusión y respeto a los derechos humanos, vinculados al sector productivo ' +
-                        'y orientados a la sustentabilidad.'
-                }
-            } catch {
-                document.getElementById('textoMision').textContent =
-                    'Formar profesionistas competitivos mediante educación de calidad, con sentido humanista, ' +
-                    'responsabilidad, inclusión y respeto a los derechos humanos, vinculados al sector productivo ' +
-                    'y orientados a la sustentabilidad.'
-            }
-        }
-
-        cargarMision()
-    </script>
+    <script src="../js/mision.js"></script>
 </body>
 
 </html>

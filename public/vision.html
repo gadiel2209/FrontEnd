@@ -153,29 +153,7 @@
     <script src="../js/footer.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script src="../js/main.js"></script>
-    <script>
-        // Carga el texto de visión desde la API de ajustes
-        async function cargarVision() {
-            try {
-                const res = await fetch('http://localhost:3000/api/ajustes/vision')
-                const data = await res.json()
-                if (data?.valor) {
-                    document.getElementById('textoVision').textContent = data.valor
-                } else {
-                    document.getElementById('textoVision').textContent =
-                        'Ser la plataforma líder en gestión de préstamos tecnológicos educativos, ' +
-                        'garantizando el acceso equitativo a herramientas digitales para todos los estudiantes.'
-                }
-            } catch {
-                // Si la API no está disponible, mostrar texto por defecto
-                document.getElementById('textoVision').textContent =
-                    'Ser la plataforma líder en gestión de préstamos tecnológicos educativos, ' +
-                    'garantizando el acceso equitativo a herramientas digitales para todos los estudiantes.'
-            }
-        }
-
-        cargarVision()
-    </script>
+    <script src="../js/vision.js"></script>
 </body>
 
 </html>

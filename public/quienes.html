@@ -199,29 +199,7 @@
     <script src="../js/footer.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script src="../js/main.js"></script>
-    <script>
-        async function cargarQuienes() {
-            try {
-                const res = await fetch('http://localhost:3000/api/ajustes/quienes')
-                const data = await res.json()
-                if (data?.valor) {
-                    document.getElementById('textoQuienes').textContent = data.valor
-                } else {
-                    document.getElementById('textoQuienes').textContent =
-                        'LoanWare es un sistema creado para gestionar el préstamo de equipos de cómputo ' +
-                        'dentro de instituciones educativas, facilitando el control y seguimiento de los ' +
-                        'materiales prestados de forma eficiente y transparente.'
-                }
-            } catch {
-                document.getElementById('textoQuienes').textContent =
-                    'LoanWare es un sistema creado para gestionar el préstamo de equipos de cómputo ' +
-                    'dentro de instituciones educativas, facilitando el control y seguimiento de los ' +
-                    'materiales prestados de forma eficiente y transparente.'
-            }
-        }
-
-        cargarQuienes()
-    </script>
+    <script src="../js/quienes.js"></script>
 </body>
 
 </html>
