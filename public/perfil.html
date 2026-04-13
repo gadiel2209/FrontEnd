@@ -18,8 +18,9 @@
     <style>
         /* ── Modales ── */
         .modal-perfil {
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,.45);
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .45);
             backdrop-filter: blur(3px);
             z-index: 1000;
             display: none;
@@ -27,6 +28,7 @@
             justify-content: center;
             padding: 1rem;
         }
+
         .modal-perfil-box {
             background: #fff;
             border-radius: 1rem;
@@ -34,117 +36,241 @@
             max-width: 480px;
             max-height: 92vh;
             overflow-y: auto;
-            box-shadow: 0 25px 60px rgba(0,0,0,.25);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, .25);
             animation: modalIn .2s ease;
         }
+
         @keyframes modalIn {
-            from { transform: translateY(14px) scale(.97); opacity: 0; }
-            to   { transform: translateY(0) scale(1);     opacity: 1; }
+            from {
+                transform: translateY(14px) scale(.97);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
         }
+
         .modal-p-header {
-            display: flex; align-items: center; justify-content: space-between;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             padding: 1.2rem 1.5rem;
             border-bottom: 1px solid #f1f5f9;
         }
-        .modal-p-header h3 { font-weight: 700; font-size: 1rem; color: var(--primary); margin: 0; }
-        .modal-p-body   { padding: 1.5rem; }
+
+        .modal-p-header h3 {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--primary);
+            margin: 0;
+        }
+
+        .modal-p-body {
+            padding: 1.5rem;
+        }
+
         .modal-p-footer {
             padding: 1rem 1.5rem;
             border-top: 1px solid #f1f5f9;
-            display: flex; justify-content: flex-end; gap: .75rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: .75rem;
         }
+
         .btn-close-p {
-            background: none; border: none; cursor: pointer;
-            color: #94a3b8; font-size: 1rem; transition: color .2s;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 1rem;
+            transition: color .2s;
         }
-        .btn-close-p:hover { color: #334155; }
+
+        .btn-close-p:hover {
+            color: #334155;
+        }
 
         /* ── Form inputs ── */
         .p-label {
-            display: block; font-size: .72rem; font-weight: 700;
-            color: #64748b; margin-bottom: .35rem;
-            text-transform: uppercase; letter-spacing: .04em;
+            display: block;
+            font-size: .72rem;
+            font-weight: 700;
+            color: #64748b;
+            margin-bottom: .35rem;
+            text-transform: uppercase;
+            letter-spacing: .04em;
         }
+
         .p-input {
-            width: 100%; padding: .6rem .9rem;
-            border: 1.5px solid #e2e8f0; border-radius: .5rem;
-            font-family: 'Montserrat', sans-serif; font-size: .875rem;
-            outline: none; transition: border-color .2s; box-sizing: border-box;
+            width: 100%;
+            padding: .6rem .9rem;
+            border: 1.5px solid #e2e8f0;
+            border-radius: .5rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: .875rem;
+            outline: none;
+            transition: border-color .2s;
+            box-sizing: border-box;
         }
-        .p-input:focus { border-color: var(--accent); }
+
+        .p-input:focus {
+            border-color: var(--accent);
+        }
 
         /* ── Alerta edición ── */
         #alertaEdicion {
-            display: none; padding: 10px 14px; border-radius: .5rem;
-            font-size: .8rem; font-weight: 600; margin-bottom: 1rem;
-            align-items: center; gap: 8px;
+            display: none;
+            padding: 10px 14px;
+            border-radius: .5rem;
+            font-size: .8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            align-items: center;
+            gap: 8px;
         }
 
         /* ── Botones ── */
         .btn-p-save {
-            background: var(--primary); color: white;
-            padding: .55rem 1.4rem; border-radius: .5rem;
-            font-weight: 700; font-size: .82rem; border: none;
-            cursor: pointer; transition: opacity .2s;
+            background: var(--primary);
+            color: white;
+            padding: .55rem 1.4rem;
+            border-radius: .5rem;
+            font-weight: 700;
+            font-size: .82rem;
+            border: none;
+            cursor: pointer;
+            transition: opacity .2s;
             font-family: 'Montserrat', sans-serif;
         }
-        .btn-p-save:hover:not(:disabled) { opacity: .88; }
-        .btn-p-save:disabled { opacity: .6; cursor: not-allowed; }
+
+        .btn-p-save:hover:not(:disabled) {
+            opacity: .88;
+        }
+
+        .btn-p-save:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
+
         .btn-p-cancel {
-            background: #f1f5f9; color: #475569;
-            padding: .55rem 1.2rem; border-radius: .5rem;
-            font-weight: 600; font-size: .82rem; border: none;
-            cursor: pointer; transition: background .2s;
+            background: #f1f5f9;
+            color: #475569;
+            padding: .55rem 1.2rem;
+            border-radius: .5rem;
+            font-weight: 600;
+            font-size: .82rem;
+            border: none;
+            cursor: pointer;
+            transition: background .2s;
             font-family: 'Montserrat', sans-serif;
         }
-        .btn-p-cancel:hover { background: #e2e8f0; }
+
+        .btn-p-cancel:hover {
+            background: #e2e8f0;
+        }
 
         /* ── Código de verificación ── */
         .codigo-inputs-perfil {
-            display: flex; gap: .6rem; justify-content: center; margin: 1.2rem 0;
+            display: flex;
+            gap: .6rem;
+            justify-content: center;
+            margin: 1.2rem 0;
         }
+
         .codigo-input-perfil {
-            width: 48px; height: 56px;
-            border: 2px solid #e2e8f0; border-radius: .6rem;
-            text-align: center; font-size: 1.4rem; font-weight: 700;
-            font-family: 'Montserrat', sans-serif; color: var(--primary);
-            outline: none; transition: border-color .2s;
+            width: 48px;
+            height: 56px;
+            border: 2px solid #e2e8f0;
+            border-radius: .6rem;
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary);
+            outline: none;
+            transition: border-color .2s;
         }
-        .codigo-input-perfil:focus { border-color: var(--accent); }
+
+        .codigo-input-perfil:focus {
+            border-color: var(--accent);
+        }
+
         #errorCodigoPerfil {
-            display: none; color: #ef4444;
-            font-size: .8rem; font-weight: 600;
-            text-align: center; margin-bottom: .75rem;
+            display: none;
+            color: #ef4444;
+            font-size: .8rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: .75rem;
         }
+
         .contador-perfil {
-            text-align: center; font-size: .78rem;
-            color: #94a3b8; margin-bottom: .5rem;
+            text-align: center;
+            font-size: .78rem;
+            color: #94a3b8;
+            margin-bottom: .5rem;
         }
+
         .btn-reenviar-p {
-            background: none; border: none; cursor: pointer;
-            color: var(--accent); font-weight: 700; font-size: .78rem;
-            font-family: 'Montserrat', sans-serif; display: block;
-            margin: 0 auto .5rem; transition: opacity .2s;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--accent);
+            font-weight: 700;
+            font-size: .78rem;
+            font-family: 'Montserrat', sans-serif;
+            display: block;
+            margin: 0 auto .5rem;
+            transition: opacity .2s;
         }
-        .btn-reenviar-p:disabled { opacity: .5; cursor: not-allowed; }
+
+        .btn-reenviar-p:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
         .btn-verificar-p {
-            width: 100%; background: var(--primary); color: white;
-            padding: .75rem; border-radius: .6rem;
-            font-weight: 700; font-size: .875rem; border: none;
-            cursor: pointer; transition: opacity .2s;
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            padding: .75rem;
+            border-radius: .6rem;
+            font-weight: 700;
+            font-size: .875rem;
+            border: none;
+            cursor: pointer;
+            transition: opacity .2s;
             font-family: 'Montserrat', sans-serif;
         }
-        .btn-verificar-p:disabled { opacity: .6; cursor: not-allowed; }
+
+        .btn-verificar-p:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
 
         /* ── Botón editar perfil ── */
         .btn-editar-perfil {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 9px 20px; background: var(--primary); color: white;
-            border-radius: 8px; font-family: 'Montserrat', sans-serif;
-            font-weight: 700; font-size: .8rem; border: none;
-            cursor: pointer; transition: opacity .2s; margin-top: 1.2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 20px;
+            background: var(--primary);
+            color: white;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: .8rem;
+            border: none;
+            cursor: pointer;
+            transition: opacity .2s;
+            margin-top: 1.2rem;
         }
-        .btn-editar-perfil:hover { opacity: .88; }
+
+        .btn-editar-perfil:hover {
+            opacity: .88;
+        }
     </style>
 </head>
 
@@ -172,6 +298,9 @@
                     </div>
                 </div>
                 <a href="contacto.html">Contacto</a>
+                <a href="buzon.html" style="color:var(--accent);">
+                    <i class="fas fa-envelope"></i> Mis Mensajes
+                </a>
             </nav>
             <div class="user-profile-header">
                 <div class="user-details">
@@ -209,7 +338,8 @@
                             border:4px solid rgba(132,204,22,0.2); flex-shrink:0;">?</div>
                         <div>
                             <h3 id="perfilNombre" style="color:var(--primary); margin:0;">Cargando...</h3>
-                            <span id="perfilRolTag" class="tag" style="font-size:.7rem; margin:4px 0 0; display:inline-block;"></span>
+                            <span id="perfilRolTag" class="tag"
+                                style="font-size:.7rem; margin:4px 0 0; display:inline-block;"></span>
                         </div>
                     </div>
 
@@ -217,8 +347,10 @@
                     <div class="stat-card" style="text-align:left; margin-bottom:1rem; flex-direction:row;
                         display:flex; justify-content:space-between; align-items:center; padding:15px 25px;">
                         <div>
-                            <h4 style="margin:0; font-size:.75rem; color:var(--text-muted); text-transform:uppercase;">Nombre Completo</h4>
-                            <p id="perfilNombreCompleto" style="margin:5px 0 0; font-weight:700; color:var(--primary);">—</p>
+                            <h4 style="margin:0; font-size:.75rem; color:var(--text-muted); text-transform:uppercase;">
+                                Nombre Completo</h4>
+                            <p id="perfilNombreCompleto" style="margin:5px 0 0; font-weight:700; color:var(--primary);">
+                                —</p>
                         </div>
                         <i class="fas fa-id-card" style="font-size:1.2rem; color:var(--accent);"></i>
                     </div>
@@ -226,7 +358,8 @@
                     <div class="stat-card" style="text-align:left; margin-bottom:1rem; flex-direction:row;
                         display:flex; justify-content:space-between; align-items:center; padding:15px 25px;">
                         <div>
-                            <h4 style="margin:0; font-size:.75rem; color:var(--text-muted); text-transform:uppercase;">Usuario</h4>
+                            <h4 style="margin:0; font-size:.75rem; color:var(--text-muted); text-transform:uppercase;">
+                                Usuario</h4>
                             <p id="perfilUsuario" style="margin:5px 0 0; font-weight:700; color:var(--primary);">—</p>
                         </div>
                         <i class="fas fa-at" style="font-size:1.2rem; color:var(--accent);"></i>
@@ -235,7 +368,8 @@
                     <div class="stat-card" style="text-align:left; margin-bottom:1rem; flex-direction:row;
                         display:flex; justify-content:space-between; align-items:center; padding:15px 25px;">
                         <div>
-                            <h4 style="margin:0; font-size:.75rem; color:var(--text-muted); text-transform:uppercase;">Correo Electrónico</h4>
+                            <h4 style="margin:0; font-size:.75rem; color:var(--text-muted); text-transform:uppercase;">
+                                Correo Electrónico</h4>
                             <p id="perfilCorreo" style="margin:5px 0 0; font-weight:700; color:var(--primary);">—</p>
                         </div>
                         <i class="fas fa-envelope" style="font-size:1.2rem; color:var(--accent);"></i>
@@ -244,7 +378,8 @@
                     <div class="stat-card" style="text-align:left; flex-direction:row;
                         display:flex; justify-content:space-between; align-items:center; padding:15px 25px;">
                         <div>
-                            <h4 style="margin:0; font-size:.75rem; color:var(--text-muted); text-transform:uppercase;">Rol en el Sistema</h4>
+                            <h4 style="margin:0; font-size:.75rem; color:var(--text-muted); text-transform:uppercase;">
+                                Rol en el Sistema</h4>
                             <p id="perfilRol" style="margin:5px 0 0; font-weight:700; color:var(--primary);">—</p>
                         </div>
                         <i class="fas fa-user-shield" style="font-size:1.2rem; color:var(--accent);"></i>
@@ -262,24 +397,31 @@
                     <div class="card" style="text-align:left; border-top:5px solid var(--accent);">
                         <div class="card-icon"><i class="fas fa-lock"></i></div>
                         <h3>Seguridad</h3>
-                        <p style="color:var(--text-muted);">Cambia tu contraseña periódicamente para proteger tu acceso al sistema LoanWare.</p>
+                        <p style="color:var(--text-muted);">Cambia tu contraseña periódicamente para proteger tu acceso
+                            al sistema LoanWare.</p>
 
                         <div id="alertaPerfil" style="display:none; padding:12px 16px; border-radius:10px;
                             font-size:.85rem; font-weight:600; margin:16px 0; align-items:center; gap:8px;"></div>
 
                         <form id="formPassword" style="margin-top:20px;">
                             <div style="margin-bottom:15px;">
-                                <label style="font-weight:700; font-size:.75rem; color:var(--primary); display:block; margin-bottom:8px;">CONTRASEÑA ACTUAL</label>
+                                <label
+                                    style="font-weight:700; font-size:.75rem; color:var(--primary); display:block; margin-bottom:8px;">CONTRASEÑA
+                                    ACTUAL</label>
                                 <div style="position:relative; display:flex; align-items:center;">
-                                    <i class="fas fa-lock" style="position:absolute; left:15px; color:var(--primary); opacity:.5;"></i>
+                                    <i class="fas fa-lock"
+                                        style="position:absolute; left:15px; color:var(--primary); opacity:.5;"></i>
                                     <input id="passwordActual" type="password" placeholder="Tu contraseña actual"
                                         style="width:100%; padding:12px 12px 12px 40px; border-radius:8px; border:1px solid #ddd; font-family:'Montserrat'; font-size:.9rem; box-sizing:border-box;">
                                 </div>
                             </div>
                             <div style="margin-bottom:20px;">
-                                <label style="font-weight:700; font-size:.75rem; color:var(--primary); display:block; margin-bottom:8px;">NUEVA CONTRASEÑA</label>
+                                <label
+                                    style="font-weight:700; font-size:.75rem; color:var(--primary); display:block; margin-bottom:8px;">NUEVA
+                                    CONTRASEÑA</label>
                                 <div style="position:relative; display:flex; align-items:center;">
-                                    <i class="fas fa-key" style="position:absolute; left:15px; color:var(--primary); opacity:.5;"></i>
+                                    <i class="fas fa-key"
+                                        style="position:absolute; left:15px; color:var(--primary); opacity:.5;"></i>
                                     <input id="passwordNueva" type="password" placeholder="Mínimo 6 caracteres"
                                         style="width:100%; padding:12px 12px 12px 40px; border-radius:8px; border:1px solid #ddd; font-family:'Montserrat'; font-size:.9rem; box-sizing:border-box;">
                                 </div>
@@ -328,17 +470,20 @@
                         <input type="text" id="editUsuario" class="p-input" placeholder="usuario123">
                     </div>
                     <div>
-                        <label class="p-label" for="editApPaterno">Apellido Paterno <span style="color:#ef4444">*</span></label>
+                        <label class="p-label" for="editApPaterno">Apellido Paterno <span
+                                style="color:#ef4444">*</span></label>
                         <input type="text" id="editApPaterno" class="p-input" placeholder="Apellido paterno">
                     </div>
                     <div>
-                        <label class="p-label" for="editApMaterno">Apellido Materno <span style="color:#ef4444">*</span></label>
+                        <label class="p-label" for="editApMaterno">Apellido Materno <span
+                                style="color:#ef4444">*</span></label>
                         <input type="text" id="editApMaterno" class="p-input" placeholder="Apellido materno">
                     </div>
                 </div>
 
                 <div style="margin-top:1rem;">
-                    <label class="p-label" for="editCorreo">Correo Electrónico <span style="color:#ef4444">*</span></label>
+                    <label class="p-label" for="editCorreo">Correo Electrónico <span
+                            style="color:#ef4444">*</span></label>
                     <input type="email" id="editCorreo" class="p-input" placeholder="correo@uthh.edu.mx">
                     <p style="font-size:.72rem; color:#94a3b8; margin:.4rem 0 0;">
                         <i class="fas fa-info-circle" style="margin-right:4px;"></i>
@@ -361,16 +506,20 @@
     <div id="modalVerificacionPerfil" class="modal-perfil">
         <div class="modal-perfil-box" style="max-width:420px;">
             <div class="modal-p-header">
-                <h3><i class="fas fa-envelope-open-text" style="color:var(--accent); margin-right:8px;"></i> Verificar Nuevo Correo</h3>
+                <h3><i class="fas fa-envelope-open-text" style="color:var(--accent); margin-right:8px;"></i> Verificar
+                    Nuevo Correo</h3>
                 <button class="btn-close-p" onclick="cerrarModalVerificacion()"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-p-body" style="text-align:center;">
-                <div style="width:60px; height:60px; background:#f0fdf4; border-radius:50%;
+                <div
+                    style="width:60px; height:60px; background:#f0fdf4; border-radius:50%;
                     display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:1.5rem; color:var(--primary);">
                     <i class="fas fa-paper-plane"></i>
                 </div>
-                <p style="font-size:.9rem; color:#334155; margin-bottom:4px;">Ingresa el código de 6 dígitos enviado a:</p>
-                <p id="verificCorreoDestino" style="font-weight:700; color:var(--primary); font-size:.95rem; margin-bottom:0;"></p>
+                <p style="font-size:.9rem; color:#334155; margin-bottom:4px;">Ingresa el código de 6 dígitos enviado a:
+                </p>
+                <p id="verificCorreoDestino"
+                    style="font-weight:700; color:var(--primary); font-size:.95rem; margin-bottom:0;"></p>
 
                 <div class="codigo-inputs-perfil">
                     <input type="text" inputmode="numeric" maxlength="1" class="codigo-input-perfil">
@@ -406,13 +555,16 @@
             <h4>Centro de Inclusión</h4>
             <div class="access-section">
                 <small>VISIÓN Y CEGUERA</small>
-                <button type="button" onclick="toggleNarrador()"><i class="fas fa-comment-dots"></i> Narrador de Voz</button>
+                <button type="button" onclick="toggleNarrador()"><i class="fas fa-comment-dots"></i> Narrador de
+                    Voz</button>
                 <button type="button" onclick="toggleDaltonismo()"><i class="fas fa-eye"></i> Modos Daltonismo</button>
             </div>
             <div class="access-section">
                 <small>TAMAÑO DE TEXTO</small>
-                <button type="button" onclick="cambiarFontSize('increase')"><i class="fas fa-plus"></i> Aumentar</button>
-                <button type="button" onclick="cambiarFontSize('decrease')"><i class="fas fa-minus"></i> Disminuir</button>
+                <button type="button" onclick="cambiarFontSize('increase')"><i class="fas fa-plus"></i>
+                    Aumentar</button>
+                <button type="button" onclick="cambiarFontSize('decrease')"><i class="fas fa-minus"></i>
+                    Disminuir</button>
             </div>
         </div>
     </div>
@@ -457,4 +609,5 @@
     <script src="../js/footer.js"></script>
 
 </body>
+
 </html>

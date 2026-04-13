@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Mensajes | LoanWare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="publico.css">
+    <style>
+        .buzon-layout {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 24px;
+            margin-top: 30px;
+        }
+
+        /* ── Lista de mensajes ── */
+        .msg-list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 620px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .msg-list-container::-webkit-scrollbar { width: 4px; }
+        .msg-list-container::-webkit-scrollbar-track { background: transparent; }
+        .msg-list-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+        .msg-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 14px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+
+        .msg-item:hover { border-color: var(--accent); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+        .msg-item.activo { border-color: var(--primary); background: #f0fdf4; }
+
+        .msg-badge {
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-enviado  { background: #dbeafe; color: #1d4ed8; }
+        .badge-respondido { background: #dcfce7; color: #15803d; }
+        .badge-pendiente { background: #fef9c3; color: #854d0e; }
+
+        /* ── Visor ── */
+        .visor-card {
+            background: white;
+            border-radius: 18px;
+            padding: 32px;
+            min-height: 520px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+        }
+
+        .visor-header {
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 20px;
+            margin-bottom: 22px;
+        }
+
+        .visor-asunto {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0 0 10px;
+        }
+
+        .visor-meta {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .visor-cuerpo {
+            flex: 1;
+            font-size: 0.93rem;
+            line-height: 1.8;
+            color: var(--text-dark, #1e293b);
+            white-space: pre-wrap;
+        }
+
+        /* Respuesta del admin */
+        .respuesta-admin {
+            margin-top: 24px;
+            background: #f0fdf4;
+            border-left: 4px solid var(--primary);
+            border-radius: 0 12px 12px 0;
+            padding: 16px 20px;
+        }
+
+        .respuesta-admin .resp-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .respuesta-admin .resp-texto {
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: #166534;
+        }
+
+        /* Nuevo mensaje */
+        .nuevo-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+        .nuevo-btn:hover { background: #14532d; }
+
+        /* Modal nuevo mensaje */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.activo { display: flex; }
+
+        .modal-box {
+            background: white;
+            border-radius: 18px;
+            padding: 32px;
+            width: 100%;
+            max-width: 520px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .modal-box h3 {
+            color: var(--primary);
+            margin: 0 0 22px;
+            font-size: 1.1rem;
+        }
+
+        .form-group { margin-bottom: 16px; }
+
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: var(--primary);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 11px 13px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.88rem;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+            color: #1e293b;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus { border-color: var(--accent); }
+
+        .modal-close {
+            position: absolute;
+            top: 16px; right: 16px;
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            color: #94a3b8;
+            cursor: pointer;
+        }
+
+        /* Placeholder vacío */
+        .visor-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            color: var(--text-muted);
+            gap: 12px;
+            text-align: center;
+        }
+
+        .visor-placeholder i { font-size: 3.5rem; opacity: 0.15; }
+        .visor-placeholder p { font-size: 0.9rem; }
+
+        /* Estado envío */
+        .estado-envio {
+            display: none;
+            font-size: 0.83rem;
+            font-weight: 600;
+            margin-top: 8px;
+            text-align: right;
+        }
+
+        /* Empty state lista */
+        .lista-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+        }
+        .lista-empty i { font-size: 2.5rem; opacity: 0.2; display: block; margin-bottom: 10px; }
+
+        @media (max-width: 900px) {
+            .buzon-layout { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── HEADER ── -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-microchip"></i>
+                <h1>Loan<span>Ware</span></h1>
+            </div>
+            <nav class="main-nav">
+                <a href="home.html">Inicio</a>
+                <a href="equipos.html">Equipos</a>
+                <a href="historial.html">Historial</a>
+                <div class="dropdown" style="display:inline-block; position:relative;">
+                    <a href="" class="dropbtn">
+                        Acerca de... <i class="fas fa-chevron-down" style="font-size:0.7rem; margin-left:5px;"></i>
+                    </a>
+                    <div class="dropdown-content">
+                        <a href="quienes.html"><i class="fas fa-users"></i> Quiénes Somos</a>
+                        <a href="mision.html"><i class="fas fa-bullseye"></i> Misión</a>
+                        <a href="vision.html"><i class="fas fa-eye"></i> Visión</a>
+                    </div>
+                </div>
+                <a href="contacto.html">Contacto</a>
+                <a href="buzon.html" style="color:var(--accent);">
+                    <i class="fas fa-envelope"></i> Mis Mensajes
+                </a>
+            </nav>
+            <div class="login-container">
+                <a href="perfil.html" class="btn-login" id="btnSesion">
+                    <i class="fas fa-user-circle"></i> Mi Perfil
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ── MAIN ── -->
+    <main class="container" style="padding: 40px 20px;">
+
+        <div class="section-header" style="margin-bottom: 10px;">
+            <span class="tag">Mi Cuenta</span>
+            <h2>Mis <span style="color: var(--primary);">Mensajes</span></h2>
+            <div class="line"></div>
+        </div>
+
+        <!-- Barra superior -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; flex-wrap:wrap; gap:12px;">
+            <p style="font-size:0.85rem; color:var(--text-muted); margin:0;">
+                Consulta el historial de tus mensajes enviados al administrador y sus respuestas.
+            </p>
+            <button class="nuevo-btn" onclick="abrirModal()">
+                <i class="fas fa-plus"></i> Nuevo mensaje
+            </button>
+        </div>
+
+        <!-- Layout buzón -->
+        <div class="buzon-layout">
+
+            <!-- Lista -->
+            <div class="msg-list-container" id="listaMensajesUsuario">
+                <div class="lista-empty">
+                    <i class="fas fa-circle-notch fa-spin" style="font-size:2rem; opacity:0.4;"></i>
+                    <p style="margin-top:10px;">Cargando mensajes...</p>
+                </div>
+            </div>
+
+            <!-- Visor -->
+            <div class="visor-card" id="visorUsuario">
+                <div class="visor-placeholder" id="visorPlaceholder">
+                    <i class="fas fa-envelope-open-text"></i>
+                    <p>Selecciona un mensaje para verlo</p>
+                </div>
+                <div id="visorContenidoUsuario" style="display:none; flex-direction:column; flex:1;"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ── MODAL NUEVO MENSAJE ── -->
+    <div class="modal-overlay" id="modalNuevo">
+        <div class="modal-box">
+            <button class="modal-close" onclick="cerrarModal()" title="Cerrar">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3><i class="fas fa-paper-plane" style="color:var(--accent);"></i> Nuevo mensaje</h3>
+
+            <div class="form-group">
+                <label>Asunto</label>
+                <select id="modalAsunto">
+                    <option value="">Selecciona un asunto...</option>
+                    <option value="prestamo">Dudas sobre préstamo</option>
+                    <option value="devolucion">Devolución de equipo</option>
+                    <option value="tecnico">Problema técnico</option>
+                    <option value="otro">Otro</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Mensaje</label>
+                <textarea id="modalMensaje" rows="6" placeholder="Describe tu solicitud o duda..."></textarea>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:4px;">
+                <button onclick="cerrarModal()"
+                    style="background:none; border:1.5px solid #cbd5e1; color:#64748b;
+                           padding:9px 18px; border-radius:9px; cursor:pointer;
+                           font-family:'Montserrat',sans-serif; font-weight:600; font-size:0.82rem;">
+                    Cancelar
+                </button>
+                <button onclick="enviarNuevoMensaje()"
+                    style="background:var(--primary); border:none; color:white;
+                           padding:9px 20px; border-radius:9px; cursor:pointer;
+                           font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.82rem;
+                           display:flex; align-items:center; gap:7px;">
+                    <i class="fas fa-paper-plane"></i> Enviar
+                </button>
+            </div>
+
+            <p id="estadoModal" class="estado-envio"></p>
+        </div>
+    </div>
+
+    <!-- ── ACCESIBILIDAD ── -->
+    <div class="accessibility-wrapper" id="draggableWrapper">
+        <button class="btn-access" id="accessBtn" title="Opciones de Accesibilidad">
+            <i class="fas fa-universal-access"></i>
+        </button>
+        <div class="access-menu" id="accessMenu">
+            <h4>Centro de Inclusión</h4>
+            <div class="access-section">
+                <small>VISIÓN Y CEGUERA</small>
+                <button type="button" onclick="toggleNarrador()"><i class="fas fa-comment-dots"></i> Narrador de Voz</button>
+                <button type="button" onclick="toggleDaltonismo()"><i class="fas fa-eye"></i> Modos Daltonismo</button>
+            </div>
+            <div class="access-section">
+                <small>TAMAÑO DE TEXTO</small>
+                <button type="button" onclick="cambiarFontSize('increase')"><i class="fas fa-plus"></i> Aumentar</button>
+                <button type="button" onclick="cambiarFontSize('decrease')"><i class="fas fa-minus"></i> Disminuir</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="reading-guide" class="reading-guide"></div>
+
+    <!-- ── FOOTER ── -->
+    <footer class="footer">
+        <div class="footer-contenido container">
+            <div class="footer-col">
+                <h3>Loan<span>Ware</span></h3>
+                <p>Sistema de gestión de préstamo de equipos escolares.</p>
+                <div class="redes-sociales">
+                    <a href="#" id="footer-facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" id="footer-instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" id="footer-github" aria-label="Github"><i class="fab fa-github"></i></a>
+                    <a href="#" id="footer-tiktok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Contacto</h4>
+                <p><i class="fas fa-envelope"></i> <span id="footer-email">LoanWare@gmail.com</span></p>
+                <p><i class="fas fa-phone"></i> <span id="footer-telefono">+52 771 234 8743</span></p>
+                <p><i class="fas fa-location-dot"></i> <span id="footer-direccion">Huejutla de Reyes, Hidalgo</span></p>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <div class="footer-links">
+                    <a href="#">Aviso de Privacidad</a>
+                    <a href="#">Términos y Condiciones</a>
+                    <a href="#">Reglamento de Préstamos</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span id="footer-copyright">© 2026 LoanWare — Diseñado para el éxito educativo.</span>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/footer.js"></script>
+    <script src="../js/buzon.js"></script>
+
+</body>
+</html>
