@@ -50,12 +50,13 @@ async function enviarMensaje() {
 }
 
 // ─── BUZÓN ADMIN ──────────────────────────────────────────────────
-// FIX: verificarAdmin() solo se llama si estamos en el buzón (buzon.html),
-//      NO en la página pública de contacto.
 let mensajesBuzon = []
+let mensajeActualId    = null
+let mensajeActualEmail = null
+let mensajeActualNombre = null
 
 function verificarAdmin() {
-    const token  = localStorage.getItem('token')   // FIX: leer aquí, no global
+    const token  = localStorage.getItem('token')
     const idRol  = localStorage.getItem('id_rol')
     if (!token || idRol !== '1') {
         window.location.href = '../login.html'
@@ -63,7 +64,7 @@ function verificarAdmin() {
 }
 
 async function obtenerMensajesServidor() {
-    const token = localStorage.getItem('token')    // FIX: leer aquí, no global
+    const token = localStorage.getItem('token')
     const lista = document.getElementById('listaMensajes')
     if (!lista) return
 
@@ -140,6 +141,11 @@ function mostrarDetalle(m) {
 
     const id = m.id_contacto || m._id
 
+    // Guardar datos del mensaje actual para la respuesta
+    mensajeActualId     = id
+    mensajeActualEmail  = m.correo
+    mensajeActualNombre = m.nombre
+
     visor.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:start; gap:15px; margin-bottom:20px;">
             <div>
@@ -161,16 +167,103 @@ function mostrarDetalle(m) {
                 <i class="fas fa-trash"></i>
             </button>
         </div>
-        <div style="padding:20px 0; min-height:200px; color:var(--text-dark);
-                    line-height:1.8; border-top:1px solid #f1f5f9;">
+
+        <div style="padding:20px 0; min-height:150px; color:var(--text-dark);
+                    line-height:1.8; border-top:1px solid #f1f5f9; border-bottom:1px solid #f1f5f9;">
             ${m.mensaje}
+        </div>
+
+        <!-- ─── SECCIÓN DE RESPUESTA ─── -->
+        <div style="margin-top:24px;">
+            <p style="font-size:0.85rem; color:var(--text-muted); margin:0 0 10px;">
+                <i class="fas fa-reply"></i>
+                Responder a:
+                <span style="color:var(--accent); font-weight:700;">${m.correo}</span>
+            </p>
+
+            <textarea id="campoRespuesta"
+                placeholder="Escribe tu respuesta aquí..."
+                rows="5"
+                style="width:100%; box-sizing:border-box; resize:vertical;
+                       border:1.5px solid #e2e8f0; border-radius:10px;
+                       padding:14px; font-family:'Montserrat',sans-serif;
+                       font-size:0.9rem; outline:none; transition:border-color 0.2s;
+                       color:var(--text-dark);"
+                onfocus="this.style.borderColor='var(--accent)'"
+                onblur="this.style.borderColor='#e2e8f0'"></textarea>
+
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:12px;">
+                <button onclick="document.getElementById('campoRespuesta').value=''; document.getElementById('estadoRespuesta').style.display='none';"
+                    style="background:none; border:1.5px solid #cbd5e1; color:var(--text-muted);
+                           padding:8px 18px; border-radius:8px; cursor:pointer;
+                           font-family:'Montserrat',sans-serif; font-weight:600; font-size:0.82rem;">
+                    Cancelar
+                </button>
+                <button onclick="enviarRespuesta()"
+                    style="background:var(--primary); border:none; color:white;
+                           padding:8px 20px; border-radius:8px; cursor:pointer;
+                           font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.82rem;
+                           display:flex; align-items:center; gap:7px;">
+                    <i class="fas fa-paper-plane"></i> Enviar respuesta
+                </button>
+            </div>
+
+            <p id="estadoRespuesta"
+               style="display:none; text-align:right; font-size:0.83rem;
+                      margin-top:8px; font-weight:600;"></p>
         </div>`
 
     renderizarLista()
 }
 
+async function enviarRespuesta() {
+    const token   = localStorage.getItem('token')
+    const texto   = document.getElementById('campoRespuesta')?.value.trim()
+    const estado  = document.getElementById('estadoRespuesta')
+
+    if (!texto) {
+        alert('Escribe un mensaje antes de enviar.')
+        return
+    }
+
+    estado.style.display = 'block'
+    estado.style.color   = 'var(--primary)'
+    estado.innerHTML     = '<i class="fas fa-circle-notch fa-spin"></i> Enviando...'
+
+    try {
+        const res = await fetch(`${API}/contacto/responder`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                destinatario: mensajeActualEmail,
+                nombre:       mensajeActualNombre,
+                respuesta:    texto,
+                mensajeId:    mensajeActualId
+            })
+        })
+
+        const data = await res.json()
+
+        if (res.ok) {
+            estado.style.color = '#16a34a'
+            estado.innerHTML   = '<i class="fas fa-circle-check"></i> Respuesta enviada correctamente.'
+            document.getElementById('campoRespuesta').value = ''
+        } else {
+            throw new Error(data.message || 'Error en el servidor')
+        }
+
+    } catch (error) {
+        console.error('Error al responder:', error)
+        estado.style.color = '#ef4444'
+        estado.innerHTML   = '<i class="fas fa-exclamation-triangle"></i> Error al enviar: ' + error.message
+    }
+}
+
 async function eliminarMensaje(id) {
-    const token = localStorage.getItem('token')    // FIX: leer aquí, no global
+    const token = localStorage.getItem('token')
 
     if (!confirm('¿Eliminar este mensaje permanentemente?')) return
 
@@ -182,6 +275,8 @@ async function eliminarMensaje(id) {
 
         if (res.ok) {
             mensajesBuzon = mensajesBuzon.filter(m => (m.id_contacto || m._id) != id)
+            mensajeActualId    = null
+            mensajeActualEmail = null
             document.getElementById('visorMensaje').innerHTML = `
                 <div style="text-align:center; margin-top:80px; color:var(--text-muted);">
                     <i class="fas fa-check-circle" style="font-size:3rem; color:var(--accent); opacity:0.5; display:block; margin-bottom:12px;"></i>
@@ -199,7 +294,6 @@ async function eliminarMensaje(id) {
 
 // ─── ARRANQUE ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-    // FIX: solo verificar admin si estamos en el buzón, no en contacto público
     const esBuzon = document.getElementById('listaMensajes') !== null
     if (esBuzon) {
         verificarAdmin()

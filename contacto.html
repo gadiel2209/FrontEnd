@@ -141,9 +141,57 @@
 
             <div class="card" id="visorMensaje"
                 style="min-height: 500px; display: flex; flex-direction: column; padding: 30px;">
-                <div style="text-align: center; margin-top: 100px; color: var(--text-muted);">
+
+                <!-- Placeholder inicial -->
+                <div id="visorPlaceholder" style="text-align: center; margin: auto; color: var(--text-muted);">
                     <i class="fas fa-envelope-open-text" style="font-size: 4rem; opacity: 0.2;"></i>
                     <p>Selecciona un mensaje para leerlo</p>
+                </div>
+
+                <!-- Contenido del mensaje -->
+                <div id="visorContenido" style="display:none; flex-direction:column; flex:1;">
+
+                    <div class="viewer-header">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <h3 id="visorAsunto" style="font-size:1.1rem; font-weight:700; margin:0 0 10px;"></h3>
+                            <button class="btn-danger-outline" onclick="eliminarMensaje(mensajeActualId)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        <p style="font-size:0.85rem; color:var(--text-muted); margin:3px 0;">
+                            <strong>De:</strong>
+                            <span id="visorRemitente" style="color: var(--accent);"></span>
+                        </p>
+                        <p style="font-size:0.85rem; color:var(--text-muted); margin:3px 0;">
+                            <i class="fas fa-clock"></i> Recibido: <span id="visorFecha"></span>
+                        </p>
+                    </div>
+
+                    <div id="visorCuerpo" style="flex:1; font-size:0.95rem; line-height:1.7; margin-bottom:24px;"></div>
+
+                    <!-- Sección de respuesta -->
+                    <div style="border-top: 1px solid #eee; padding-top: 20px;">
+                        <p style="font-size:0.85rem; color:var(--text-muted); margin:0 0 10px;">
+                            <i class="fas fa-reply"></i>
+                            Responder a: <span id="visorEmailRespuesta"
+                                style="color: var(--accent); font-weight:600;"></span>
+                        </p>
+                        <textarea id="campoRespuesta" placeholder="Escribe tu respuesta aquí..." rows="5" style="width:100%; box-sizing:border-box; resize:vertical; border:1px solid #ddd;
+                        border-radius:10px; padding:14px; font-family:inherit; font-size:0.9rem;
+                        outline:none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--accent)'"
+                            onblur="this.style.borderColor='#ddd'"></textarea>
+
+                        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:12px;">
+                            <button class="btn-secondary" onclick="document.getElementById('campoRespuesta').value=''">
+                                Cancelar
+                            </button>
+                            <button class="btn-primary" onclick="enviarRespuesta()">
+                                <i class="fas fa-paper-plane"></i> Enviar respuesta
+                            </button>
+                        </div>
+                        <p id="estadoRespuesta" style="display:none; text-align:right; font-size:0.85rem;
+                color: var(--accent); margin-top:8px;"></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -170,7 +218,7 @@
             </div>
         </div>
     </div>
-    
+
     <footer class="footer">
         <div class="footer-contenido container">
             <div class="footer-col about">
