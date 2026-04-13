@@ -1,6 +1,6 @@
 const API_INV = 'https://prestamos-xi.vercel.app/api';
-const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/TU_CLOUD_NAME/image/upload';
-const CLOUDINARY_PRESET = 'TU_UPLOAD_PRESET'; // Cambia esto por tu unsigned preset
+const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dzkyzf0ni/image/upload';
+const CLOUDINARY_PRESET = 'sistemaPrestamo';
 
 let todosLosEquipos = [];
 let listaCategorias = [];
