@@ -103,28 +103,33 @@ function renderEquipoCard(equipo, solicitudesEquipo) {
     }, 50)
 }
 
-// ─── GRÁFICA GENERAL ─────────────────────────────────────────────
+// ─── GRÁFICA GENERAL (TOTAL CONSOLIDADO) ───────────────────────────
 function renderGeneralChart(equipos, solicitudes) {
-    const nombres = [], datosP0 = [], datosQ1 = [], datosQ4 = []
+    // 1. Calculamos el total de solicitudes sin filtrar por equipo
+    const totalP0 = solicitudes.length;
 
-    equipos.forEach(eq => {
-        const sols = solicitudes.filter(s =>
-            (s.equipo_nombre || '').toLowerCase() === eq.nombre.toLowerCase()
-        )
-        const P0 = sols.length
-        if (P0 === 0) return
-        const { q1, q4 } = modelar(P0)
-        nombres.push(eq.nombre.length > 18 ? eq.nombre.substring(0, 16) + '…' : eq.nombre)
-        datosP0.push(P0)
-        datosQ1.push(q1)
-        datosQ4.push(q4)
-    })
+    // Si no hay solicitudes, detenemos la ejecución
+    if (totalP0 === 0) {
+        document.getElementById('generalLoading').innerText = 'No hay datos disponibles';
+        return;
+    }
 
-    const wrap   = document.getElementById('generalChartWrap')
-    const canvas = document.getElementById('generalChart')
-    document.getElementById('generalLoading').style.display = 'none'
-    canvas.style.display = 'block'
-    wrap.style.height = Math.max(300, nombres.length * 52 + 80) + 'px'
+    // 2. Obtenemos las predicciones basadas en el total general
+    const { q1, q4 } = modelar(totalP0);
+
+    const nombres = ['Total General'];
+    const datosP0 = [totalP0];
+    const datosQ1 = [q1];
+    const datosQ4 = [q4];
+
+    const wrap   = document.getElementById('generalChartWrap');
+    const canvas = document.getElementById('generalChart');
+    
+    document.getElementById('generalLoading').style.display = 'none';
+    canvas.style.display = 'block';
+    
+    // Ajustamos la altura: al ser solo una barra, no necesitamos mucho espacio
+    wrap.style.height = '200px'; 
 
     new Chart(canvas, {
         type: 'bar',
@@ -133,14 +138,16 @@ function renderGeneralChart(equipos, solicitudes) {
             datasets: [
                 { label: 'P₀ actual',          data: datosP0, backgroundColor: '#1a392a55', borderColor: '#1a392a', borderWidth: 2, borderRadius: 6 },
                 { label: 'Pred. 1 mes',         data: datosQ1, backgroundColor: '#05966955', borderColor: '#059669', borderWidth: 2, borderRadius: 6 },
-                { label: 'Pred. cuatrimestre',  data: datosQ4, backgroundColor: '#84cc1655', borderColor: '#84cc16', borderWidth: 2, borderRadius: 6 },
+                { label: 'Pred. 4 meses',  data: datosQ4, backgroundColor: '#84cc1655', borderColor: '#84cc16', borderWidth: 2, borderRadius: 6 },
             ]
         },
         options: {
             indexAxis: 'y',
-            responsive: true, maintainAspectRatio: false,
+            responsive: true, 
+            maintainAspectRatio: false,
             plugins: {
-                legend: { display: false },
+                // Activamos la leyenda porque ahora ayuda a diferenciar las 3 métricas en una sola fila
+                legend: { display: true, position: 'bottom' }, 
                 tooltip: {
                     callbacks: { label: c => ` ${c.dataset.label}: ${c.parsed.x} solicitudes` },
                     backgroundColor: '#1a392a', titleColor: '#84cc16',
@@ -150,16 +157,18 @@ function renderGeneralChart(equipos, solicitudes) {
             scales: {
                 x: {
                     min: 0,
-                    ticks: { color: '#94a3b8', font: { size: 11 }, stepSize: 1 },
+                    ticks: { color: '#94a3b8', font: { size: 11 } },
                     grid: { color: 'rgba(0,0,0,0.04)' },
-                    title: { display: true, text: 'Número de solicitudes', color: '#64748b', font: { size: 11 } }
+                    title: { display: true, text: 'Número total de solicitudes', color: '#64748b', font: { size: 11 } }
                 },
-                y: { ticks: { color: '#475569', font: { size: 12, weight: '600' } }, grid: { display: false } }
+                y: { 
+                    ticks: { color: '#475569', font: { size: 14, weight: '700' } }, 
+                    grid: { display: false } 
+                }
             }
         }
-    })
+    });
 }
-
 // ─── CARGA PRINCIPAL ─────────────────────────────────────────────
 async function cargarPredicciones() {
     try {
