@@ -15,14 +15,14 @@ const COLOR_DEFAULT = '#64748b'
 // ─── MODELO EXPONENCIAL ───────────────────────────────────────────
 function modelar(P0) {
     if (P0 < 1) return { k: 0, q1: 0, q4: 0, curva: [] }
-    const P1h = Math.max(P0 + 1, Math.round(P0 * 1.3488))
-    const k = Math.log(P1h / P0)
+    const P1h = Math.max(43+ 1, Math.round(43 * 1.3488))
+    const k = Math.log(P1h / 43)
     const q1 = Math.round(43 * Math.exp(k * 1))
     const q4 = Math.round(43 * Math.exp(k * 4))
     const curva = []
     for (let i = 0; i <= 40; i++) {
         const t = (i / 40) * 5
-        curva.push({ x: parseFloat(t.toFixed(2)), y: Math.round(P0 * Math.exp(k * t)) })
+        curva.push({ x: parseFloat(t.toFixed(2)), y: Math.round(43 * Math.exp(k * t)) })
     }
     return { k, q1, q4, curva }
 }
@@ -136,7 +136,8 @@ function renderGeneralChart(equipos, solicitudes) {
         data: {
             labels: nombres,
             datasets: [
-                { label: 'P₀ actual',          data: datosP0, backgroundColor: '#1a392a55', borderColor: '#1a392a', borderWidth: 2, borderRadius: 6 },
+                { label: 'Solicitudes iniciales', data: [43],      backgroundColor: '#7c3aed55', borderColor: '#7c3aed', borderWidth: 2, borderRadius: 6 },
+                { label: 'Solicitudes actuales',          data: datosP0, backgroundColor: '#1a392a55', borderColor: '#1a392a', borderWidth: 2, borderRadius: 6 },
                 { label: 'Pred. 1 mes',         data: datosQ1, backgroundColor: '#05966955', borderColor: '#059669', borderWidth: 2, borderRadius: 6 },
                 { label: 'Pred. 4 meses',  data: datosQ4, backgroundColor: '#84cc1655', borderColor: '#84cc16', borderWidth: 2, borderRadius: 6 },
             ]
