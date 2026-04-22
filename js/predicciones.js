@@ -17,8 +17,8 @@ function modelar(P0) {
     if (P0 < 1) return { k: 0, q1: 0, q4: 0, curva: [] }
     const P1h = Math.max(P0 + 1, Math.round(P0 * 1.3488))
     const k = Math.log(P1h / P0)
-    const q1 = Math.round(P0 * Math.exp(k * 1))
-    const q4 = Math.round(P0 * Math.exp(k * 4))
+    const q1 = Math.round(43 * Math.exp(k * 1))
+    const q4 = Math.round(43 * Math.exp(k * 4))
     const curva = []
     for (let i = 0; i <= 40; i++) {
         const t = (i / 40) * 5
