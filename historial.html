@@ -573,88 +573,90 @@
         </div>
     </main>
     <!-- ── MODELO PREDICTIVO ─────────────────────────────── -->
-    <div class="pred-section" style="background:linear-gradient(135deg,#f0f7f4,#e8f5e9);padding:48px 0 60px;">
-        <div style="max-width:1200px;margin:0 auto;padding:0 32px;">
-
-            <!-- Header -->
-            <div style="display:flex;align-items:center;gap:16px;margin-bottom:32px;flex-wrap:wrap;">
-                <span
-                    style="display:inline-flex;align-items:center;gap:6px;background:rgba(45,90,61,0.12);border:1px solid rgba(45,90,61,0.25);color:#2d5a3d;font-size:0.7rem;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;padding:5px 13px;border-radius:20px;">
-                    <i class="fas fa-chart-line"></i> Modelo Predictivo
-                </span>
-                <h2 style="font-size:1.45rem;font-weight:700;color:#1a392a;margin:0;">
-                    Proyección de <span style="color:#84cc16;">Préstamos</span>
-                </h2>
+    <div class="pred-hero">
+        <div class="pred-hero-inner">
+            <div>
+                <div class="tag-pill"><i class="fas fa-chart-line"></i> Modelo Predictivo</div>
+                <h1>Predicciones de <span>Inventario</span></h1>
+                <p>Proyección de préstamos por equipo — P(t) = P₀ · e^(k·t)</p>
             </div>
-
-            <!-- Barra de fórmula -->
-            <div
-                style="background:#1a392a;border-radius:14px;padding:16px 28px;display:flex;align-items:center;gap:20px;margin-bottom:28px;flex-wrap:wrap;">
-                <div>
-                    <div
-                        style="font-size:0.65rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">
-                        Ecuación diferencial</div>
-                    <div style="font-family:'Courier New',monospace;font-size:1rem;font-weight:700;color:#84cc16;">dP/dt
-                        = k · P(t)</div>
+            <div class="hero-badges">
+                <div class="hero-badge">
+                    <div class="num" id="heroTotalEquipos">--</div>
+                    <div class="lbl">Equipos</div>
                 </div>
-                <div style="width:1px;height:32px;background:rgba(255,255,255,0.12);"></div>
-                <div>
-                    <div
-                        style="font-size:0.65rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">
-                        Solución analítica</div>
-                    <div id="predFormulaLabel"
-                        style="font-family:'Courier New',monospace;font-size:1rem;font-weight:700;color:#84cc16;">P(t) =
-                        P₀ · e^(k·t)</div>
+                <div class="hero-badge">
+                    <div class="num" id="heroTotalSolicitudes">--</div>
+                    <div class="lbl">Solicitudes</div>
                 </div>
-                <div style="width:1px;height:32px;background:rgba(255,255,255,0.12);"></div>
-                <div>
-                    <div
-                        style="font-size:0.65rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">
-                        Constante k</div>
-                    <div id="predKLabel"
-                        style="font-family:'Courier New',monospace;font-size:1rem;font-weight:700;color:#84cc16;">k =
-                        ...</div>
+                <div class="hero-badge">
+                    <div class="num" id="heroPredMes">--</div>
+                    <div class="lbl">Pred. 1 mes</div>
+                </div>
+                <div class="hero-badge">
+                    <div class="num" id="heroPredCuat">--</div>
+                    <div class="lbl">Pred. 4 meses </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Cards -->
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;">
-                 <div
-                    style="background:white;border-radius:16px;padding:20px 24px;border:1px solid rgba(26,57,42,0.07);border-left:4px solid #2d5a3d;box-shadow:0 2px 12px rgba(26,57,42,0.06);">
-                    <div
-                        style="font-size:0.68rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#64748b;margin-bottom:6px;">
-                        P₀ — Préstamos iniciales</div>
-                    <div style="font-size:2rem;font-weight:700;color:#1a392a;line-height:1;">43</div>
-                    <div style="font-size:0.75rem;color:#94a3b8;margin-top:4px;">Registros en t = 0</div>
-                </div>
-                <div
-                    style="background:white;border-radius:16px;padding:20px 24px;border:1px solid rgba(26,57,42,0.07);border-left:4px solid #2d5a3d;box-shadow:0 2px 12px rgba(26,57,42,0.06);">
-                    <div
-                        style="font-size:0.68rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#64748b;margin-bottom:6px;">
-                        P₀ — Préstamos actuales</div>
-                    <div id="predCardP0" style="font-size:2rem;font-weight:700;color:#1a392a;line-height:1;">--</div>
-                    <div style="font-size:0.75rem;color:#94a3b8;margin-top:4px;">Registros en t = 0</div>
-                </div>
-                <div
-                    style="background:white;border-radius:16px;padding:20px 24px;border:1px solid rgba(26,57,42,0.07);border-left:4px solid #059669;box-shadow:0 2px 12px rgba(26,57,42,0.06);">
-                    <div
-                        style="font-size:0.68rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#64748b;margin-bottom:6px;">
-                        Pregunta 1 — En 1 mes</div>
-                    <div id="predCardQ1" style="font-size:2rem;font-weight:700;color:#1a392a;line-height:1;">--</div>
-                    <div style="font-size:0.75rem;color:#94a3b8;margin-top:4px;">P(1) = P₀ · e^(k·1)</div>
-                </div>
-                <div
-                    style="background:white;border-radius:16px;padding:20px 24px;border:1px solid rgba(26,57,42,0.07);border-left:4px solid #84cc16;box-shadow:0 2px 12px rgba(26,57,42,0.06);">
-                    <div
-                        style="font-size:0.68rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#64748b;margin-bottom:6px;">
-                        Pregunta 2 — En 4 meses</div>
-                    <div id="predCardQ2" style="font-size:2rem;font-weight:700;color:#1a392a;line-height:1;">--</div>
-                    <div style="font-size:0.75rem;color:#94a3b8;margin-top:4px;">P(4) = P₀ · e^(k·4)</div>
-                </div>
+    <!-- CONTENIDO -->
+    <div class="pred-content">
+
+        <!-- Fórmula -->
+        <div class="formula-bar">
+            <div>
+                <div class="f-lbl">Ecuación diferencial</div>
+                <div class="f-val">dP/dt = k · P(t)</div>
             </div>
+            <div class="sep"></div>
+            <div>
+                <div class="f-lbl">Solución analítica</div>
+                <div class="f-val">P(t) = P₀ · e^(k·t)</div>
+            </div>
+            <div class="sep"></div>
+            <div>
+                <div class="f-lbl">k global del sistema</div>
+                <div class="f-val" id="kGlobalLabel">k = ...</div>
+            </div>
+            <div class="sep"></div>
+            <div>
+                <div class="f-lbl">Datos desde</div>
+                <div class="f-val">API LoanWare — tiempo real</div>
+            </div>
+        </div>
 
-            <!-- Gráfica -->
-<!-- Gráfica general -->
+        <!-- Tarjetas resumen -->
+        <div class="resumen-grid">
+            <div class="resumen-card" style="border-left-color:#1a392a;">
+                <div class="rc-label">P₀ — Solicitudes iniciales</div>
+                <div class="rc-val" >43</div>
+                <div class="rc-sub">Total en sistema (t = 0)</div>
+            </div>
+            <div class="resumen-card" style="border-left-color:#1a392a;">
+                <div class="rc-label"> Solicitudes actuales</div>
+                <div class="rc-val" id="rcP0">--</div>
+                
+            </div>
+            <div class="resumen-card" style="border-left-color:#059669;">
+                <div class="rc-label">Pregunta 1 — En 1 mes</div>
+                <div class="rc-val" id="rcQ1">--</div>
+                <div class="rc-sub">P(1) = P₀ · e^(k·1)</div>
+            </div>
+            <div class="resumen-card" style="border-left-color:#84cc16;">
+                <div class="rc-label">Pregunta 2 — En 4 meses</div>
+                <div class="rc-val" id="rcQ4">--</div>
+                <div class="rc-sub">P(4) = P₀ · e^(k·4)</div>
+            </div>
+            <div class="resumen-card" style="border-left-color:#d97706;">
+                <div class="rc-label">Equipos con préstamos</div>
+                <div class="rc-val" id="rcEquiposActivos">--</div>
+                <div class="rc-sub">Con al menos 1 solicitud</div>
+            </div>
+        </div>
+
+        <!-- Gráfica general -->
         <div class="section-title">
             <div class="icon"><i class="fas fa-chart-bar"></i></div>
             <div>
@@ -684,9 +686,6 @@
                 <canvas id="generalChart" style="display:none;"></canvas>
             </div>
         </div>
-
-        </div>
-    </div>
 
     <div class="accessibility-wrapper" id="draggableWrapper">
         <button class="btn-access" id="accessBtn" title="Opciones de Accesibilidad">

@@ -15,7 +15,7 @@ const COLOR_DEFAULT = '#64748b'
 // ─── MODELO EXPONENCIAL ───────────────────────────────────────────
 function modelar(P0) {
     if (P0 < 1) return { k: 0, q1: 0, q4: 0, curva: [] }
-    const P1h = Math.max(P0 + 1, Math.round(P0 * 1.349))
+    const P1h = Math.max(P0 + 1, Math.round(P0 * 1.3488))
     const k = Math.log(P1h / P0)
     const q1 = Math.round(P0 * Math.exp(k * 1))
     const q4 = Math.round(P0 * Math.exp(k * 4))

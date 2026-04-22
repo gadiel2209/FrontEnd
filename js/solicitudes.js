@@ -1,5 +1,5 @@
 const API_SOL = 'https://prestamos-xi.vercel.app/api'
-const token = localStorage.getItem('token')
+
 
 let todasLasSolicitudes = []
 let solicitudesFiltradas = []
